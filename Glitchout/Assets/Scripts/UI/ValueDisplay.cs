@@ -13,13 +13,12 @@ public class ValueDisplay : MonoBehaviour{
     }
 
     void Update(){
-        Player[] players=FindObjectsOfType<Player>();
-        foreach(Player player in players){
+        foreach(Player player in FindObjectsOfType<Player>()){
             if(player.playerNum==playerNum.One){player1=player;}
             if(player.playerNum==playerNum.Two){player2=player;}
         }
-        if(value=="health_p1")txt=player1.health.ToString();
-        if(value=="health_p2")txt=player2.health.ToString();
+        if(value=="health_p1")txt=Mathf.RoundToInt(player1.health).ToString();
+        if(value=="health_p2")txt=Mathf.RoundToInt(player2.health).ToString();
 
         GetComponent<TMPro.TextMeshProUGUI>().text=txt;
     }

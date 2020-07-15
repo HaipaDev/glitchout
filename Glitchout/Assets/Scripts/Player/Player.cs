@@ -14,7 +14,7 @@ public class Player : MonoBehaviour{
     [SerializeField]float yspeed=0.1f;
     [SerializeField]float xRange=0.8f;
     [SerializeField]float yRange=0.8f;
-    [SerializeField]float maxHealth=100f;
+    [SerializeField]public float maxHealth=100f;
     [HeaderAttribute("Current Values")]
     public float health;
     public float damage;
@@ -34,6 +34,7 @@ public class Player : MonoBehaviour{
     }
 
     void Update(){
+        health=Mathf.Clamp(health,0,maxHealth);
         Move();
         Die();
     }
@@ -108,6 +109,9 @@ public class Player : MonoBehaviour{
         if(CompareTag(other.tag)){
             if(moving==true)other.GetComponent<Player>().health-=damage;
             GlitchOut();
+        }else{
+            if(other.gameObject.name.Contains("HealthPack")){health+=25;}
+            if(other.gameObject.name.Contains("Saw")){health-=0.1f;}
         }
     }
     private void OnTriggerStay2D(Collider2D other) {
@@ -115,6 +119,8 @@ public class Player : MonoBehaviour{
         if(CompareTag(other.tag)){
             if(moving==true)other.GetComponent<Player>().health-=damage;
             GlitchOut();
+        }else{
+            if(other.gameObject.name.Contains("Saw")){health-=0.1f;}
         }
     }
 }
