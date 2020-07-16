@@ -44,42 +44,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da37379824486b54ea7f2696a5b904fc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  score: 0
-  scoreMulti: 1
-  luckMulti: 1
-  coins: 0
-  cores: 0
-  coresXp: 0
-  coresXpTotal: 0
-  enemiesCount: 0
-  EVscore: 0
-  EVscoreMax: 20
-  shopScore: 0
-  shopScoreMax: 250
-  shopScoreMaxS: 200
-  shopScoreMaxE: 800
-  xp_forCore: 100
-  xp_wave: 20
-  xp_shop: 0
-  xp_powerup: 1
-  xp_flying: 7
-  flyingTimeReq: 25
-  xp_staying: -5
+  players: []
+  score: 
+  kills: []
+  respawnTimer: []
+  score_kill: 20
+  score_assist: 15
+  score_death: 10
+  score_staying: 5
   stayingTimeReq: 4
-  enballDropMulti: 1
-  enballMultiAmnt: 0.07
-  coinDropMulti: 1
-  coinMultiAmnt: 0.08
-  coreDropMulti: 1
-  coreMultiAmnt: 0.04
-  rarePwrupMulti: 1
-  rareMultiAmnt: 0.075
-  legendPwrupMulti: 1
-  legendMultiAmnt: 0.04
+  respawnTime: 3
   gameSpeed: 1
+  speedChanged: 0
   cheatmode: 1
   dmgPopups: 1
-  speedChanged: 0
 --- !u!82 &4215481038911001461
 AudioSource:
   m_ObjectHideFlags: 0

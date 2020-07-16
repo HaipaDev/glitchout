@@ -14,7 +14,7 @@ public enum dmgType{
 public class DamageDealer : MonoBehaviour{
     //public static DamageDealer instance;
     float dmg = 5;
-    float dmgZone = 2;
+    float dmgZone = 6;
     float dmgPlayer = 5;
     float dmgPlayerStay = 1;
     float dmgLaser = 2;

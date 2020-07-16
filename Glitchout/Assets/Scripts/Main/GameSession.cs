@@ -8,15 +8,18 @@ using UnityEngine.UI;
 public class GameSession : MonoBehaviour{
     public static GameSession instance;
     [HeaderAttribute("Current Player Values")]
+    public Player[] players;
     public int[] score;
     public float[] kills;
+    public float[] respawnTimer;
     [HeaderAttribute("Score Values")]
-    public float score_kill=20f;
-    public float score_assist=15f;
-    public float score_death=-10f;
-    public float xp_staying=-5f;
+    public int score_kill=20;
+    public int score_assist=15;
+    public int score_death=10;
+    public int score_staying=5;
     public float stayingTimeReq=4f;
     [HeaderAttribute("Settings")]
+    public float respawnTime;
     [Range(0.0f, 10.0f)] public float gameSpeed = 1f;
     public bool speedChanged;
     [HeaderAttribute("Other")]
@@ -46,6 +49,7 @@ public class GameSession : MonoBehaviour{
     }*/
 
     private void Awake(){
+        instance=this;
         SetUpSingleton();
     }
     private void SetUpSingleton(){
@@ -58,12 +62,31 @@ public class GameSession : MonoBehaviour{
     }
     private void Start()
     {
+        Array.Resize(ref players,FindObjectsOfType<Player>().Length);
+        Array.Resize(ref score,players.Length);
+        Array.Resize(ref kills,players.Length);
+        Array.Resize(ref respawnTimer,players.Length);
+        for(var i=0;i<respawnTimer.Length;i++){
+            respawnTimer[i]=-4;
+        }
         //FindObjectOfType<SaveSerial>().highscore = 0;
     }
     private void Update()
     {
-        Time.timeScale = gameSpeed;
+        Player[] allPlayers=FindObjectsOfType<Player>();
+        foreach(Player player in allPlayers){
+            players[player.playerNum]=player;
+        }
 
+        for(var i=0;i<score.Length;i++){
+            score[i]=Mathf.Clamp(score[i],0,99999);
+        }
+        for(var r=0;r<respawnTimer.Length;r++){
+            if(respawnTimer[r]>0)respawnTimer[r]-=Time.deltaTime;
+            if(respawnTimer[r]<=0&&respawnTimer[r]!=-4){players[r].Respawn();respawnTimer[r]=-4;}
+        }
+
+        Time.timeScale = gameSpeed;
         //Set speed to normal
         if(speedChanged!=true){gameSpeed=1;}
         if(SceneManager.GetActiveScene().name!="Game"){gameSpeed=1;}
@@ -81,9 +104,22 @@ public class GameSession : MonoBehaviour{
         CheckCodes(0,0);
     }
 
+    public void Die(int playerNum, float hitTimer){
+        if(playerNum==0){
+            SubToScore(playerNum,score_death);
+            respawnTimer[playerNum]=respawnTime;
+            if(hitTimer>0)AddToScore(playerNum+1,score_kill);
+        }else if(playerNum==1){
+            SubToScore(playerNum,score_death);
+            respawnTimer[playerNum]=respawnTime;
+            if(hitTimer>0)AddToScore(playerNum-1,score_kill);
+        }
+    }
 
     public void AddToScore(int i,int scoreValue){
         score[i] += scoreValue;//Mathf.RoundToInt(scoreValue*scoreMulti);
+    }public void SubToScore(int i,int scoreValue){
+        score[i] -= scoreValue;//Mathf.RoundToInt(scoreValue*scoreMulti);
     }
 
     public void MultiplyScore(int i,float multipl)
@@ -106,6 +142,7 @@ public class GameSession : MonoBehaviour{
     public void ResetScore(){
         Array.Clear(score,0,score.Length);
         Array.Clear(kills,0,kills.Length);
+        Array.Clear(respawnTimer,0,respawnTimer.Length);
     }
     /*
     public void SaveHighscore()

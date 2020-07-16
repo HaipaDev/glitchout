@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -6,19 +7,21 @@ using UnityEngine.UI;
 public class ValueDisplay : MonoBehaviour{
     [SerializeField]string value;
     string txt;
-    Player player1;
-    Player player2;
+    public Player[] players;
     void Start(){
-        
+        Array.Resize(ref players,FindObjectsOfType<Player>().Length);
     }
 
     void Update(){
-        foreach(Player player in FindObjectsOfType<Player>()){
-            if(player.playerNum==playerNum.One){player1=player;}
-            if(player.playerNum==playerNum.Two){player2=player;}
+        Player[] allPlayers=FindObjectsOfType<Player>();
+        foreach(Player player in allPlayers){
+            //if(player.playerNum==playerNum.One){player1=player;}
+            //if(player.playerNum==playerNum.Two){player2=player;}
+            //Array.Resize(ref players,allPlayers.Length);
+            players[player.playerNum]=player;
         }
-        if(value=="health_p1")txt=Mathf.RoundToInt(player1.health).ToString();
-        if(value=="health_p2")txt=Mathf.RoundToInt(player2.health).ToString();
+        if(value.Contains("health_")){string[] x=value.Split('_');int xx=int.Parse(x[1]); if(players[xx].hidden!=true){txt=Mathf.RoundToInt(players[xx].health).ToString();}else{txt=Math.Round(GameSession.instance.respawnTimer[xx],1).ToString();}}
+        if(value.Contains("score_")){string[] x=value.Split('_');int xx=int.Parse(x[1]);txt=GameSession.instance.score[xx].ToString();}//GameSession.instance.score[int.Parse(value.Split(["_"]))];}
 
         GetComponent<TMPro.TextMeshProUGUI>().text=txt;
     }
