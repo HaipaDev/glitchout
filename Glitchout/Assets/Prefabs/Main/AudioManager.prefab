@@ -48,10 +48,10 @@ MonoBehaviour:
   sounds:
   - name: Death
     clip: {fileID: 8300000, guid: 71f3f1c2b56350b4bad361c8865e73ef, type: 3}
-    volume: 1
+    volume: 0.75
     volumeVariance: 0
     pitch: 1
-    pitchVariance: 0
+    pitchVariance: 0.12
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
@@ -78,16 +78,16 @@ MonoBehaviour:
     volume: 1
     volumeVariance: 0.2
     pitch: 1
-    pitchVariance: 0.1
+    pitchVariance: 0.175
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
   - name: Respawn
     clip: {fileID: 8300000, guid: 039dc5cd09d3fa34eb5be6dbe95a767e, type: 3}
-    volume: 1
+    volume: 0.9
     volumeVariance: 0
     pitch: 1
-    pitchVariance: 0
+    pitchVariance: 0.1
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
@@ -103,9 +103,9 @@ MonoBehaviour:
   - name: Spinning
     clip: {fileID: 8300000, guid: 3b3999e813efaf446bb1413425c126a6, type: 3}
     volume: 1
-    volumeVariance: 0.025
+    volumeVariance: 0.055
     pitch: 1
-    pitchVariance: 0.025
+    pitchVariance: 0.075
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}

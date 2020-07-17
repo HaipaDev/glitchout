@@ -138,12 +138,15 @@ public class Player : MonoBehaviour{
             GameSession.instance.Die(playerNum,hitTimer);
             //gameObject.SetActive(false);
             Hide();
+            shake.CamShake(4f,0.4f);
+            GameAssets.instance.VFX("ExplosionGlitch",transform.position,0.5f);
             AudioManager.instance.Play("Death");
         }
     }public void Respawn(){
         health=maxHealth;
         TpRandom();
         UnHide();
+        GameAssets.instance.VFX("Respawn",new Vector2(xpos,ypos),0.3f);
         AudioManager.instance.Play("Respawn");
     }
     private void Hide(){
