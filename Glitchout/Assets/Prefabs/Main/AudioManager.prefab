@@ -45,4 +45,94 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mixerGroup: {fileID: -3264893150293988699, guid: cdf423136b4935c44a751cae8c8b0d94,
     type: 2}
-  sounds: []
+  sounds:
+  - name: Death
+    clip: {fileID: 8300000, guid: 71f3f1c2b56350b4bad361c8865e73ef, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Heal
+    clip: {fileID: 8300000, guid: 059f6cae038a720449cb75cad29e8157, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: HPCollect
+    clip: {fileID: 8300000, guid: 48bee6f2e0a298c40bdda9e1c23038a7, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Hit
+    clip: {fileID: 8300000, guid: 4530aa0fd53ea184d96124493067efa4, type: 3}
+    volume: 1
+    volumeVariance: 0.2
+    pitch: 1
+    pitchVariance: 0.1
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Respawn
+    clip: {fileID: 8300000, guid: 039dc5cd09d3fa34eb5be6dbe95a767e, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: SawHit
+    clip: {fileID: 8300000, guid: a14105007c96d4140bc0f49cbfb01496, type: 3}
+    volume: 1
+    volumeVariance: 0.025
+    pitch: 1
+    pitchVariance: 0.025
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Spinning
+    clip: {fileID: 8300000, guid: 3b3999e813efaf446bb1413425c126a6, type: 3}
+    volume: 1
+    volumeVariance: 0.025
+    pitch: 1
+    pitchVariance: 0.025
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: TVDistort
+    clip: {fileID: 8300000, guid: e9977a2b96ff28948944cd38ef465c18, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: HPSet
+    clip: {fileID: 8300000, guid: de735354e63e233498e1b73bc21763da, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Victory
+    clip: {fileID: 8300000, guid: 75ad02d93e634644798cefa6e8833ef1, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}

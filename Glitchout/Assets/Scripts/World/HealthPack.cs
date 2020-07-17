@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class HealthPack : MonoBehaviour{
     public float timerMax=5f;
     public float timer;
+    public bool played;
     void Start(){
         timer=timerMax;
     }
@@ -14,6 +15,7 @@ public class HealthPack : MonoBehaviour{
         if(timer>0){
             timer-=Time.deltaTime;
             GetComponentInChildren<Image>().fillAmount=1/timer;
-        }else GetComponentInChildren<Image>().fillAmount=1;
+            played=false;
+        }else {GetComponentInChildren<Image>().fillAmount=1;if(played==false){GetComponent<AudioSource>().Play();played=true;}}
     }
 }

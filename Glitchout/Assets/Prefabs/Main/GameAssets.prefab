@@ -48,5 +48,11 @@ MonoBehaviour:
     gobj: {fileID: 3994705528246303720, guid: 7e5f105f07dbb0f418ab7ad0cc3eb22b, type: 3}
   - name: HealthPack
     gobj: {fileID: 1137447772072343336, guid: 904286a91a0ca1245a96a5d96f036ce2, type: 3}
-  vfx: []
+  vfx:
+  - name: GlitchHit
+    gobj: {fileID: 7556307479021332897, guid: 3a57e44eda25d1a479a3f80305ac1bf5, type: 3}
+  - name: 0
+    gobj: {fileID: 7556307479021332897, guid: ff0244974457ac1449b9f9770704d71c, type: 3}
+  - name: 1
+    gobj: {fileID: 4407140962056451393, guid: e5ca1b8b9b4248c42a35c666e691144b, type: 3}
   sprites: []

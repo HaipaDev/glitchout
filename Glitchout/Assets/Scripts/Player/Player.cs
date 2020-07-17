@@ -37,7 +37,11 @@ public class Player : MonoBehaviour{
     bool vMove;
     bool moving;
     public bool hidden;
+
+    Shake shake;
     void Start(){
+        shake = GameObject.FindObjectOfType<Shake>();
+        
         health=maxHealth;
         damage=GetComponent<DamageDealer>().GetDmgPlayer();
     }
@@ -71,7 +75,7 @@ public class Player : MonoBehaviour{
         else hMove=false;
         if(keyUp||keyDown)vMove=true;
         else vMove=false;
-        if(hMove||vMove)moving=true;
+        if(hMove||vMove){moving=true;AudioManager.instance.Play("Spinning");}
         else moving=false;
 
         //ypos=transform.position.y;
@@ -106,16 +110,24 @@ public class Player : MonoBehaviour{
         transform.eulerAngles=new Vector3(0, 0, angle);
     }
 
+    public void Damage(float dmg){
+        health-=dmg;
+        
+        shake.CamShake(1f*dmg,1f);
+    }
     public void GlitchOut(){
         var xx=Random.Range(-xRange,xRange);
         var yy=Random.Range(-yRange,yRange);
 
         xpos+=xx;
         ypos+=yy;
+        GameAssets.instance.VFX("GlitchHit",transform.position,0.2f);
+        AudioManager.instance.Play("Hit");
     }
     public void TpMiddle(){
         xpos=0;
         ypos=0;
+        AudioManager.instance.Play("Hit");
     }public void TpRandom(){
         xpos=Random.Range(-xBound,xBound);
         ypos=Random.Range(-yBound,yBound);
@@ -126,11 +138,13 @@ public class Player : MonoBehaviour{
             GameSession.instance.Die(playerNum,hitTimer);
             //gameObject.SetActive(false);
             Hide();
+            AudioManager.instance.Play("Death");
         }
     }public void Respawn(){
         health=maxHealth;
         TpRandom();
         UnHide();
+        AudioManager.instance.Play("Respawn");
     }
     private void Hide(){
         hidden=true;
@@ -145,13 +159,13 @@ public class Player : MonoBehaviour{
     private void OnTriggerEnter2D(Collider2D other){
         damage=GetComponent<DamageDealer>().GetDmgPlayer();
         if(CompareTag(other.tag)){
-            if(moving==true){other.GetComponent<Player>().health-=damage;other.GetComponent<Player>().hitTimer=hitTimerMax;}
+            if(moving==true){other.GetComponent<Player>().Damage(damage);other.GetComponent<Player>().hitTimer=hitTimerMax;}
             GlitchOut();
         }else{
             var dmgDealer=other.GetComponent<DamageDealer>();
-            if(other.GetComponent<HealthPack>()!=null&&other.GetComponent<HealthPack>().timer<=0){health+=25;other.GetComponent<HealthPack>().timer=other.GetComponent<HealthPack>().timerMax;}
-            if(other.GetComponent<Saw>()!=null){health-=dmgDealer.GetDmgSaw()*2;}
-            if(other.GetComponent<Tag_Barrier>()!=null){health-=dmgDealer.GetDmgZone();TpMiddle();}
+            if(other.GetComponent<HealthPack>()!=null&&other.GetComponent<HealthPack>().timer<=0){health+=25;other.GetComponent<HealthPack>().timer=other.GetComponent<HealthPack>().timerMax;AudioManager.instance.Play("HPCollect");}
+            if(other.GetComponent<Saw>()!=null){Damage(dmgDealer.GetDmgSaw()*2);AudioManager.instance.Play("SawHit");int i=Random.Range(0,2);GameAssets.instance.VFX(i.ToString(),transform.position,0.2f);}
+            if(other.GetComponent<Tag_Barrier>()!=null){Damage(dmgDealer.GetDmgZone());TpMiddle();}
         }
         dmgTimer=0;
     }
@@ -159,11 +173,11 @@ public class Player : MonoBehaviour{
         if(dmgTimer<=0){
             damage=GetComponent<DamageDealer>().GetDmgPlayerStay();
             if(CompareTag(other.tag)){
-                if(moving==true)other.GetComponent<Player>().health-=damage;
+                if(moving==true)other.GetComponent<Player>().Damage(damage);
                 GlitchOut();
             }else{
                 var dmgDealer=other.GetComponent<DamageDealer>();
-                if(other.GetComponent<Saw>()!=null){health-=dmgDealer.GetDmgSaw();}
+                if(other.GetComponent<Saw>()!=null){Damage(dmgDealer.GetDmgSaw());AudioManager.instance.Play("SawHit");int i=Random.Range(0,2);GameAssets.instance.VFX(i.ToString(),transform.position,0.2f);}
             }
             dmgTimer=dmgFreq;
         }
