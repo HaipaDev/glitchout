@@ -41,9 +41,10 @@ public class Level : MonoBehaviour{
         FindObjectOfType<GameSession>().ResetScore();
         FindObjectOfType<SaveSerial>().Save();
         FindObjectOfType<GameSession>().ResetMusicPitch();*/
+        FindObjectOfType<GameSession>().speedChanged=false;
+        FindObjectOfType<GameSession>().gameSpeed=1f;
         SceneManager.LoadScene("Menu");
         //LoadLevel("Menu");
-        if(SceneManager.GetActiveScene().name=="Menu")FindObjectOfType<GameSession>().gameSpeed=1f;
         //Time.timeScale = 1f;
         
         //FindObjectOfType<GameSession>().savableData.Save();
@@ -51,6 +52,7 @@ public class Level : MonoBehaviour{
     }
     public void LoadGameScene(){
         SceneManager.LoadScene("Game");
+        GameSession.instance.resize=true;
         //LoadLevel("Game");
         FindObjectOfType<GameSession>().ResetScore();
         FindObjectOfType<GameSession>().gameSpeed=1f;
@@ -95,5 +97,9 @@ public class Level : MonoBehaviour{
         //yield return new WaitForSeconds(transitionTime);
 
         SceneManager.LoadScene(sceneName);
+    }
+
+    public void OpenGameJolt(){
+        Application.OpenURL("https://gamejolt.com/@HyperGamesDev");
     }
 }

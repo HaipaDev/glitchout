@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using UnityEngine.Rendering.PostProcessing;
 public class GameSession : MonoBehaviour{
     public static GameSession instance;
     [HeaderAttribute("Current Player Values")]
@@ -25,8 +26,10 @@ public class GameSession : MonoBehaviour{
     [HeaderAttribute("Other")]
     public bool cheatmode;
     public bool dmgPopups=true;
+    [HideInInspector]public bool resize;
 
     Player player;
+    PostProcessVolume postProcessVolume;
     //public string gameVersion;
     //public bool moveByMouse = true;
 
@@ -62,17 +65,26 @@ public class GameSession : MonoBehaviour{
     }
     private void Start()
     {
-        Array.Resize(ref players,FindObjectsOfType<Player>().Length);
-        Array.Resize(ref score,players.Length);
-        Array.Resize(ref kills,players.Length);
-        Array.Resize(ref respawnTimer,players.Length);
-        for(var i=0;i<respawnTimer.Length;i++){
-            respawnTimer[i]=-4;
-        }
         //FindObjectOfType<SaveSerial>().highscore = 0;
     }
     private void Update()
     {
+        if(SceneManager.GetActiveScene().name=="Game"&&resize==false){resize=true;}
+        if(SceneManager.GetActiveScene().name=="Game"&&resize==true){
+            Array.Resize(ref players,FindObjectsOfType<Player>().Length);
+            Array.Resize(ref score,players.Length);
+            Array.Resize(ref kills,players.Length);
+            Array.Resize(ref respawnTimer,players.Length);
+            for(var i=0;i<respawnTimer.Length;i++){
+                if(respawnTimer[i]==0)respawnTimer[i]=-4;
+            }
+            resize=false;
+        }else{
+            Array.Resize(ref players,0);
+            Array.Resize(ref score,0);
+            Array.Resize(ref kills,0);
+            Array.Resize(ref respawnTimer,0);
+        }
         Player[] allPlayers=FindObjectsOfType<Player>();
         foreach(Player player in allPlayers){
             players[player.playerNum]=player;
@@ -86,12 +98,14 @@ public class GameSession : MonoBehaviour{
             if(respawnTimer[r]<=0&&respawnTimer[r]!=-4){players[r].Respawn();respawnTimer[r]=-4;}
         }
 
+        if(SceneManager.GetActiveScene().name=="Game"&&PauseMenu.GameIsPaused==true){gameSpeed=0;}
+
         Time.timeScale = gameSpeed;
         //Set speed to normal
         if(speedChanged!=true){gameSpeed=1;}
-        if(SceneManager.GetActiveScene().name!="Game"){gameSpeed=1;}
+        //if(SceneManager.GetActiveScene().name!="Game"){gameSpeed=1;}
         //if(Shop.shopOpen==false&&Shop.shopOpened==false){gameSpeed=1;}
-        if(FindObjectOfType<Player>()==null){gameSpeed=1;}
+        //if(FindObjectOfType<Player>()==null){gameSpeed=1;}
         
         //Restart with R or Space/Resume with Space
         /*if((GameObject.Find("GameOverCanvas")!=null&&GameObject.Find("GameOverCanvas").activeSelf==true)&&(Input.GetKeyDown(KeyCode.Space)||Input.GetKeyDown(KeyCode.R))
@@ -99,6 +113,12 @@ public class GameSession : MonoBehaviour{
             FindObjectOfType<Level>().RestartGame();}
         else if(PauseMenu.GameIsPaused==true&&Input.GetKeyDown(KeyCode.Space)){FindObjectOfType<PauseMenu>().Resume();}
         */
+
+        //Postprocessing
+        postProcessVolume=FindObjectOfType<PostProcessVolume>();
+        //if(SaveSerial.instance.pprocessing==true && postProcessVolume==null){postProcessVolume=Instantiate(pprocessingPrefab,Camera.main.transform).GetComponent<PostProcessVolume>();}
+        if(SaveSerial.instance.pprocessing==true && postProcessVolume!=null){postProcessVolume.enabled=true;}
+        if(SaveSerial.instance.pprocessing==false && FindObjectOfType<PostProcessVolume>()!=null){postProcessVolume=FindObjectOfType<PostProcessVolume>();postProcessVolume.enabled=false;}
 
 
         CheckCodes(0,0);
@@ -149,12 +169,12 @@ public class GameSession : MonoBehaviour{
     {
         if (score > FindObjectOfType<SaveSerial>().highscore) FindObjectOfType<SaveSerial>().highscore = score;
         //FindObjectOfType<DataSavable>().highscore = highscore;
-    }
+    }*/
     public void SaveSettings(){
         var ss=FindObjectOfType<SaveSerial>();
         var sm=FindObjectOfType<SettingsMenu>();
-        ss.moveByMouse = sm.moveByMouse;
-        ss.quality = sm.quality;
+        //ss.moveByMouse = sm.moveByMouse;
+        //ss.quality = sm.quality;
         ss.fullscreen = sm.fullscreen;
         ss.scbuttons = sm.scbuttons;
         ss.pprocessing = sm.pprocessing;
@@ -164,13 +184,13 @@ public class GameSession : MonoBehaviour{
 
         ss.SaveSettings();
     }
-    public void SaveInventory(){
+    /*public void SaveInventory(){
         FindObjectOfType<SaveSerial>().chameleonColor[0] = FindObjectOfType<Inventory>().chameleonColorArr[0];
         FindObjectOfType<SaveSerial>().chameleonColor[1] = FindObjectOfType<Inventory>().chameleonColorArr[1];
         FindObjectOfType<SaveSerial>().chameleonColor[2] = FindObjectOfType<Inventory>().chameleonColorArr[2];
-    }
-    public void Save(){ FindObjectOfType<SaveSerial>().Save(); FindObjectOfType<SaveSerial>().SaveSettings(); }
-    public void Load(){ FindObjectOfType<SaveSerial>().Load(); FindObjectOfType<SaveSerial>().LoadSettings(); }
+    }*/
+    public void Save(){ /*FindObjectOfType<SaveSerial>().Save();*/ FindObjectOfType<SaveSerial>().SaveSettings(); }
+    public void Load(){ /*FindObjectOfType<SaveSerial>().Load();*/ FindObjectOfType<SaveSerial>().LoadSettings(); }
     public void DeleteAllShowConfirm(){ GameObject.Find("OptionsUI").transform.GetChild(0).gameObject.SetActive((false)); GameObject.Find("OptionsUI").transform.GetChild(1).gameObject.SetActive((true)); }
     public void DeleteAllHideConfirm(){ GameObject.Find("OptionsUI").transform.GetChild(0).gameObject.SetActive((true)); GameObject.Find("OptionsUI").transform.GetChild(1).gameObject.SetActive((false)); }
     public void DeleteAll(){ FindObjectOfType<SaveSerial>().Delete(); ResetSettings(); FindObjectOfType<Level>().Restart(); Destroy(FindObjectOfType<SaveSerial>().gameObject); Destroy(gameObject);}
@@ -186,9 +206,9 @@ public class GameSession : MonoBehaviour{
         s.masterVolume=1;
         s.soundVolume=1;
         s.musicVolume=1;*/
-    /*/}public void ResetMusicPitch(){
+    }public void ResetMusicPitch(){
         //if(FindObjectOfType<MusicPlayer>()!=null)FindObjectOfType<MusicPlayer>().GetComponent<AudioSource>().pitch=1;
-    }*/
+    }
     public void CheckCodes(int fkey, int nkey){
         if(fkey==0&&nkey==0){}
         if(Input.GetKey(KeyCode.Delete) || fkey==-1){

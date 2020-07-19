@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8471223227161679637}
   - component: {fileID: 7134123160950297538}
   m_Layer: 0
-  m_Name: 0
+  m_Name: 0VFX
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -222,7 +222,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 0.06977572, g: 0.3018868, b: 0.06977572, a: 1}
+      maxColor: {r: 0.03529412, g: 0.1882353, b: 0.03529412, a: 1}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}

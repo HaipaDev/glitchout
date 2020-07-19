@@ -10,6 +10,7 @@ public class Logo : MonoBehaviour{
     Shake shake;
     void Start(){
         shake=FindObjectOfType<Shake>();
+        GetComponent<Animator>().Play("LogoAnim2");
         GetComponent<Animator>().speed=animSpeed;
     }
 

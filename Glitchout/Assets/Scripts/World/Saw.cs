@@ -9,6 +9,6 @@ public class Saw : MonoBehaviour{
     }
 
     void Update(){
-        transform.Rotate(0,0,rotationSpeed);
+        if(Time.timeScale>0.0001f)transform.Rotate(0,0,rotationSpeed*Time.timeScale);
     }
 }

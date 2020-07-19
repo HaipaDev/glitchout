@@ -9,39 +9,39 @@ using BayatGames.SaveGameFree.Encoders;
 using BayatGames.SaveGameFree.Serializers;
 
 public class SaveSerial : MonoBehaviour{
+	public static SaveSerial instance;
 	[SerializeField] string filename = "playerData";
 	[SerializeField] string filenameSettings = "gameSettings.cfg";
-	[HeaderAttribute("PlayerData")]
-	public int highscore;
-	public float[] chameleonColor = new float[3];
+	//[HeaderAttribute("PlayerData")]
+	
 	[HeaderAttribute("SettingsData")]
 	public string gameVersion;
-	public bool moveByMouse;
+	//public bool moveByMouse;
 	public bool fullscreen;
 	public bool pprocessing;
 	public bool scbuttons;
-	public int quality;
+	//public int quality;
 	public float masterVolume;
 	public float soundVolume;
 	public float musicVolume;
-	public class PlayerData
+	/*public class PlayerData
 	{
 		public int highscore;
 		
-	}public class SettingsData
+	}*/public class SettingsData
 	{
 		public string gameVersion;
-		public bool moveByMouse;
+		//public bool moveByMouse;
 		public bool fullscreen;
 		public bool pprocessing;
 		public bool scbuttons;
-		public int quality;
+		//public int quality;
 		public float masterVolume;
 		public float soundVolume;
 		public float musicVolume;
 	}
 
-	public void Save()
+	/*public void Save()
 	{
 		PlayerData data = new PlayerData();
 		data.highscore = highscore;
@@ -51,16 +51,16 @@ public class SaveSerial : MonoBehaviour{
 		SaveGame.Serializer = new SaveGameJsonSerializer();
 		SaveGame.Save(filename, data);
 		Debug.Log("Game Data saved");
-	}
+	}*/
 	public void SaveSettings()
 	{
 		SettingsData data = new SettingsData();
 		data.gameVersion=gameVersion;
-		data.moveByMouse = moveByMouse;
+		//data.moveByMouse = moveByMouse;
 		data.fullscreen = fullscreen;
 		data.pprocessing = pprocessing;
 		data.scbuttons = scbuttons;
-		data.quality = quality;
+		//data.quality = quality;
 		data.masterVolume = masterVolume;
 		data.soundVolume = soundVolume;
 		data.musicVolume = musicVolume;
@@ -71,7 +71,7 @@ public class SaveSerial : MonoBehaviour{
 		SaveGame.Save(filenameSettings, data);
 		Debug.Log("Settings saved");
 	}
-	public void Load()
+	/*public void Load()
 	{
 		if (File.Exists(Application.persistentDataPath + "/"+filename)){
 			PlayerData data = new PlayerData();
@@ -82,7 +82,7 @@ public class SaveSerial : MonoBehaviour{
 			if(data.highscore!=0)highscore = data.highscore;
 			Debug.Log("Game Data loaded");
 		}else Debug.Log("Game Data file not found in "+Application.persistentDataPath+"/"+filename);
-	}
+	}*/
 	public void LoadSettings()
 	{
 		if (File.Exists(Application.persistentDataPath + "/"+filenameSettings)){
@@ -92,11 +92,11 @@ public class SaveSerial : MonoBehaviour{
 			data = SaveGame.Load<SettingsData>(filenameSettings);
 
 			gameVersion=data.gameVersion;
-			moveByMouse = data.moveByMouse;
+			//moveByMouse = data.moveByMouse;
 			fullscreen = data.fullscreen;
 			pprocessing = data.pprocessing;
 			scbuttons = data.scbuttons;
-			quality = data.quality;
+			//quality = data.quality;
 			masterVolume = data.masterVolume;
 			soundVolume = data.soundVolume;
 			musicVolume = data.musicVolume;
@@ -121,6 +121,7 @@ public class SaveSerial : MonoBehaviour{
 	private void Awake()
 	{
 		SetUpSingleton();
+		instance=this;
 	}
 	private void SetUpSingleton()
 	{

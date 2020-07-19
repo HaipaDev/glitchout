@@ -47,7 +47,7 @@ public class Player : MonoBehaviour{
     }
 
     void Update(){
-        if(hidden==false){
+        if(Time.timeScale>0.0001f&&hidden==false){
             health=Mathf.Clamp(health,0,maxHealth);
             if(dmgTimer>0)dmgTimer-=Time.deltaTime;
             if(hitTimer>0)hitTimer-=Time.deltaTime;
@@ -82,22 +82,22 @@ public class Player : MonoBehaviour{
         //xpos=transform.position.x;
 
         if(keyUp&&!hMove){
-            ypos+=yspeed;
-            angle+=rotationSpeed;
+            ypos+=yspeed*Time.timeScale;
+            angle+=rotationSpeed*Time.timeScale;
         }if(keyDown&&!hMove){
-            ypos-=yspeed;
-            angle-=rotationSpeed;
+            ypos-=yspeed*Time.timeScale;
+            angle-=rotationSpeed*Time.timeScale;
         }
         if(keyLeft){
-            xpos-=xspeed;
-            angle-=rotationSpeed;
-            if(keyUp){ypos+=yspeed;}
-            if(keyDown){ypos-=yspeed;}
+            xpos-=xspeed*Time.timeScale;
+            angle-=rotationSpeed*Time.timeScale;
+            if(keyUp){ypos+=yspeed*Time.timeScale;}
+            if(keyDown){ypos-=yspeed*Time.timeScale;}
         }if(keyRight){
-            xpos+=xspeed;
-            angle+=rotationSpeed;
-            if(keyUp){ypos+=yspeed;}
-            if(keyDown){ypos-=yspeed;}
+            xpos+=xspeed*Time.timeScale;
+            angle+=rotationSpeed*Time.timeScale;
+            if(keyUp){ypos+=yspeed*Time.timeScale;}
+            if(keyDown){ypos-=yspeed*Time.timeScale;}
         }
 
         transform.position=new Vector2(xpos,ypos);

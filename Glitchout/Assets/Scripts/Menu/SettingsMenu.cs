@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 //using UnityEngine.UIElements;
 using UnityEngine.Audio;
-//using UnityEngine.Rendering.PostProcessing;
+using UnityEngine.Rendering.PostProcessing;
 
 public class SettingsMenu : MonoBehaviour{
     //Settings settings;
@@ -12,14 +12,14 @@ public class SettingsMenu : MonoBehaviour{
     SaveSerial saveSerial;
     //public int quality;
     public bool fullscreen;
-    //public bool pprocessing;
+    public bool pprocessing;
     public bool scbuttons;
     public float masterVolume;
     public float soundVolume;
     public float musicVolume;
     //[SerializeField]GameObject qualityDropdopwn;
     [SerializeField]GameObject fullscreenToggle;
-    //[SerializeField]GameObject pprocessingToggle;
+    [SerializeField]GameObject pprocessingToggle;
     [SerializeField]GameObject scbuttonsToggle;
     //[SerializeField]GameObject steeringToggle;
     [SerializeField]GameObject masterSlider;
@@ -27,7 +27,8 @@ public class SettingsMenu : MonoBehaviour{
     [SerializeField]GameObject musicSlider;
     [SerializeField]AudioSource audioSource;
     public AudioMixer audioMixer;
-    //[SerializeField]GameObject pprocessingPrefab;
+    [SerializeField]GameObject pprocessingPrefab;
+    public PostProcessVolume postProcessVolume;
     private void Start(){
         //settings = FindObjectOfType<Settings>();
         gameSession = FindObjectOfType<GameSession>();
@@ -40,7 +41,7 @@ public class SettingsMenu : MonoBehaviour{
 
         //qualityDropdopwn.GetComponent<Dropdown>().value = saveSerial.quality;
         fullscreenToggle.GetComponent<Toggle>().isOn = saveSerial.fullscreen;
-        //pprocessingToggle.GetComponent<Toggle>().isOn = saveSerial.pprocessing;
+        pprocessingToggle.GetComponent<Toggle>().isOn = saveSerial.pprocessing;
         scbuttonsToggle.GetComponent<Toggle>().isOn = saveSerial.scbuttons;
 
         masterSlider.GetComponent<Slider>().value = saveSerial.masterVolume;
@@ -48,8 +49,10 @@ public class SettingsMenu : MonoBehaviour{
         musicSlider.GetComponent<Slider>().value = saveSerial.musicVolume;
     }
     private void Update() {
-        //if(pprocessing==true && FindObjectOfType<PostProcessVolume>()==null){Instantiate(pprocessingPrefab,Camera.main.transform);}
-        //if(pprocessing==false && FindObjectOfType<PostProcessVolume>()!=null){Destroy(FindObjectOfType<PostProcessVolume>());}
+        postProcessVolume=FindObjectOfType<PostProcessVolume>();
+        if(pprocessing==true && postProcessVolume==null){postProcessVolume=Instantiate(pprocessingPrefab,Camera.main.transform).GetComponent<PostProcessVolume>();}
+        if(pprocessing==true && postProcessVolume!=null){postProcessVolume.enabled=true;}
+        if(pprocessing==false && FindObjectOfType<PostProcessVolume>()!=null){postProcessVolume=FindObjectOfType<PostProcessVolume>();postProcessVolume.enabled=false;}//Destroy(FindObjectOfType<PostProcessVolume>());}
     }
     public void SetMasterVolume(float volume){
         audioMixer.SetFloat("MasterVolume", volume);
@@ -69,14 +72,15 @@ public class SettingsMenu : MonoBehaviour{
     public void SetFullscreen (bool isFullscreen){
         Screen.fullScreen = isFullscreen;
         fullscreen = isFullscreen;
-    }/*public void SetPostProcessing (bool isPostprocessed){
+    }public void SetPostProcessing (bool isPostprocessed){
         //gameSession.pprocessing = isPostprocessed;
         pprocessing = isPostprocessed;
-        if(isPostprocessed==true && FindObjectOfType<PostProcessVolume>()==null){Instantiate(pprocessingPrefab,Camera.main.transform);}//FindObjectOfType<Level>().RestartScene();}
-        if(isPostprocessed==false && FindObjectOfType<PostProcessVolume>()!=null){Destroy(FindObjectOfType<PostProcessVolume>());}
-    }*/public void SetOnScreenButtons (bool onscbuttons){
+        if(isPostprocessed==true && postProcessVolume==null){postProcessVolume=Instantiate(pprocessingPrefab,Camera.main.transform).GetComponent<PostProcessVolume>();}//FindObjectOfType<Level>().RestartScene();}
+        if(isPostprocessed==true && postProcessVolume!=null){postProcessVolume.enabled=true;}
+        if(isPostprocessed==false && FindObjectOfType<PostProcessVolume>()!=null){FindObjectOfType<PostProcessVolume>().enabled=false;}//Destroy(FindObjectOfType<PostProcessVolume>());}
+    }public void SetOnScreenButtons (bool onscbuttons){
         scbuttons = onscbuttons;
-        if(onscbuttons){Debug.Log(scbuttons);scbuttons=true;}
+        //if(onscbuttons){Debug.Log(scbuttons);scbuttons=true;}
     }
     public void PlayDing(){
         audioSource.Play();
