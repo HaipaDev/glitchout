@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class Level : MonoBehaviour{
+    public static Level instance;
     GameSession gameSession;
     [SerializeField]ParticleSystem transition;
     [SerializeField]Animator transitioner;
@@ -25,6 +26,7 @@ public class Level : MonoBehaviour{
         }
     }
     void Start(){
+        instance=this;
         gameSession = FindObjectOfType<GameSession>();
         //transition=FindObjectOfType<Tag_Transition>().GetComponent<ParticleSystem>();
         //prevGameSpeed = gameSession.gameSpeed;

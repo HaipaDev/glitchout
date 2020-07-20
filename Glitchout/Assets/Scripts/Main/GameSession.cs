@@ -128,11 +128,11 @@ public class GameSession : MonoBehaviour{
         if(playerNum==0){
             SubToScore(playerNum,score_death);
             respawnTimer[playerNum]=respawnTime;
-            if(hitTimer>0)AddToScore(playerNum+1,score_kill);
+            if(hitTimer>0){AddToScore(playerNum+1,score_kill);kills[playerNum+1]++;}
         }else if(playerNum==1){
             SubToScore(playerNum,score_death);
             respawnTimer[playerNum]=respawnTime;
-            if(hitTimer>0)AddToScore(playerNum-1,score_kill);
+            if(hitTimer>0){AddToScore(playerNum-1,score_kill);kills[playerNum-1]++;}
         }
     }
 
