@@ -76,7 +76,7 @@ public class GameConditions : MonoBehaviour{
     public void SetTimeLimitEnabled(bool isTimeLimit){
         timerEnabled = isTimeLimit;
     }public void SetTimeLimitKills(bool isTimeLimitKills){
-        timeKillsEnabled = isTimeLimitKills;
+        if(timerEnabled)timeKillsEnabled = isTimeLimitKills;
     }
     public void SetScoreLimitEnabled(bool isScoreLimit){
         scoreEnabled = isScoreLimit;

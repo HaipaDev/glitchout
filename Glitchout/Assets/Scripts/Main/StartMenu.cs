@@ -31,6 +31,7 @@ public class StartMenu : MonoBehaviour{
         //foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player")){player.SetActive(true);}
         //foreach(GameObject obj in GameObject.FindGameObjectsWithTag("World")){obj.SetActive(true);}
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
+        gameSession.speedChanged=false;
         gameSession.gameSpeed = prevGameSpeed;
         GameIsStarted = true;
     }
@@ -50,9 +51,7 @@ public class StartMenu : MonoBehaviour{
     }
     public void Menu(){
         //gameSession.gameSpeed = prevGameSpeed;
-        gameSession.speedChanged = false;
-        gameSession.gameSpeed = 1f;
-        SceneManager.LoadScene("Menu");
+        Level.instance.LoadStartMenu();
     }
 
     /*public void SetTimeLimitTxt(TMPro.TMP_InputField txt){
@@ -77,8 +76,10 @@ public class StartMenu : MonoBehaviour{
         GameConditions.instance.killsLimit=int.Parse(txt.text);
     }
     public void TimeLimitKillsChange(bool isTimeLimitKills){
+        if(GameConditions.instance.timerEnabled){
         if(GameObject.Find("CheckmarkK")!=null)GameObject.Find("CheckmarkK").GetComponent<TMPro.TextMeshProUGUI>().enabled=isTimeLimitKills;
         if(GameObject.Find("CheckmarkK")!=null)GameObject.Find("CheckmarkS").GetComponent<TMPro.TextMeshProUGUI>().enabled=!isTimeLimitKills;
+        }
     }
 
     public void PreviousGameSpeed(){gameSession.gameSpeed = prevGameSpeed;}

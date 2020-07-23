@@ -27,9 +27,10 @@ public class PlayerSkin : MonoBehaviour{
         if(GetComponent<Image>()!=null)num=GetComponent<Image>().sprite.name.Split('r');
         skinID=int.Parse(num[1]);
 
+        
+        GameSession.instance.speedChanged=true;
+        GameSession.instance.gameSpeed=0;
         yield return new WaitForSecondsRealtime(0.005f);
-        //GameSession.instance.speedChanged=true;
-        //GameSession.instance.gameSpeed=0;
     }
     void Update(){
         if(skinID>=0&&skinID<skins.Length){
