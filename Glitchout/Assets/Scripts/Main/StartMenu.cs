@@ -71,6 +71,15 @@ public class StartMenu : MonoBehaviour{
         float sec=float.Parse(txt.text)-min;
         GameConditions.instance.timer=(min*60)+(sec*100); //float.Parse(txt.text);*/
     }
+    public void SetScoreLimit(TMPro.TMP_InputField txt){
+        GameConditions.instance.scoreLimit=int.Parse(txt.text);
+    }public void SetKillsLimit(TMPro.TMP_InputField txt){
+        GameConditions.instance.killsLimit=int.Parse(txt.text);
+    }
+    public void TimeLimitKillsChange(bool isTimeLimitKills){
+        if(GameObject.Find("CheckmarkK")!=null)GameObject.Find("CheckmarkK").GetComponent<TMPro.TextMeshProUGUI>().enabled=isTimeLimitKills;
+        if(GameObject.Find("CheckmarkK")!=null)GameObject.Find("CheckmarkS").GetComponent<TMPro.TextMeshProUGUI>().enabled=!isTimeLimitKills;
+    }
 
     public void PreviousGameSpeed(){gameSession.gameSpeed = prevGameSpeed;}
 }

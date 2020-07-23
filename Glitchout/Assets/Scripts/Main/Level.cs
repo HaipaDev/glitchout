@@ -66,8 +66,8 @@ public class Level : MonoBehaviour{
     public void RestartGame(){
         //PauseMenu.GameIsPaused=false;
         /*FindObjectOfType<GameSession>().SaveHighscore();
-        FindObjectOfType<GameSession>().ResetScore();
         FindObjectOfType<GameSession>().ResetMusicPitch();*/
+        FindObjectOfType<GameSession>().ResetScore();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         FindObjectOfType<GameSession>().gameSpeed=1f;
         Time.timeScale = 1f;

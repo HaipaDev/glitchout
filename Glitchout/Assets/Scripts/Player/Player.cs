@@ -39,11 +39,16 @@ public class Player : MonoBehaviour{
     public bool hidden;
 
     Shake shake;
+    GameObject glowVFX;
     void Start(){
         shake = GameObject.FindObjectOfType<Shake>();
         
         health=maxHealth;
         damage=GetComponent<DamageDealer>().GetDmgPlayer();
+
+        glowVFX=Instantiate(GameAssets.instance.GetVFX("PlayerGlow"),transform);
+        if(playerNum==0)glowVFX.GetComponent<ParticleSystem>().startColor=Color.cyan;
+        if(playerNum==1)glowVFX.GetComponent<ParticleSystem>().startColor=Color.magenta;
     }
 
     void Update(){

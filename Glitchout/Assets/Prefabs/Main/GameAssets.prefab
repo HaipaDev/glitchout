@@ -59,4 +59,6 @@ MonoBehaviour:
     gobj: {fileID: 7556307479021332897, guid: fa74ac45927033140bde4bbcfed69202, type: 3}
   - name: Respawn
     gobj: {fileID: 7556307479021332897, guid: 301eaea2941e4e0458e6e25813575a87, type: 3}
+  - name: PlayerGlow
+    gobj: {fileID: 100000, guid: cfb86c3fde9272a4d9ef1296f03d33ba, type: 3}
   sprites: []
