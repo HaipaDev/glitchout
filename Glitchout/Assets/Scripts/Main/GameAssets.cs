@@ -76,7 +76,7 @@ public class GameAssets : MonoBehaviour{
         Sprite gs=s.spr;
 		if (s == null)
 		{
-			Debug.LogWarning("Object: " + name + " not found!");
+			Debug.LogWarning("Sprite: " + name + " not found!");
 			return null;
 		}
         return gs;
