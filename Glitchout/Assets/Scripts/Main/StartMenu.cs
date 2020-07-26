@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,7 +8,9 @@ public class StartMenu : MonoBehaviour{
     public static StartMenu instance;
     public static bool GameIsStarted = false;
     public GameObject startMenuUI;
+    public GameObject perksMenuUI;
     public float prevGameSpeed = 1f;
+    public int editPerksID;
 
     GameSession gameSession;
     //Shop shop;
@@ -15,6 +18,7 @@ public class StartMenu : MonoBehaviour{
         instance=this;
         gameSession = FindObjectOfType<GameSession>();
         if(startMenuUI==null){startMenuUI=transform.GetChild(0).gameObject;}
+        if(perksMenuUI==null){startMenuUI=transform.GetChild(1).gameObject;}
         Open();
         //shop=FindObjectOfType<Shop>();
     }
@@ -28,6 +32,7 @@ public class StartMenu : MonoBehaviour{
     }
     public void StartGame(){
         startMenuUI.SetActive(false);
+        perksMenuUI.SetActive(false);
         //foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player")){player.SetActive(true);}
         //foreach(GameObject obj in GameObject.FindGameObjectsWithTag("World")){obj.SetActive(true);}
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
@@ -38,6 +43,7 @@ public class StartMenu : MonoBehaviour{
     public void Open(){
         prevGameSpeed = gameSession.gameSpeed;
         startMenuUI.SetActive(true);
+        perksMenuUI.SetActive(false);
         //foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player")){player.SetActive(false);}
         //foreach(GameObject obj in GameObject.FindGameObjectsWithTag("World")){obj.SetActive(false);}
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
@@ -54,6 +60,16 @@ public class StartMenu : MonoBehaviour{
         Level.instance.LoadStartMenu();
     }
 
+    public void PerksMenu(int number){
+        editPerksID=number;
+        startMenuUI.SetActive(false);
+        perksMenuUI.SetActive(true);
+    }
+    public void BackStartMenu(){
+        perksMenuUI.SetActive(false);
+        startMenuUI.SetActive(true);
+    }
+
     /*public void SetTimeLimitTxt(TMPro.TMP_InputField txt){
         var timer=GameConditions.instance.timer;
         var timerSet=GameConditions.instance.timerSet;
@@ -64,6 +80,20 @@ public class StartMenu : MonoBehaviour{
         //txt.text=(Mathf.Round((timer/60f)*100)/100).ToString();
         //}
     }*/
+    public void SetPerk(perks enumPerk){
+        //perks enumPerk=(perks)ID;
+        var player=GameSession.instance.players[editPerksID];
+        var playerPerks=player.GetComponent<PlayerPerks>();
+        //foreach(perks perk in playerPerks.playPerks){
+            //if(!playerPerks.playPerks.Contains(enumPerk)){
+            for(var i=0; i<playerPerks.playPerks.Count;i++){
+                if(playerPerks.playPerks[i]==perks.empty){if(!playerPerks.playPerks.Contains(enumPerk)){playerPerks.playPerks[i]=enumPerk;}break;}
+                if(playerPerks.playPerks.Contains(enumPerk)){var usedprkID=playerPerks.playPerks.FindIndex(0,playerPerks.playPerks.Count,(x) => x == enumPerk);playerPerks.playPerks[usedprkID]=perks.empty;break;}
+                //else{i++;return;}
+            }
+            //}
+        //}
+    }
     public void SetGameTimeLimit(TMPro.TMP_InputField txt){
         txt.text=System.Math.Round((float.Parse(txt.text)),2).ToString();
         float min=(float)System.Math.Truncate(float.Parse(txt.text));

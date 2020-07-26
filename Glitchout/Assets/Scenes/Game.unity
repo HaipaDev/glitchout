@@ -380,9 +380,10 @@ GameObject:
   - component: {fileID: 285985997}
   - component: {fileID: 285985996}
   - component: {fileID: 285985995}
-  - component: {fileID: 285985994}
   - component: {fileID: 285985999}
+  - component: {fileID: 285985994}
   - component: {fileID: 285986000}
+  - component: {fileID: 285986001}
   m_Layer: 8
   m_Name: Player2
   m_TagString: Player
@@ -419,7 +420,7 @@ MonoBehaviour:
   xpos: 0
   ypos: 0
   dmgTimer: 0
-  hitTimer: 0
+  hitTimer: -4
   hidden: 0
 --- !u!61 &285985995
 BoxCollider2D:
@@ -566,6 +567,21 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+--- !u!114 &285986001
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 285985993}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29bced79fb7494b4888f427e04a4c870, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playPerks: 00000000000000000000000000000000000000000000000000000000
+  splitTime: 5
+  splitTimer: -4
 --- !u!1 &428050683 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1137447772072343336, guid: 904286a91a0ca1245a96a5d96f036ce2,
@@ -1512,34 +1528,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 983a483691711ef4ea88b3d9d55b252c, type: 3}
---- !u!1 &2075338118 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7011926872291180623, guid: c1a7bd4c78edf5c48a14508f091f013a,
-    type: 3}
-  m_PrefabInstance: {fileID: 7011926871570622336}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &2075338119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2075338118}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0fb524b619675054b8252f1291fc009e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerID: -1
-  skinID: 0
-  skins:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!1 &2128621234
 GameObject:
   m_ObjectHideFlags: 0
@@ -2043,6 +2031,16 @@ PrefabInstance:
       propertyPath: m_Name
       value: EndCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 4176114285208202032, guid: 584a42fb76d67154e9e99fa4a241dd69,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0.5882353
+      objectReference: {fileID: 0}
+    - target: {fileID: 4176114285208202190, guid: 584a42fb76d67154e9e99fa4a241dd69,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 584a42fb76d67154e9e99fa4a241dd69, type: 3}
 --- !u!1001 &4983373440324394331
@@ -2158,6 +2156,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_SizeDelta.y
       value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 2392736166473925425, guid: ef4a463daf4349f4899818d4dfdc335c,
+        type: 3}
+      propertyPath: m_Color.a
+      value: 0.5882353
       objectReference: {fileID: 0}
     - target: {fileID: 2392736166473925427, guid: ef4a463daf4349f4899818d4dfdc335c,
         type: 3}
@@ -2729,10 +2732,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6094303738895974509, guid: 5efe6e89e964c644eacb678d3da95909,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
+    - target: {fileID: 1024317908, guid: 5efe6e89e964c644eacb678d3da95909, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6094303739129792945, guid: 5efe6e89e964c644eacb678d3da95909,
         type: 3}
@@ -2749,21 +2751,11 @@ PrefabInstance:
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1379637389}
-    - target: {fileID: 6094303739879303366, guid: 5efe6e89e964c644eacb678d3da95909,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 6094303740011676219, guid: 5efe6e89e964c644eacb678d3da95909,
         type: 3}
       propertyPath: onValueChanged.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1379637389}
-    - target: {fileID: 6094303740226232018, guid: 5efe6e89e964c644eacb678d3da95909,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 8477995699316811450, guid: 5efe6e89e964c644eacb678d3da95909,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2873,11 +2865,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: StartCanvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 8477995700257097744, guid: 5efe6e89e964c644eacb678d3da95909,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5efe6e89e964c644eacb678d3da95909, type: 3}
@@ -3007,17 +2994,16 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2529771964178614092, guid: c1a7bd4c78edf5c48a14508f091f013a,
+        type: 3}
+      propertyPath: playPerks.Array.size
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 7011926872291180623, guid: c1a7bd4c78edf5c48a14508f091f013a,
         type: 3}
       propertyPath: m_Name
       value: Player1
       objectReference: {fileID: 0}
-    - target: {fileID: 7011926872291180624, guid: c1a7bd4c78edf5c48a14508f091f013a,
-        type: 3}
-      propertyPath: m_Sprite
-      value: 
-      objectReference: {fileID: 21300000, guid: fc4ae5cfd6d63604187cf988f8d00ab4,
-        type: 3}
     - target: {fileID: 7011926872291180625, guid: c1a7bd4c78edf5c48a14508f091f013a,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3075,8 +3061,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7011926872291180626, guid: c1a7bd4c78edf5c48a14508f091f013a,
         type: 3}
-      propertyPath: health
-      value: 100
+      propertyPath: hitTimer
+      value: -4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c1a7bd4c78edf5c48a14508f091f013a, type: 3}

@@ -30,6 +30,7 @@ public class ValueDisplay : MonoBehaviour{
         if(value.Contains("score_")){string[] x=value.Split('_');if(GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled==true){value="kills_"+x[1];}  int xx=int.Parse(x[1]);txt=GameSession.instance.score[xx].ToString();}//GameSession.instance.score[int.Parse(value.Split(["_"]))];}
         if(value.Contains("kills_")){string[] x=value.Split('_');if(GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled!=true){value="score_"+x[1];}  int xx=int.Parse(x[1]);txt=GameSession.instance.kills[xx].ToString();}
         if(value.Contains("scoreDesc")){if((GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled!=true)||GameConditions.instance.scoreEnabled){txt="Score:";}else if((GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled)||GameConditions.instance.killsEnabled){txt="Kills:";}}
+        if(value.Contains("perksFor")){txt="CHANGE PERKS FOR PLAYER "+(StartMenu.instance.editPerksID+1).ToString();}
 
         if(value=="timer"){GetComponent<TMPro.TextMeshProUGUI>().enabled=GameConditions.instance.timerEnabled;
             var timer=GameConditions.instance.timer;if(timer>0){float min=timer/60; float sec=Mathf.RoundToInt(timer-(float)(System.Math.Truncate(min)*60f)); if(sec>=60){min+=1;sec=0;} string textSec=sec.ToString(); if(sec<10){textSec="0"+sec;} txt=System.Math.Truncate(min).ToString()+":"+textSec;}else{txt="0:00";}}//160/60=2\.6 | 160-2*60=160-120=40
