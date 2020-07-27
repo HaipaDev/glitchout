@@ -86,11 +86,14 @@ public class StartMenu : MonoBehaviour{
         var playerPerks=player.GetComponent<PlayerPerks>();
         //foreach(perks perk in playerPerks.playPerks){
             //if(!playerPerks.playPerks.Contains(enumPerk)){
+                if(playerPerks.playPerks.Contains(enumPerk)){var usedprkID=playerPerks.playPerks.FindIndex(0,playerPerks.playPerks.Count,(x) => x == enumPerk);playerPerks.playPerks[usedprkID]=perks.empty;return;}
             for(var i=0; i<playerPerks.playPerks.Count;i++){
-                if(playerPerks.playPerks[i]==perks.empty){if(!playerPerks.playPerks.Contains(enumPerk)){playerPerks.playPerks[i]=enumPerk;}break;}
-                if(playerPerks.playPerks.Contains(enumPerk)){var usedprkID=playerPerks.playPerks.FindIndex(0,playerPerks.playPerks.Count,(x) => x == enumPerk);playerPerks.playPerks[usedprkID]=perks.empty;break;}
+                if(playerPerks.playPerks[i]==perks.empty){if(!playerPerks.playPerks.Contains(enumPerk)){playerPerks.playPerks[i]=enumPerk;}}
+                
+                //if(playerPerks.playPerks[i]!=perks.empty&&!playerPerks.playPerks.Contains(enumPerk)){return;}
                 //else{i++;return;}
             }
+            
             //}
         //}
     }
