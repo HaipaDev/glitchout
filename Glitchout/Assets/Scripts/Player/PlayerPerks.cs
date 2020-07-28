@@ -4,13 +4,13 @@ using UnityEngine;
 
 public enum perks{
     empty,
-    tank,
-    lizard,
+    refined,
+    autofix,
     unstable,
     split,
-    bubble,
-    illusion,
-    undead
+    //bubble,
+    spectre,
+    recovery
 }
 public class PlayerPerks : MonoBehaviour{
     public List<perks> playPerks;

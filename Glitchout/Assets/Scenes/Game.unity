@@ -2732,60 +2732,50 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 246339248, guid: 5efe6e89e964c644eacb678d3da95909, type: 3}
-      propertyPath: m_Name
-      value: PerksGrid
+    - target: {fileID: 3669483483227507991, guid: 5efe6e89e964c644eacb678d3da95909,
+        type: 3}
+      propertyPath: m_fontColor.r
+      value: 0.8396226
       objectReference: {fileID: 0}
-    - target: {fileID: 246339251, guid: 5efe6e89e964c644eacb678d3da95909, type: 3}
-      propertyPath: m_Enabled
-      value: 0
+    - target: {fileID: 3669483483227507991, guid: 5efe6e89e964c644eacb678d3da95909,
+        type: 3}
+      propertyPath: m_fontColor.g
+      value: 0.35248306
       objectReference: {fileID: 0}
-    - target: {fileID: 908597335, guid: 5efe6e89e964c644eacb678d3da95909, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 1033
+    - target: {fileID: 3669483483227507991, guid: 5efe6e89e964c644eacb678d3da95909,
+        type: 3}
+      propertyPath: m_fontColor.b
+      value: 0.4331131
       objectReference: {fileID: 0}
-    - target: {fileID: 908597338, guid: 5efe6e89e964c644eacb678d3da95909, type: 3}
-      propertyPath: perkList.Array.size
-      value: 6
+    - target: {fileID: 3669483483227507991, guid: 5efe6e89e964c644eacb678d3da95909,
+        type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4285422294
       objectReference: {fileID: 0}
-    - target: {fileID: 908597338, guid: 5efe6e89e964c644eacb678d3da95909, type: 3}
-      propertyPath: perkList.Array.data[1]
-      value: 
-      objectReference: {fileID: 21300000, guid: b808dd95b4d021c43aaca285e15debbf,
+    - target: {fileID: 3884067112606381815, guid: 5efe6e89e964c644eacb678d3da95909,
         type: 3}
-    - target: {fileID: 908597338, guid: 5efe6e89e964c644eacb678d3da95909, type: 3}
-      propertyPath: perkList.Array.data[0]
-      value: 
-      objectReference: {fileID: 21300000, guid: 588100d9d9af7a34ab24c4e440601d2a,
-        type: 3}
-    - target: {fileID: 908597338, guid: 5efe6e89e964c644eacb678d3da95909, type: 3}
-      propertyPath: perkList.Array.data[6]
-      value: 
-      objectReference: {fileID: 21300000, guid: d53b4c9b18f8dd5439f47b403b5d75ce,
-        type: 3}
-    - target: {fileID: 908597338, guid: 5efe6e89e964c644eacb678d3da95909, type: 3}
-      propertyPath: perkList.Array.data[4]
-      value: 
-      objectReference: {fileID: 21300000, guid: 3f1256f1ea18ed246a8afe51f3bf3cee,
-        type: 3}
-    - target: {fileID: 908597338, guid: 5efe6e89e964c644eacb678d3da95909, type: 3}
-      propertyPath: perkList.Array.data[5]
-      value: 
-      objectReference: {fileID: 21300000, guid: d53b4c9b18f8dd5439f47b403b5d75ce,
-        type: 3}
-    - target: {fileID: 1024317908, guid: 5efe6e89e964c644eacb678d3da95909, type: 3}
-      propertyPath: m_IsActive
-      value: 1
+      propertyPath: m_fontColor.r
+      value: 0.8396226
       objectReference: {fileID: 0}
-    - target: {fileID: 4913078500058681660, guid: 5efe6e89e964c644eacb678d3da95909,
+    - target: {fileID: 3884067112606381815, guid: 5efe6e89e964c644eacb678d3da95909,
         type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -206
+      propertyPath: m_fontColor.g
+      value: 0.35248306
+      objectReference: {fileID: 0}
+    - target: {fileID: 3884067112606381815, guid: 5efe6e89e964c644eacb678d3da95909,
+        type: 3}
+      propertyPath: m_fontColor.b
+      value: 0.4331131
+      objectReference: {fileID: 0}
+    - target: {fileID: 3884067112606381815, guid: 5efe6e89e964c644eacb678d3da95909,
+        type: 3}
+      propertyPath: m_fontColor32.rgba
+      value: 4285422294
       objectReference: {fileID: 0}
     - target: {fileID: 6094303738895974509, guid: 5efe6e89e964c644eacb678d3da95909,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6094303739129792945, guid: 5efe6e89e964c644eacb678d3da95909,
         type: 3}
@@ -2805,7 +2795,7 @@ PrefabInstance:
     - target: {fileID: 6094303739879303366, guid: 5efe6e89e964c644eacb678d3da95909,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6094303740011676219, guid: 5efe6e89e964c644eacb678d3da95909,
         type: 3}
@@ -2815,7 +2805,7 @@ PrefabInstance:
     - target: {fileID: 6094303740226232018, guid: 5efe6e89e964c644eacb678d3da95909,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8477995699316811450, guid: 5efe6e89e964c644eacb678d3da95909,
         type: 3}

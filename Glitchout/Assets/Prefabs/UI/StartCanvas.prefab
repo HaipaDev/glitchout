@@ -146,7 +146,7 @@ GameObject:
   - component: {fileID: 246339251}
   - component: {fileID: 246339250}
   m_Layer: 5
-  m_Name: Re-orderable Grid ScrollRect
+  m_Name: PerksGrid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -266,7 +266,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 246339248}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 31a19414c41e5ae4aae2af33fee712f6, type: 3}
   m_Name: 
@@ -389,7 +389,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 504.78, y: -424.0664}
-  m_SizeDelta: {x: 1009.5514, y: 845.4584}
+  m_SizeDelta: {x: 1033, y: 845.4584}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &908597337
 MonoBehaviour:
@@ -442,15 +442,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   perkList:
-  - {fileID: 21300000, guid: d4c6e9c7fb9b77540bbd9b89b58d3aea, type: 3}
-  - {fileID: 21300000, guid: 6a4d9da658db2f54d9e025db71aeb7f9, type: 3}
-  - {fileID: 21300000, guid: c109f972218549e4e94adbc0b26bc684, type: 3}
-  - {fileID: 21300000, guid: c16d4828fe65d484686631d2e492bae2, type: 3}
-  - {fileID: 21300000, guid: a2e05b41af40eb04d9df6c5bcb3ed7af, type: 3}
-  - {fileID: 21300000, guid: 734d91920b6041b4187ca64a4ae2b51c, type: 3}
-  - {fileID: 21300000, guid: 220477dfe158fff438f8ab11d75bee5c, type: 3}
+  - {fileID: 21300000, guid: 588100d9d9af7a34ab24c4e440601d2a, type: 3}
+  - {fileID: 21300000, guid: b808dd95b4d021c43aaca285e15debbf, type: 3}
+  - {fileID: 21300000, guid: 0ab25ee2b155ed446a1df350eb8879ae, type: 3}
+  - {fileID: 21300000, guid: 774441415ecccd14185a7ca458302320, type: 3}
+  - {fileID: 21300000, guid: 3f1256f1ea18ed246a8afe51f3bf3cee, type: 3}
+  - {fileID: 21300000, guid: d53b4c9b18f8dd5439f47b403b5d75ce, type: 3}
   elementPrefab: {fileID: 119549046141769848, guid: 2e5238100eacb1242ad5baee394e52b6,
     type: 3}
+  rowMax: 5
 --- !u!1 &1024317908
 GameObject:
   m_ObjectHideFlags: 0
@@ -913,8 +913,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2.9, y: -115.5}
-  m_SizeDelta: {x: 263.36368, y: 92.34018}
+  m_AnchoredPosition: {x: -10.6, y: -122.5}
+  m_SizeDelta: {x: 356.29617, y: 106.28009}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &581715533053606756
 CanvasRenderer:
@@ -1018,6 +1018,7 @@ GameObject:
   - component: {fileID: 8034920974682506303}
   - component: {fileID: 7936338107513471494}
   - component: {fileID: 3669483483227507991}
+  - component: {fileID: 1048788000}
   m_Layer: 5
   m_Name: PerksText
   m_TagString: Untagged
@@ -1071,7 +1072,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: PERKS
+  m_text: 0/0 PERKS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 50e34c1c9eadcf644a8f1a7520fd9800, type: 2}
   m_sharedMaterial: {fileID: -4296770515748183816, guid: 50e34c1c9eadcf644a8f1a7520fd9800,
@@ -1100,7 +1101,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 77
+  m_fontSize: 61.75
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -1141,10 +1142,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 3669483483227507991}
-    characterCount: 5
+    characterCount: 9
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 1
+    spaceCount: 1
+    wordCount: 3
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -1164,6 +1165,21 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &1048788000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1979728356631297171}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1e2d4882ceff71478b6d4852e32be3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: perkCount_1
+  update: 1
+  players: []
 --- !u!1 &6094303738350827588
 GameObject:
   m_ObjectHideFlags: 0
@@ -2800,7 +2816,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6094303738895974499}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 058cba836c1846c3aa1c5fd2e28aea77, type: 3}
   m_Name: 
@@ -4689,7 +4705,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6094303739879303364}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 058cba836c1846c3aa1c5fd2e28aea77, type: 3}
   m_Name: 
@@ -6022,7 +6038,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6094303740226232016}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 058cba836c1846c3aa1c5fd2e28aea77, type: 3}
   m_Name: 
@@ -6253,7 +6269,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -2, y: -115.50011}
-  m_SizeDelta: {x: 263.36368, y: 92.34018}
+  m_SizeDelta: {x: 356.2962, y: 106}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6145526073708374222
 CanvasRenderer:
@@ -6357,6 +6373,7 @@ GameObject:
   - component: {fileID: 4626968364252769739}
   - component: {fileID: 4642636825271952983}
   - component: {fileID: 3884067112606381815}
+  - component: {fileID: 402116073}
   m_Layer: 5
   m_Name: PerksText1
   m_TagString: Untagged
@@ -6410,7 +6427,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: PERKS
+  m_text: 0/0 PERKS
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 50e34c1c9eadcf644a8f1a7520fd9800, type: 2}
   m_sharedMaterial: {fileID: -4296770515748183816, guid: 50e34c1c9eadcf644a8f1a7520fd9800,
@@ -6439,7 +6456,7 @@ MonoBehaviour:
   m_outlineColor:
     serializedVersion: 2
     rgba: 4278190080
-  m_fontSize: 77
+  m_fontSize: 61.75
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -6480,10 +6497,10 @@ MonoBehaviour:
   m_margin: {x: 0, y: 0, z: 0, w: 0}
   m_textInfo:
     textComponent: {fileID: 3884067112606381815}
-    characterCount: 5
+    characterCount: 9
     spriteCount: 0
-    spaceCount: 0
-    wordCount: 1
+    spaceCount: 1
+    wordCount: 3
     linkCount: 0
     lineCount: 1
     pageCount: 1
@@ -6503,6 +6520,21 @@ MonoBehaviour:
   - {fileID: 0}
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!114 &402116073
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7933253233924365016}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d1e2d4882ceff71478b6d4852e32be3f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  value: perkCount_0
+  update: 1
+  players: []
 --- !u!1 &8477995699316811454
 GameObject:
   m_ObjectHideFlags: 0

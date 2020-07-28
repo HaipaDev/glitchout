@@ -5,10 +5,15 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class PerksList : MonoBehaviour{
+    public static PerksList instance;
     public Sprite[] perkList;
     public GameObject elementPrefab;
     [SerializeField] int rowMax=5;
+    private void Awake() {
+        instance=this;
+    }
     void Start(){
+        instance=this;
         var i=0;
         var ii=1;
         foreach(Sprite perk in perkList){
