@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,7 +10,7 @@ using UnityEngine.Rendering.PostProcessing;
 public class GameSession : MonoBehaviour{
     public static GameSession instance;
     [HeaderAttribute("Current Player Values")]
-    public Player[] players;
+    public List<Player> players;
     public int[] score;
     public float[] kills;
     public float[] respawnTimer;
@@ -71,16 +72,16 @@ public class GameSession : MonoBehaviour{
     {
         if(SceneManager.GetActiveScene().name=="Game"&&resize==false){resize=true;}
         if(SceneManager.GetActiveScene().name=="Game"&&resize==true){
-            Array.Resize(ref players,FindObjectsOfType<Player>().Length);
-            Array.Resize(ref score,players.Length);
-            Array.Resize(ref kills,players.Length);
-            Array.Resize(ref respawnTimer,players.Length);
+            players=FindObjectsOfType<Player>().ToList();
+            Array.Resize(ref score,players.Count);
+            Array.Resize(ref kills,players.Count);
+            Array.Resize(ref respawnTimer,players.Count);
             for(var i=0;i<respawnTimer.Length;i++){
                 if(respawnTimer[i]==0)respawnTimer[i]=-4;
             }
             resize=false;
         }else{
-            Array.Resize(ref players,0);
+            players.Clear();
             Array.Resize(ref score,0);
             Array.Resize(ref kills,0);
             Array.Resize(ref respawnTimer,0);

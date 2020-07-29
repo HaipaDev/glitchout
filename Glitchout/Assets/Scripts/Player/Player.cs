@@ -10,11 +10,11 @@ public class Player : MonoBehaviour{
     [HeaderAttribute("Setup")]
     //[SerializeField]public playerNum playerNum=playerNum.One;
     [SerializeField]public int playerNum;
-    [SerializeField]float rotationSpeed=30;
-    [SerializeField]float xspeed=0.1f;
-    [SerializeField]float yspeed=0.1f;
-    [SerializeField]float xRange=0.8f;
-    [SerializeField]float yRange=0.8f;
+    [SerializeField]public float rotationSpeed=30;
+    [SerializeField]public float xspeed=0.1f;
+    [SerializeField]public float yspeed=0.1f;
+    [SerializeField]public float xRange=0.8f;
+    [SerializeField]public float yRange=0.8f;
     [SerializeField]float xBound=4f;
     [SerializeField]float yBound=6.8f;
     [SerializeField]public float maxHealth=100f;
@@ -22,7 +22,7 @@ public class Player : MonoBehaviour{
     [SerializeField]public float hitTimerMax=3f;
     [HeaderAttribute("Current Values")]
     public float health;
-    public float damage;
+    public float damage=-4;
     public float angle;
     public float xpos;
     public float ypos;
@@ -44,11 +44,12 @@ public class Player : MonoBehaviour{
         shake = GameObject.FindObjectOfType<Shake>();
         
         health=maxHealth;
-        damage=GetComponent<DamageDealer>().GetDmgPlayer();
+        if(damage==-4)damage=GetComponent<DamageDealer>().GetDmgPlayer();
 
         glowVFX=Instantiate(GameAssets.instance.GetVFX("PlayerGlow"),transform);
-        if(playerNum==0)glowVFX.GetComponent<ParticleSystem>().startColor=Color.cyan;
-        if(playerNum==1)glowVFX.GetComponent<ParticleSystem>().startColor=Color.magenta;
+        var ps=glowVFX.GetComponent<ParticleSystem>().main;
+        if(playerNum==0)ps.startColor=Color.cyan;
+        if(playerNum==1)ps.startColor=Color.magenta;
     }
 
     void Update(){
@@ -59,6 +60,16 @@ public class Player : MonoBehaviour{
             else hitTimer=-4;
             Move();
             Die();
+        }
+        var ps=glowVFX.GetComponent<ParticleSystem>().main;
+        var em=glowVFX.GetComponent<ParticleSystem>().emission;
+        if(health>0){
+        var dur=Mathf.Clamp(0.05f/(health/maxHealth)*Mathf.Clamp((0.3f/(health/maxHealth)),0,1),0.05f,1.5f);
+        if(ps.duration!=dur){glowVFX.GetComponent<ParticleSystem>().Stop();ps.duration=dur;glowVFX.GetComponent<ParticleSystem>().Play();}
+        ps.startLifetime=(float)System.Math.Round(Mathf.Clamp(0.5f/(health/maxHealth),0.5f,1.5f),1);
+        ps.maxParticles=(int)Mathf.Clamp((10*(float)System.Math.Round((health/maxHealth),1)),1,10);
+        if(health<maxHealth/2){em.rateOverTime=1;}
+        else{em.rateOverTime=2;}
         }
     }
 
@@ -117,10 +128,11 @@ public class Player : MonoBehaviour{
 
     public void Damage(float dmg){
         health-=dmg;
+        GetComponent<PlayerPerks>().dmgdTimer=GetComponent<PlayerPerks>().dmgdTime*Mathf.Clamp(dmg,0,10);
         
         shake.CamShake(1f*dmg,1f);
     }
-    public void GlitchOut(){
+    public void GlitchOut(float xRange,float yRange){
         var xx=Random.Range(-xRange,xRange);
         var yy=Random.Range(-yRange,yRange);
 
@@ -165,10 +177,18 @@ public class Player : MonoBehaviour{
     }
 
     private void OnTriggerEnter2D(Collider2D other){
-        damage=GetComponent<DamageDealer>().GetDmgPlayer();
+        //damage=GetComponent<DamageDealer>().GetDmgPlayer();
         if(CompareTag(other.tag)){
-            if(moving==true){other.GetComponent<Player>().Damage(damage);other.GetComponent<Player>().hitTimer=hitTimerMax;}
-            GlitchOut();
+            //Player
+            if(other.GetComponent<Player>()!=null){
+                if(moving==true){other.GetComponent<Player>().Damage(damage);other.GetComponent<Player>().hitTimer=hitTimerMax;}
+                GlitchOut(xRange,yRange);
+            }if(other.GetComponent<SplitBullet>()!=null){//SplitBullet
+            if(other.GetComponent<SplitBullet>().playerID!=playerNum){
+                Damage(other.GetComponent<DamageDealer>().GetDmgSplit());
+                GlitchOut(xRange,yRange);
+            }
+            }
         }else{
             var dmgDealer=other.GetComponent<DamageDealer>();
             if(other.GetComponent<HealthPack>()!=null&&other.GetComponent<HealthPack>().timer<=0){health+=25;other.GetComponent<HealthPack>().timer=other.GetComponent<HealthPack>().timerMax;AudioManager.instance.Play("HPCollect");}
@@ -179,10 +199,12 @@ public class Player : MonoBehaviour{
     }
     private void OnTriggerStay2D(Collider2D other){
         if(dmgTimer<=0){
-            damage=GetComponent<DamageDealer>().GetDmgPlayerStay();
+            //damage=GetComponent<DamageDealer>().GetDmgPlayerStay();
             if(CompareTag(other.tag)){
-                if(moving==true)other.GetComponent<Player>().Damage(damage);
-                GlitchOut();
+                if(other.GetComponent<Player>()!=null){
+                    if(moving==true)other.GetComponent<Player>().Damage(damage/5);
+                    GlitchOut(xRange,yRange);
+                }
             }else{
                 var dmgDealer=other.GetComponent<DamageDealer>();
                 if(other.GetComponent<Saw>()!=null){Damage(dmgDealer.GetDmgSaw());AudioManager.instance.Play("SawHit");int i=Random.Range(0,2);GameAssets.instance.VFX(i.ToString(),transform.position,0.2f);}

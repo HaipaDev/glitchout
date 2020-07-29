@@ -9,7 +9,8 @@ public class RotateParticle : MonoBehaviour{
     }
 
     void Update(){
-        if(parent!=true)GetComponent<ParticleSystem>().startRotation=transform.rotation.z;
-        if(parent==true)GetComponent<ParticleSystem>().startRotation=transform.parent.rotation.z;
+        var ps=GetComponent<ParticleSystem>().main;
+        if(parent!=true)ps.startRotation=transform.rotation.z;
+        if(parent==true)ps.startRotation=transform.parent.rotation.z;
     }
 }

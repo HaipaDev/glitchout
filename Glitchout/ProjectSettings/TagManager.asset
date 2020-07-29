@@ -6,6 +6,7 @@ TagManager:
   tags:
   - World
   - Particles
+  - Barrier
   layers:
   - Default
   - TransparentFX

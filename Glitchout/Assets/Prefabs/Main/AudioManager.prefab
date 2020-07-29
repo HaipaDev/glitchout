@@ -136,3 +136,12 @@ MonoBehaviour:
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
+  - name: HealAFix
+    clip: {fileID: 8300000, guid: 059f6cae038a720449cb75cad29e8157, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0.02
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}

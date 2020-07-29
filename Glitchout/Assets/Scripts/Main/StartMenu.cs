@@ -39,6 +39,9 @@ public class StartMenu : MonoBehaviour{
         gameSession.speedChanged=false;
         gameSession.gameSpeed = prevGameSpeed;
         GameIsStarted = true;
+        foreach(Player player in GameSession.instance.players){
+            player.GetComponent<PlayerPerks>().SetStartParams();
+        }
     }
     public void Open(){
         prevGameSpeed = gameSession.gameSpeed;

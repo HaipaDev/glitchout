@@ -13,7 +13,7 @@ public class PerkButton : MonoBehaviour{
         //GetComponent<Button>().onClick.AddListener(delegate{StartMenu.instance.SetPerk(perkID);});
 
         if(perkEnum!=perks.empty)txtTitle=perkEnum.ToString();
-        if(perkEnum==perks.refined)txt="MORE STARTING HEALTH, SLOWER SPEED";
+        if(perkEnum==perks.hardened)txt="MORE STARTING HEALTH, SLOWER SPEED";
         if(perkEnum==perks.autofix)txt="YOU GET SLOWLY HEALED WHEN NOT DAMAGED";
         if(perkEnum==perks.unstable)txt="HIGHER DAMAGE, BUT RANDOM SPAZ";
         if(perkEnum==perks.split)txt="YOU SPLIT INTO RGB BULLETS";
