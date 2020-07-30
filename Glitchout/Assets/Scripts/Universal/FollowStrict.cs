@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FollowStrict : MonoBehaviour{
-    Vector2 targetPos;
+    public Vector2 targetPos;
     //new Vector2 selfPos;
     [SerializeField] GameObject target;
     [SerializeField] string targetTag;

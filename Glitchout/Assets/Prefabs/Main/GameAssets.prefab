@@ -50,6 +50,8 @@ MonoBehaviour:
     gobj: {fileID: 1137447772072343336, guid: 904286a91a0ca1245a96a5d96f036ce2, type: 3}
   - name: SplitBt
     gobj: {fileID: 4662837967160001273, guid: dad9dd14ba1b6914b8fd778b944f6522, type: 3}
+  - name: Spectre
+    gobj: {fileID: 4662837967160001273, guid: b2625266fe25fdf4c848739b9f3e42d6, type: 3}
   vfx:
   - name: GlitchHit
     gobj: {fileID: 7556307479021332897, guid: 2f981baf2c4e65848aa8478ca72843d4, type: 3}

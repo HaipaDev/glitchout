@@ -41,6 +41,7 @@ public class StartMenu : MonoBehaviour{
         GameIsStarted = true;
         foreach(Player player in GameSession.instance.players){
             player.GetComponent<PlayerPerks>().SetStartParams();
+            player.GetComponent<PlayerPerks>().RespawnPerks();
         }
     }
     public void Open(){

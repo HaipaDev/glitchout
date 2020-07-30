@@ -15,6 +15,10 @@ public class Follow : MonoBehaviour{
     [SerializeField] public float speedFollow = 5f;
     [SerializeField] public float vspeed = 2.4f;
     [SerializeField] public float hspeed = 0f;
+    [SerializeField] public float xx;
+    [SerializeField] public float yy;
+    public Vector2 selfPosChanged;
+
     [HeaderAttribute("Rotation")]
     [SerializeField] bool rotateTowards = false;
     [SerializeField] float speedRotate = 15f;
@@ -40,13 +44,14 @@ public class Follow : MonoBehaviour{
 
     // Update is called once per frame
     void Update()
-    {
+    {   
+        if(selfPosChanged!=new Vector2(0,0)){transform.position=selfPosChanged;selfPos=selfPosChanged;}
         if (target != null) { targetObj = GameObject.FindGameObjectWithTag(target.tag); }
         else { targetObj = GameObject.FindGameObjectWithTag(targetTag); }
 
         if(targetObj==null){rb.velocity = new Vector2(hspeed, -vspeed);}
         else{
-            targetPos = new Vector2(targetObj.transform.position.x, targetObj.transform.position.y);
+            targetPos = new Vector2(targetObj.transform.position.x+xx, targetObj.transform.position.y+yy);
             selfPos = new Vector2(transform.position.x, transform.position.y);
             dist=Vector2.Distance(targetPos, selfPos);
 

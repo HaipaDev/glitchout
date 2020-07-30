@@ -34,6 +34,14 @@ public class PlayerPerks : MonoBehaviour{
     public float splitTimer=-4;
     public float splitTimeInst=0.38f;
     public float splitTimerInst=-4;
+    [HeaderAttribute("Spectre")]
+    public GameObject[] spectres=new GameObject[4];
+    public float spectreSwitchTime=8f;
+    public float spectreSwitchTimer=-4;
+    [HeaderAttribute("Recovery")]
+    public float recoveryHealth=16f;
+    public float recoveryLifetime=3.4f;
+    public float recoveryLifetimer=-4;
 
     int splitId;
 
@@ -80,6 +88,32 @@ public class PlayerPerks : MonoBehaviour{
                 if(splitTimerInst>0){splitTimerInst-=Time.deltaTime;}
                 if(splitTimerInst<=0&&splitTimerInst!=-4){MakeSplit(splitId);if(splitId<2){splitId++;splitTimerInst=splitTimeInst;}else{splitId=0;splitTimerInst=-4;}}
             }
+            if(perk==perks.spectre){
+                if(spectreSwitchTimer==-4)spectreSwitchTimer=spectreSwitchTime;
+                if(spectreSwitchTimer>0)spectreSwitchTimer-=Time.deltaTime;
+                if(spectreSwitchTimer<=0&&spectreSwitchTimer!=-4){
+                int rndm=UnityEngine.Random.Range(0,spectres.Length-1);
+                Debug.Log(rndm);
+                if(spectres[rndm]!=null){   
+                    Vector2 selfPos=transform.position;
+                    Vector2 spectrePos=spectres[rndm].transform.position;
+                    GetComponent<Player>().xpos=spectrePos.x;
+                    GetComponent<Player>().ypos=spectrePos.y;
+                    foreach(GameObject spectre in spectres){var spectrePosC=spectre.transform.position;spectre.GetComponent<FollowStrict>().xx=spectrePos.x-spectrePosC.x;spectre.GetComponent<FollowStrict>().yy=spectrePos.y-spectrePosC.y;}
+                    spectres[rndm].transform.position=selfPos;
+                    //spectres[rndm].GetComponent<FollowStrict>().targetObj=null;
+                    //spectres[rndm].GetComponent<FollowStrict>().targetPos=selfPos;
+                    /*foreach(GameObject spectre in spectres){if(spectre!=spectres[rndm]){spectre.GetComponent<FollowStrict>().targetObj=spectres[rndm];}}*/
+                }
+                spectreSwitchTimer=spectreSwitchTime;
+                }
+            }if(perk==perks.recovery){
+                if(recoveryLifetimer>0)recoveryLifetimer-=Time.deltaTime;
+                if(recoveryLifetimer<=0&&recoveryLifetimer!=-4&&player.health>0){
+                    player.Death();
+                    recoveryLifetimer=-4;
+                }
+            }
         }
         }
     }
@@ -95,6 +129,34 @@ public class PlayerPerks : MonoBehaviour{
                 player.damage=7.7f;
                 player.xRange*=1.1f;
                 player.yRange*=1.1f;
+            }
+        }
+    }
+    public void RespawnPerks(){
+        foreach(perks perk in playPerks){
+            if(perk==perks.spectre){
+                GameObject parent=new GameObject();
+                //GameObject parent=Instantiate(new GameObject(),transform);
+                parent.name="SpectresParent"+(player.playerNum+1).ToString();
+                for(var i=0;i<spectres.Length;i++){
+                    GameObject go=Instantiate(GameAssets.instance.Get("Spectre"),parent.transform);
+                    spectres[i]=go;
+                    go.name="Spectre"+(i+1).ToString();
+                    go.GetComponent<SpriteRenderer>().sprite=GetComponent<SpriteRenderer>().sprite;
+                    go.GetComponent<Spectre>().playerID=GetComponent<Player>().playerNum;
+
+                    Vector2 pos=transform.position;
+                    float xs=0.3f;float xm=1.2f;
+                    float xx=0;float yy=0;
+                    if(i==0){xx=UnityEngine.Random.Range(xs,xm);yy=UnityEngine.Random.Range(xs,xm);}
+                    if(i==1){xx=-UnityEngine.Random.Range(xs,xm);yy=UnityEngine.Random.Range(xs,xm);}
+                    if(i==2){xx=UnityEngine.Random.Range(xs,xm);yy=-UnityEngine.Random.Range(xs,xm);}
+                    if(i==3){xx=-UnityEngine.Random.Range(xs,xm);yy=-UnityEngine.Random.Range(xs,xm);}
+                    go.transform.position=new Vector2(pos.x+xx,pos.y+yy);
+                    go.GetComponent<FollowStrict>().targetObj=this.gameObject;
+                    go.GetComponent<FollowStrict>().xx=xx;
+                    go.GetComponent<FollowStrict>().yy=yy;
+                }
             }
         }
     }

@@ -594,6 +594,15 @@ MonoBehaviour:
   splitTimer: -4
   splitTimeInst: 0.38
   splitTimerInst: -4
+  spectrePrefab: {fileID: 4662837967160001273, guid: b2625266fe25fdf4c848739b9f3e42d6,
+    type: 3}
+  spectres:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  spectreSwitchTime: 8
+  spectreSwitchTimer: -4
 --- !u!1 &428050683 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1137447772072343336, guid: 904286a91a0ca1245a96a5d96f036ce2,
@@ -3057,6 +3066,12 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2529771964178614092, guid: c1a7bd4c78edf5c48a14508f091f013a,
+        type: 3}
+      propertyPath: spectrePrefab
+      value: 
+      objectReference: {fileID: 4662837967160001273, guid: b2625266fe25fdf4c848739b9f3e42d6,
+        type: 3}
     - target: {fileID: 7011926872291180623, guid: c1a7bd4c78edf5c48a14508f091f013a,
         type: 3}
       propertyPath: m_Name

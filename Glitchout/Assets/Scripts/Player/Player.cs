@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System.Linq;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -152,13 +153,26 @@ public class Player : MonoBehaviour{
 
     private void Die(){
         if(health<=0){
-            GameSession.instance.Die(playerNum,hitTimer);
-            //gameObject.SetActive(false);
-            Hide();
-            shake.CamShake(4f,0.4f);
-            GameAssets.instance.VFX("ExplosionGlitch",transform.position,0.5f);
-            AudioManager.instance.Play("Death");
+            if(GetComponent<PlayerPerks>().playPerks.Contains(perks.recovery)&&GetComponent<PlayerPerks>().recoveryLifetimer==-4){//Recovery Death
+                RecoveryDeath();
+            }else{//Normal death
+                Death();
+            }
         }
+    }public void Death(){
+        GameSession.instance.Die(playerNum,hitTimer);
+        //gameObject.SetActive(false);
+        Hide();
+        shake.CamShake(4f,0.4f);
+        GameAssets.instance.VFX("ExplosionGlitch",transform.position,0.5f);
+        AudioManager.instance.Play("Death");
+    }public void RecoveryDeath(){
+        var pperks=GetComponent<PlayerPerks>();
+        health=pperks.recoveryHealth;
+        pperks.recoveryLifetimer=pperks.recoveryLifetime;
+        //AudioManager.instance.Play("Death");
+        AudioManager.instance.Play("Respawn");
+        GameAssets.instance.VFX("Respawn",new Vector2(xpos,ypos),0.1f);
     }public void Respawn(){
         health=maxHealth;
         TpRandom();
