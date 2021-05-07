@@ -1,6 +1,6 @@
 # Glitchout
-### Is an update project of moving my previous beta game GlitchedOut from GMS I made in 2018 to Unity.
-### A bizzare quick and fun PvP arena game!
+### Is an update project of moving to Unity [my previous beta game GlitchedOut from GMS I made in 2018](https://github.com/HyperGamesDev/GlitchedOut-GMS-0.1-).
+## A bizzare quick and fun PvP arena game!
 For any updates follow me [@HyperLemonPL on Twitter](https://twitter.com/HyperLemonPL)
 
 ![screen1](https://i.imgur.com/Dduc4ds.jpg?1)
