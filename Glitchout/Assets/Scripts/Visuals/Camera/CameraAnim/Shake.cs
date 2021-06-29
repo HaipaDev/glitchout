@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Shake : MonoBehaviour{
+    public static Shake instance;
     public Animator camAnim;
     [SerializeField] bool debug;
     [HideInInspector]public float mult;
     [SerializeField]float x=0;
     [SerializeField]float y=0;
+    private void Awake(){instance=this;}
     public void CamShake(float multiplier, float speed){
         if(debug==true)Debug.Log("Mult Before: "+mult);
         if(multiplier>mult||camAnim.GetBool("shake")!=true){

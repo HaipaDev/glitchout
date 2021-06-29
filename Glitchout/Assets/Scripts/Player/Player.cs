@@ -39,10 +39,8 @@ public class Player : MonoBehaviour{
     bool moving;
     public bool hidden;
 
-    Shake shake;
     GameObject glowVFX;
     void Start(){
-        shake = GameObject.FindObjectOfType<Shake>();
         
         health=maxHealth;
         if(damage==-4)damage=GetComponent<DamageDealer>().GetDmgPlayer();
@@ -66,13 +64,14 @@ public class Player : MonoBehaviour{
         var em=glowVFX.GetComponent<ParticleSystem>().emission;
         if(health>0){
         var dur=Mathf.Clamp(0.05f/(health/maxHealth)*Mathf.Clamp((0.3f/(health/maxHealth)),0,1),0.05f,1.5f);
-        if(ps.duration!=dur){glowVFX.GetComponent<ParticleSystem>().Stop();ps.duration=dur;glowVFX.GetComponent<ParticleSystem>().Play();}
+        if(ps.duration!=dur){StartCoroutine(ChangePtDur(ps,dur));}
         ps.startLifetime=(float)System.Math.Round(Mathf.Clamp(0.5f/(health/maxHealth),0.5f,1.5f),1);
         ps.maxParticles=(int)Mathf.Clamp((10*(float)System.Math.Round((health/maxHealth),1)),1,10);
         if(health<maxHealth/2){em.rateOverTime=1;}
         else{em.rateOverTime=2;}
         }
     }
+    IEnumerator ChangePtDur(ParticleSystem.MainModule ps, float dur){glowVFX.GetComponent<ParticleSystem>().Stop();yield return new WaitForSecondsRealtime(0.05f);ps.duration=dur;glowVFX.GetComponent<ParticleSystem>().Play();}
 
     private void Move(){
         //if(playerNum==playerNum.One){
@@ -131,7 +130,7 @@ public class Player : MonoBehaviour{
         health-=dmg;
         GetComponent<PlayerPerks>().dmgdTimer=GetComponent<PlayerPerks>().dmgdTime*Mathf.Clamp(dmg,0,10);
         
-        shake.CamShake(1f*dmg,1f);
+        Shake.instance.CamShake(1f*dmg,1f);
     }
     public void GlitchOut(float xRange,float yRange){
         var xx=Random.Range(-xRange,xRange);
@@ -163,7 +162,7 @@ public class Player : MonoBehaviour{
         GameSession.instance.Die(playerNum,hitTimer);
         //gameObject.SetActive(false);
         Hide();
-        shake.CamShake(4f,0.4f);
+        Shake.instance.CamShake(4f,0.4f);
         GameAssets.instance.VFX("ExplosionGlitch",transform.position,0.5f);
         AudioManager.instance.Play("Death");
     }public void RecoveryDeath(){

@@ -18,7 +18,7 @@ public class GameConditions : MonoBehaviour{
     public bool wonBySKLimit;
     public bool doubleScoreDisplay;
     void Start(){
-        instance=this;
+        if(instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}
         ChangeSettings();
     }
     public void ChangeSettings(){
@@ -44,11 +44,11 @@ public class GameConditions : MonoBehaviour{
             }
             if(scoreEnabled==true&&matchFinished!=true){
                 for(var i=0;i<GameSession.instance.score.Length;i++){
-                    if(GameSession.instance.score[i]>=scoreLimit){matchFinished=true;wonBySKLimit=true;winningPlayer=i;}
+                    if(GameSession.instance.score[i]>=scoreLimit){matchFinished=true;wonBySKLimit=true;winningPlayer=i+1;}
                 }
             }if(killsEnabled==true&&matchFinished!=true){
                 for(var i=0;i<GameSession.instance.kills.Length;i++){
-                    if(GameSession.instance.kills[i]>=killsLimit){matchFinished=true;wonBySKLimit=true;winningPlayer=i;}
+                    if(GameSession.instance.kills[i]>=killsLimit){matchFinished=true;wonBySKLimit=true;winningPlayer=i+1;}
                 }
             }
 
@@ -59,6 +59,7 @@ public class GameConditions : MonoBehaviour{
                 //GameSession.instance.gameSpeed=0;
             }
         }
+        if(!StartMenu.GameIsStarted){matchFinished=false;}
     }
     void SetWinningPlayer(){
         if(timerEnabled==true&&!wonBySKLimit){
@@ -72,16 +73,6 @@ public class GameConditions : MonoBehaviour{
                 else{winningPlayer=-1;}
             }
         }
-    }
-    public void SetTimeLimitEnabled(bool isTimeLimit){
-        timerEnabled = isTimeLimit;
-    }public void SetTimeLimitKills(bool isTimeLimitKills){
-        if(timerEnabled)timeKillsEnabled = isTimeLimitKills;
-    }
-    public void SetScoreLimitEnabled(bool isScoreLimit){
-        scoreEnabled = isScoreLimit;
-    }
-    public void SetKillsLimitEnabled(bool isKillsLimit){
-        killsEnabled = isKillsLimit;
+        AudioManager.instance.Play("Victory");
     }
 }

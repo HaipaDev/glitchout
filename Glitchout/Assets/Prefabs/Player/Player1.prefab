@@ -48,10 +48,12 @@ SpriteRenderer:
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -189,16 +191,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0fb524b619675054b8252f1291fc009e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerID: -1
+  playerID: 0
   skinID: 0
-  skins:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
 --- !u!114 &2529771964178614092
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -224,3 +218,15 @@ MonoBehaviour:
   unstableTimer: -4
   splitTime: 5
   splitTimer: -4
+  splitTimeInst: 0.38
+  splitTimerInst: -4
+  spectres:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  spectreSwitchTime: 8
+  spectreSwitchTimer: -4
+  recoveryHealth: 16
+  recoveryLifetime: 3.4
+  recoveryLifetimer: -4

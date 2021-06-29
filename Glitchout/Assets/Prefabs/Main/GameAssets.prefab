@@ -65,18 +65,12 @@ MonoBehaviour:
     gobj: {fileID: 7556307479021332897, guid: 301eaea2941e4e0458e6e25813575a87, type: 3}
   - name: PlayerGlow
     gobj: {fileID: 100000, guid: cfb86c3fde9272a4d9ef1296f03d33ba, type: 3}
-  sprites:
-  - name: player0
-    spr: {fileID: 21300000, guid: 1c468ce3ace13e84fa77defa7dd7b43a, type: 3}
-  - name: player1
-    spr: {fileID: 21300000, guid: afacc5d998c4b38428e6074f6e84837c, type: 3}
-  - name: player2
-    spr: {fileID: 21300000, guid: fc4ae5cfd6d63604187cf988f8d00ab4, type: 3}
-  - name: player3
-    spr: {fileID: 21300000, guid: a3f53549e1fdf37479c49d1d546ff365, type: 3}
-  - name: player4
-    spr: {fileID: 21300000, guid: 87808e61b17db53469d746d9e5ae57d6, type: 3}
-  - name: player5
-    spr: {fileID: 21300000, guid: 986983d51763e194bbc45fe927c6ef0b, type: 3}
-  - name: player6
-    spr: {fileID: 21300000, guid: d83eadd234580b744ab2d36613a0515b, type: 3}
+  sprites: []
+  skins:
+  - {fileID: 21300000, guid: 316c15bb5bdc6614c87964e574eb3a20, type: 3}
+  - {fileID: 21300000, guid: 3161a7fece7a8a54fa8d0f15c61315d6, type: 3}
+  - {fileID: 21300000, guid: afacc5d998c4b38428e6074f6e84837c, type: 3}
+  - {fileID: 21300000, guid: fc4ae5cfd6d63604187cf988f8d00ab4, type: 3}
+  - {fileID: 21300000, guid: a3f53549e1fdf37479c49d1d546ff365, type: 3}
+  - {fileID: 21300000, guid: 87808e61b17db53469d746d9e5ae57d6, type: 3}
+  - {fileID: 21300000, guid: 986983d51763e194bbc45fe927c6ef0b, type: 3}

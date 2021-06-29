@@ -11,7 +11,9 @@ public class ValueDisplay : MonoBehaviour{
     public Player[] players;
     void Start(){
         Array.Resize(ref players,FindObjectsOfType<Player>().Length);
-        if(value=="timerSetting"){var timer=GameConditions.instance.timer; float min=timer/60; float sec=Mathf.RoundToInt(timer-(float)(System.Math.Truncate(min)*60f)); if(sec>=60){min+=1;sec=0;} string textSec=sec.ToString(); if(sec<10){textSec="0"+sec;} txt=System.Math.Truncate(min).ToString()+"."+textSec;}
+        //if(value=="timerSetting"){var timer=GameConditions.instance.timer; float min=timer/60; float sec=Mathf.RoundToInt(timer-(float)(System.Math.Truncate(min)*60f)); if(sec>=60){min+=1;sec=0;} string textSec=sec.ToString(); if(sec<10){textSec="0"+sec;} txt=System.Math.Truncate(min).ToString()+"."+textSec;}
+        if(value=="timerMin"){txt=StartMenu.instance.timerMin.ToString();}
+        if(value=="timerSec"){txt=StartMenu.instance.timerMin.ToString();}
         //if(value=="perkCount_"){txt="0/"+PerksList.instance.perkList.Length+" PERKS";}
         if(txt!=""){
             if(GetComponent<TMPro.TextMeshProUGUI>()!=null)GetComponent<TMPro.TextMeshProUGUI>().text=txt;
@@ -20,6 +22,7 @@ public class ValueDisplay : MonoBehaviour{
     }
 
     void Update(){
+        if(value.Contains("gameVersion")){txt=SaveSerial.instance.settingsData.gameVersion;}
         Player[] allPlayers=FindObjectsOfType<Player>();
         foreach(Player player in allPlayers){
             //if(player.playerNum==playerNum.One){player1=player;}

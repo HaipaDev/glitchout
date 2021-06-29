@@ -5,35 +5,20 @@ using UnityEngine.SceneManagement;
 
 public class Level : MonoBehaviour{
     public static Level instance;
-    GameSession gameSession;
     [SerializeField]ParticleSystem transition;
     [SerializeField]Animator transitioner;
     [SerializeField]float transitionTime=0.35f;
     //float prevGameSpeed;
-    private void Awake()
-    {
-        gameSession = FindObjectOfType<GameSession>();
-        gameSession.gameSpeed=1f;
-        Time.timeScale = 1f;
-        SetUpSingleton();
-    }
-    private void SetUpSingleton(){
-        int numberOfObj = FindObjectsOfType<GameSession>().Length;
-        if(numberOfObj > 1){
-            Destroy(gameObject);
-        }else{
-            DontDestroyOnLoad(gameObject);
-        }
+    private void Awake(){
+        if(instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}
+        GameSession.instance.gameSpeed=1f;
     }
     void Start(){
-        instance=this;
-        gameSession = FindObjectOfType<GameSession>();
         //transition=FindObjectOfType<Tag_Transition>().GetComponent<ParticleSystem>();
-        //prevGameSpeed = gameSession.gameSpeed;
+        //prevGameSpeed = GameSession.instance.gameSpeed;
     }
-    void Update()
-    {
-        gameSession = FindObjectOfType<GameSession>();
+    void Update(){
+        CheckESC();
         //transition=FindObjectOfType<Tag_Transition>().GetComponent<ParticleSystem>();
         //transitioner=FindObjectOfType<Tag_Transition>().GetComponent<Animator>();
     }
@@ -67,23 +52,28 @@ public class Level : MonoBehaviour{
         //PauseMenu.GameIsPaused=false;
         /*FindObjectOfType<GameSession>().SaveHighscore();
         FindObjectOfType<GameSession>().ResetMusicPitch();*/
-        FindObjectOfType<GameSession>().ResetScore();
+        GameSession.instance.ResetScore();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        FindObjectOfType<GameSession>().gameSpeed=1f;
-        Time.timeScale = 1f;
+        GameSession.instance.gameSpeed=1f;
     }public void RestartScene(){
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        gameSession.gameSpeed=1f;
-        Time.timeScale = 1f;
+        GameSession.instance.gameSpeed=1f;
     }
     public void QuitGame(){
         Application.Quit();
     }
     public void Restart(){
         SceneManager.LoadScene("Loading");
-        gameSession.gameSpeed=1f;
-        Time.timeScale = 1f;
+        GameSession.instance.gameSpeed=1f;
     }
+
+    void CheckESC(){
+    if(Input.GetKeyDown(KeyCode.Escape)){
+        var scene=SceneManager.GetActiveScene().name;
+        if(scene=="Options"){
+            LoadStartMenu();
+        }
+    }}
 
     void LoadLevel(string sceneName){
         //StartCoroutine(LoadTransition(sceneName));
@@ -101,7 +91,5 @@ public class Level : MonoBehaviour{
         SceneManager.LoadScene(sceneName);
     }
 
-    public void OpenGameJolt(){
-        Application.OpenURL("https://gamejolt.com/@HyperGamesDev");
-    }
+    public void OpenURL(string url){Application.OpenURL(url);}
 }
