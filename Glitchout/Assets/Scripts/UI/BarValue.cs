@@ -15,18 +15,18 @@ public class BarValue : MonoBehaviour{
     [SerializeField] float value;
     //[SerializeField] string maxValueName;
     [SerializeField] float maxValue;
-    Player[] players;
+    PlayerScript[] players;
     void Start(){
-        Array.Resize(ref players,FindObjectsOfType<Player>().Length);
+        Array.Resize(ref players,FindObjectsOfType<PlayerScript>().Length);
     }
 
     void Update(){
-        Player[] allPlayers=FindObjectsOfType<Player>();
-        foreach(Player player in allPlayers){
-            //if(player.playerNum==playerNum.One){player1=player;}
-            //if(player.playerNum==playerNum.Two){player2=player;}
-            //if(player.playerNum==0){player1=player;}
-            //if(player.playerNum==1){player2=player;}
+        PlayerScript[] allPlayers=FindObjectsOfType<PlayerScript>();
+        foreach(PlayerScript player in allPlayers){
+            //if(PlayerScript.playerNum==playerNum.One){player1=PlayerScript;}
+            //if(PlayerScript.playerNum==playerNum.Two){player2=PlayerScript;}
+            //if(PlayerScript.playerNum==0){player1=PlayerScript;}
+            //if(PlayerScript.playerNum==1){player2=PlayerScript;}
             //Array.Resize(ref players,allPlayers.Length);
             players[player.playerNum]=player;
         }

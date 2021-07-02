@@ -42,7 +42,7 @@ public class StartMenu : MonoBehaviour{
         GameSession.instance.speedChanged=false;
         GameSession.instance.gameSpeed=prevGameSpeed;
         GameIsStarted=true;
-        foreach(Player player in GameSession.instance.players){
+        foreach(PlayerScript player in GameSession.instance.players){
             player.GetComponent<PlayerPerks>().SetStartParams();
             player.GetComponent<PlayerPerks>().RespawnPerks();
         }

@@ -3,32 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-/*public enum playerNum{
-    One,
-    Two
-}*/
-public class Player : MonoBehaviour{
+public class PlayerScript : MonoBehaviour{
     [HeaderAttribute("Setup")]
-    //[SerializeField]public playerNum playerNum=playerNum.One;
     [SerializeField]public int playerNum;
-    [SerializeField]public float rotationSpeed=30;
-    [SerializeField]public float xspeed=0.1f;
-    [SerializeField]public float yspeed=0.1f;
+    [SerializeField]public float rotationSpeed=18;
+    [SerializeField]public float xspeed=0.05f;
+    [SerializeField]public float yspeed=0.05f;
     [SerializeField]public float xRange=0.8f;
     [SerializeField]public float yRange=0.8f;
     [SerializeField]float xBound=4f;
     [SerializeField]float yBound=6.8f;
     [SerializeField]public float maxHealth=100f;
-    [SerializeField]public float dmgFreq=0.38f;
+    [SerializeField]public float dmgFreq=0.05f;
     [SerializeField]public float hitTimerMax=3f;
     [HeaderAttribute("Current Values")]
-    public float health;
+    public float health=100;
     public float damage=-4;
     public float angle;
     public float xpos;
     public float ypos;
-    public float dmgTimer;
-    public float hitTimer;
+    public float dmgTimer=-4;
+    public float hitTimer=-4;
 
     bool keyUp;
     bool keyDown;
@@ -192,9 +187,9 @@ public class Player : MonoBehaviour{
     private void OnTriggerEnter2D(Collider2D other){
         //damage=GetComponent<DamageDealer>().GetDmgPlayer();
         if(CompareTag(other.tag)){
-            //Player
-            if(other.GetComponent<Player>()!=null){
-                if(moving==true){other.GetComponent<Player>().Damage(damage);other.GetComponent<Player>().hitTimer=hitTimerMax;}
+            //PlayerScript
+            if(other.GetComponent<PlayerScript>()!=null){
+                if(moving==true){other.GetComponent<PlayerScript>().Damage(damage);other.GetComponent<PlayerScript>().hitTimer=hitTimerMax;}
                 GlitchOut(xRange,yRange);
             }if(other.GetComponent<SplitBullet>()!=null){//SplitBullet
             if(other.GetComponent<SplitBullet>().playerID!=playerNum){
@@ -214,8 +209,8 @@ public class Player : MonoBehaviour{
         if(dmgTimer<=0){
             //damage=GetComponent<DamageDealer>().GetDmgPlayerStay();
             if(CompareTag(other.tag)){
-                if(other.GetComponent<Player>()!=null){
-                    if(moving==true)other.GetComponent<Player>().Damage(damage/5);
+                if(other.GetComponent<PlayerScript>()!=null){
+                    if(moving==true)other.GetComponent<PlayerScript>().Damage(damage/5);
                     GlitchOut(xRange,yRange);
                 }
             }else{

@@ -9,8 +9,8 @@ using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 public class GameSession : MonoBehaviour{
     public static GameSession instance;
-    [HeaderAttribute("Current Player Values")]
-    public List<Player> players;
+    [HeaderAttribute("Current PlayerScript Values")]
+    public List<PlayerScript> players;
     public int[] score;
     public float[] kills;
     public float[] respawnTimer;
@@ -29,7 +29,7 @@ public class GameSession : MonoBehaviour{
     public bool dmgPopups=true;
     [HideInInspector]public bool resize;
 
-    Player player;
+    PlayerScript PlayerScript;
     PostProcessVolume postProcessVolume;
     //public string gameVersion;
 
@@ -41,7 +41,7 @@ public class GameSession : MonoBehaviour{
     void Update(){
         if(SceneManager.GetActiveScene().name=="Game"&&resize==false){resize=true;}
         if(SceneManager.GetActiveScene().name=="Game"&&resize==true){
-            players=FindObjectsOfType<Player>().ToList();
+            players=FindObjectsOfType<PlayerScript>().ToList();
             Array.Resize(ref score,players.Count);
             Array.Resize(ref kills,players.Count);
             Array.Resize(ref respawnTimer,players.Count);
@@ -55,9 +55,9 @@ public class GameSession : MonoBehaviour{
             Array.Resize(ref kills,0);
             Array.Resize(ref respawnTimer,0);
         }
-        Player[] allPlayers=FindObjectsOfType<Player>();
-        foreach(Player player in allPlayers){
-            players[player.playerNum]=player;
+        PlayerScript[] allPlayers=FindObjectsOfType<PlayerScript>();
+        foreach(PlayerScript PlayerScript in allPlayers){
+            players[PlayerScript.playerNum]=PlayerScript;
         }
 
         for(var i=0;i<score.Length;i++){
@@ -75,7 +75,7 @@ public class GameSession : MonoBehaviour{
         if(speedChanged!=true){gameSpeed=1;}
         //if(SceneManager.GetActiveScene().name!="Game"){gameSpeed=1;}
         //if(Shop.shopOpen==false&&Shop.shopOpened==false){gameSpeed=1;}
-        //if(FindObjectOfType<Player>()==null){gameSpeed=1;}
+        //if(FindObjectOfType<PlayerScript>()==null){gameSpeed=1;}
         
         //Restart with R or Space/Resume with Space
         /*if(SceneManager.GetActiveScene().name=="Game"){
@@ -151,11 +151,11 @@ public class GameSession : MonoBehaviour{
         }
         if(cheatmode==true){
             /*if(Input.GetKey(KeyCode.Alpha1) || fkey=="1"){
-                player=Player.instance;
-                if(Input.GetKeyDown(KeyCode.Q) || nkey=="Q"){player.health=player.maxHP;}
-                if(Input.GetKeyDown(KeyCode.W) || nkey=="W"){player.energy=player.maxEnergy;}
-                if(Input.GetKeyDown(KeyCode.E) || nkey=="E"){player.gclover=true;player.gcloverTimer=player.gcloverTime;}
-                if(Input.GetKeyDown(KeyCode.R) || nkey=="R"){player.health=0;}
+                PlayerScript=PlayerScript.instance;
+                if(Input.GetKeyDown(KeyCode.Q) || nkey=="Q"){PlayerScript.health=PlayerScript.maxHP;}
+                if(Input.GetKeyDown(KeyCode.W) || nkey=="W"){PlayerScript.energy=PlayerScript.maxEnergy;}
+                if(Input.GetKeyDown(KeyCode.E) || nkey=="E"){PlayerScript.gclover=true;PlayerScript.gcloverTimer=PlayerScript.gcloverTime;}
+                if(Input.GetKeyDown(KeyCode.R) || nkey=="R"){PlayerScript.health=0;}
             }
             if(Input.GetKey(KeyCode.Alpha2) || fkey=="2"){
                 if(Input.GetKeyDown(KeyCode.Q) || nkey=="Q"){AddToScoreNoEV(100);}
@@ -169,12 +169,12 @@ public class GameSession : MonoBehaviour{
                 if(Input.GetKeyDown(KeyCode.O) || nkey=="O"){foreach(PowerupsSpawner ps in FindObjectsOfType<PowerupsSpawner>())ps.enemiesCount=100;}
             }
             if(Input.GetKey(KeyCode.Alpha3) || fkey==""){
-                player=Player.instance;
-                if(Input.GetKeyDown(KeyCode.Q) || nkey=="Q"){player.powerup="laser3";}
-                if(Input.GetKeyDown(KeyCode.W) || nkey=="W"){player.powerup="mlaser";}
-                if(Input.GetKeyDown(KeyCode.E) || nkey=="E"){player.powerup="lsaber";}
-                if(Input.GetKeyDown(KeyCode.R) || nkey=="R"){player.powerup="cstream";}
-                if(Input.GetKeyDown(KeyCode.T) || nkey=="T"){player.powerup="plaser";}
+                PlayerScript=PlayerScript.instance;
+                if(Input.GetKeyDown(KeyCode.Q) || nkey=="Q"){PlayerScript.powerup="laser3";}
+                if(Input.GetKeyDown(KeyCode.W) || nkey=="W"){PlayerScript.powerup="mlaser";}
+                if(Input.GetKeyDown(KeyCode.E) || nkey=="E"){PlayerScript.powerup="lsaber";}
+                if(Input.GetKeyDown(KeyCode.R) || nkey=="R"){PlayerScript.powerup="cstream";}
+                if(Input.GetKeyDown(KeyCode.T) || nkey=="T"){PlayerScript.powerup="plaser";}
             }*/
         }
     }

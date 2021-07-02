@@ -7,9 +7,9 @@ public class PlayerSkin : MonoBehaviour{
     public int playerID=-1;
     public int skinID;
     IEnumerator Start(){
-        if(playerID==-1)Debug.Log("Player ID not set");
-        if(GetComponent<Image>()!=null){//Set SkinID from Player
-            foreach(Player player in FindObjectsOfType<Player>()){if(player.playerNum==this.playerID){this.skinID=player.GetComponent<PlayerSkin>().skinID;}}
+        if(playerID==-1)Debug.Log("PlayerScript ID not set");
+        if(GetComponent<Image>()!=null){//Set SkinID from PlayerScript
+            foreach(PlayerScript PlayerScript in FindObjectsOfType<PlayerScript>()){if(PlayerScript.playerNum==this.playerID){this.skinID=PlayerScript.GetComponent<PlayerSkin>().skinID;}}
         }
         //Set skinID from current sprite
         string[] num=new string[2];
@@ -24,8 +24,8 @@ public class PlayerSkin : MonoBehaviour{
     }
     void Update(){
         if(skinID>=0&&skinID<GameAssets.instance.skins.Length){
-            if(GetComponent<Player>()!=null){//Set SkinID for Player from config
-                foreach(PlayerSkin skin in FindObjectsOfType<PlayerSkin>()){if(skin.playerID==GetComponent<Player>().playerNum){GetComponent<PlayerSkin>().skinID=skin.skinID;}}
+            if(GetComponent<PlayerScript>()!=null){//Set SkinID for PlayerScript from config
+                foreach(PlayerSkin skin in FindObjectsOfType<PlayerSkin>()){if(skin.playerID==GetComponent<PlayerScript>().playerNum){GetComponent<PlayerSkin>().skinID=skin.skinID;}}
             }
 
             if(GetComponent<SpriteRenderer>()!=null)GetComponent<SpriteRenderer>().sprite=GameAssets.instance.GetSkin(skinID);

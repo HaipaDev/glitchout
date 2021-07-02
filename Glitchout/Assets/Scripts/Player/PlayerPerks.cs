@@ -45,13 +45,13 @@ public class PlayerPerks : MonoBehaviour{
 
     int splitId;
 
-    Player player;
+    PlayerScript PlayerScript;
 
     private void Awake() {
         
     }
     private void Start(){
-        player=GetComponent<Player>();
+        PlayerScript=GetComponent<PlayerScript>();
     }
 
     private void Update(){
@@ -62,8 +62,8 @@ public class PlayerPerks : MonoBehaviour{
                 if(dmgdTimer<=0&&dmgdTimer!=-4){afixRegTimer=afixRegTime;dmgdTimer=-4;}
                 if(afixRegTimer>0){afixRegTimer-=Time.deltaTime;}
                 if(afixRegTimer<=0&&afixRegTimer!=-4){
-                if(player.health<player.maxHealth){
-                    player.health+=afixRegAmnt;
+                if(PlayerScript.health<PlayerScript.maxHealth){
+                    PlayerScript.health+=afixRegAmnt;
                     AudioManager.instance.Play("HealAFix");
                     afixRegTimer=afixRegTime;
                 }
@@ -73,8 +73,8 @@ public class PlayerPerks : MonoBehaviour{
                 if(unstableTimer==-4)unstableTimer=UnityEngine.Random.Range(unstableTimeS,unstableTimeE);
                 if(unstableTimer>0)unstableTimer-=Time.deltaTime;
                 if(unstableTimer<=0&&unstableTimer!=-4){
-                    player.Damage(unstableDmg);
-                    player.GlitchOut(player.xRange*1.66f,player.yRange*1.66f);
+                    PlayerScript.Damage(unstableDmg);
+                    PlayerScript.GlitchOut(PlayerScript.xRange*1.66f,PlayerScript.yRange*1.66f);
                     unstableTimer=UnityEngine.Random.Range(unstableTimeS,unstableTimeE);
                 }
             }
@@ -97,8 +97,8 @@ public class PlayerPerks : MonoBehaviour{
                 if(spectres[rndm]!=null){   
                     Vector2 selfPos=transform.position;
                     Vector2 spectrePos=spectres[rndm].transform.position;
-                    GetComponent<Player>().xpos=spectrePos.x;
-                    GetComponent<Player>().ypos=spectrePos.y;
+                    GetComponent<PlayerScript>().xpos=spectrePos.x;
+                    GetComponent<PlayerScript>().ypos=spectrePos.y;
                     foreach(GameObject spectre in spectres){var spectrePosC=spectre.transform.position;spectre.GetComponent<FollowStrict>().xx=spectrePos.x-spectrePosC.x;spectre.GetComponent<FollowStrict>().yy=spectrePos.y-spectrePosC.y;}
                     spectres[rndm].transform.position=selfPos;
                     //spectres[rndm].GetComponent<FollowStrict>().targetObj=null;
@@ -109,8 +109,8 @@ public class PlayerPerks : MonoBehaviour{
                 }
             }if(perk==perks.recovery){
                 if(recoveryLifetimer>0)recoveryLifetimer-=Time.deltaTime;
-                if(recoveryLifetimer<=0&&recoveryLifetimer!=-4&&player.health>0){
-                    player.Death();
+                if(recoveryLifetimer<=0&&recoveryLifetimer!=-4&&PlayerScript.health>0){
+                    PlayerScript.Death();
                     recoveryLifetimer=-4;
                 }
             }
@@ -120,15 +120,15 @@ public class PlayerPerks : MonoBehaviour{
     public void SetStartParams(){
         foreach(perks perk in playPerks){
             if(perk==perks.hardened){
-                player.maxHealth=hardenedHealth;
-                player.health=hardenedHealth;
-                player.xspeed*=0.75f;
-                player.yspeed*=0.75f;
-                player.rotationSpeed*=0.75f;
+                PlayerScript.maxHealth=hardenedHealth;
+                PlayerScript.health=hardenedHealth;
+                PlayerScript.xspeed*=0.75f;
+                PlayerScript.yspeed*=0.75f;
+                PlayerScript.rotationSpeed*=0.75f;
             }if(perk==perks.unstable){
-                player.damage=7.7f;
-                player.xRange*=1.1f;
-                player.yRange*=1.1f;
+                PlayerScript.damage=7.7f;
+                PlayerScript.xRange*=1.1f;
+                PlayerScript.yRange*=1.1f;
             }
         }
     }
@@ -137,13 +137,13 @@ public class PlayerPerks : MonoBehaviour{
             if(perk==perks.spectre){
                 GameObject parent=new GameObject();
                 //GameObject parent=Instantiate(new GameObject(),transform);
-                parent.name="SpectresParent"+(player.playerNum+1).ToString();
+                parent.name="SpectresParent"+(PlayerScript.playerNum+1).ToString();
                 for(var i=0;i<spectres.Length;i++){
                     GameObject go=Instantiate(GameAssets.instance.Get("Spectre"),parent.transform);
                     spectres[i]=go;
                     go.name="Spectre"+(i+1).ToString();
                     go.GetComponent<SpriteRenderer>().sprite=GetComponent<SpriteRenderer>().sprite;
-                    go.GetComponent<Spectre>().playerID=GetComponent<Player>().playerNum;
+                    go.GetComponent<Spectre>().playerID=GetComponent<PlayerScript>().playerNum;
 
                     Vector2 pos=transform.position;
                     float xs=0.3f;float xm=1.2f;
@@ -164,8 +164,8 @@ public class PlayerPerks : MonoBehaviour{
     void MakeSplit(int id){
         //for(var i=0;i<3;i++){
             GameObject go=Instantiate(GameAssets.instance.Get("SplitBt"),transform.position,Quaternion.identity);
-            go.GetComponent<SplitBullet>().playerID=GetComponent<Player>().playerNum;
-            go.GetComponent<SplitBullet>().coords=GameSession.instance.players.Where(x => x.GetComponent<Player>().playerNum != GetComponent<Player>().playerNum).SingleOrDefault().transform.position;
+            go.GetComponent<SplitBullet>().playerID=GetComponent<PlayerScript>().playerNum;
+            go.GetComponent<SplitBullet>().coords=GameSession.instance.players.Where(x => x.GetComponent<PlayerScript>().playerNum != GetComponent<PlayerScript>().playerNum).SingleOrDefault().transform.position;
             go.GetComponent<SpriteRenderer>().sprite=GetComponent<SpriteRenderer>().sprite;
             if(id==0)go.GetComponent<SpriteRenderer>().color=Color.red;
             if(id==1)go.GetComponent<SpriteRenderer>().color=Color.green;

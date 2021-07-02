@@ -6,7 +6,7 @@ using UnityEngine;
 public class Spectre : MonoBehaviour{
     public int playerID;
     GameObject glowVFX;
-    Player player;
+    PlayerScript player;
     void Start(){
         glowVFX=Instantiate(GameAssets.instance.GetVFX("PlayerGlow"),transform);
         var ps=glowVFX.GetComponent<ParticleSystem>().main;
@@ -18,7 +18,7 @@ public class Spectre : MonoBehaviour{
     }
 
     void Update(){
-        player=GameSession.instance.players.Where(x => x.GetComponent<Player>().playerNum == playerID).SingleOrDefault();
+        player=GameSession.instance.players.Where(x => x.GetComponent<PlayerScript>().playerNum == playerID).SingleOrDefault();
         transform.rotation=player.transform.rotation;
         if(player.hidden!=true){
             var ps=glowVFX.GetComponent<ParticleSystem>().main;

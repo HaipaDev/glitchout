@@ -157,7 +157,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 7011926872291180623}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bcd79ac8ce4d9c648b7f5d89dcb089da, type: 3}
+  m_Script: {fileID: 11500000, guid: 76b7a427ecc17ee4eb93566f5773f6e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   playerNum: 0
@@ -176,7 +176,7 @@ MonoBehaviour:
   angle: 0
   xpos: 0
   ypos: 0
-  dmgTimer: 0
+  dmgTimer: -4
   hitTimer: -4
   hidden: 0
 --- !u!114 &2075338119
