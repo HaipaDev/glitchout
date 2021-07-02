@@ -45,7 +45,7 @@ public class Level : MonoBehaviour{
         FindObjectOfType<GameSession>().gameSpeed=1f;
         Time.timeScale = 1f;
     }
-    public void LoadGameModeChooseScene(){SceneManager.LoadScene("GameModeChoose");}
+    public void LoadOnlineScene(){SceneManager.LoadScene("OnlineMatchmaking");}
     public void LoadOptionsScene(){SceneManager.LoadScene("Options");}
     public void LoadInventoryScene(){SceneManager.LoadScene("Inventory");}
     public void RestartGame(){
