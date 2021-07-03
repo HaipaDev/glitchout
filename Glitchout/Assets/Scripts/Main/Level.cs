@@ -24,34 +24,29 @@ public class Level : MonoBehaviour{
     }
 
     public void LoadStartMenu(){
-        /*FindObjectOfType<GameSession>().SaveHighscore();
-        FindObjectOfType<GameSession>().ResetScore();
+        /*GameSession.instance.SaveHighscore();
+        GameSession.instance.ResetScore();
         FindObjectOfType<SaveSerial>().Save();
-        FindObjectOfType<GameSession>().ResetMusicPitch();*/
-        FindObjectOfType<GameSession>().speedChanged=false;
-        FindObjectOfType<GameSession>().gameSpeed=1f;
+        GameSession.instance.ResetMusicPitch();*/
+        GameSession.instance.speedChanged=false;
+        GameSession.instance.gameSpeed=1f;
         SceneManager.LoadScene("Menu");
         //LoadLevel("Menu");
-        //Time.timeScale = 1f;
-        
-        //FindObjectOfType<GameSession>().savableData.Save();
-        //FindObjectOfType<SaveSerial>().Save();
     }
     public void LoadGameScene(){
+        GameSession.instance.offlineMode=true;
         SceneManager.LoadScene("Game");
         GameSession.instance.resize=true;
-        //LoadLevel("Game");
-        FindObjectOfType<GameSession>().ResetScore();
-        FindObjectOfType<GameSession>().gameSpeed=1f;
-        Time.timeScale = 1f;
+        GameSession.instance.ResetScore();
+        GameSession.instance.gameSpeed=1f;
     }
-    public void LoadOnlineScene(){SceneManager.LoadScene("OnlineMatchmaking");}
+    public void LoadOnlineScene(){GameSession.instance.offlineMode=false;SceneManager.LoadScene("OnlineMatchmaking");}
     public void LoadOptionsScene(){SceneManager.LoadScene("Options");}
     public void LoadInventoryScene(){SceneManager.LoadScene("Inventory");}
     public void RestartGame(){
         //PauseMenu.GameIsPaused=false;
-        /*FindObjectOfType<GameSession>().SaveHighscore();
-        FindObjectOfType<GameSession>().ResetMusicPitch();*/
+        /*GameSession.instance.SaveHighscore();
+        GameSession.instance.ResetMusicPitch();*/
         GameSession.instance.ResetScore();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         GameSession.instance.gameSpeed=1f;

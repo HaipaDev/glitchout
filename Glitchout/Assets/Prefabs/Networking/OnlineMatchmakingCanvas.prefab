@@ -256,9 +256,21 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
+      - m_Target: {fileID: 4826543448127363558}
+        m_TargetAssemblyTypeName: NetworkController, Assembly-CSharp
+        m_MethodName: Disconnect
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 1
       - m_Target: {fileID: 4201300888754685035, guid: f0f9db98eefc6544cb033ccb81dab8ea,
           type: 3}
-        m_TargetAssemblyTypeName: 
+        m_TargetAssemblyTypeName: Level, Assembly-CSharp
         m_MethodName: LoadStartMenu
         m_Mode: 1
         m_Arguments:
@@ -2393,7 +2405,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 0
+  m_Interactable: 1
   m_TargetGraphic: {fileID: 6481330491904323565}
   m_OnClick:
     m_PersistentCalls:

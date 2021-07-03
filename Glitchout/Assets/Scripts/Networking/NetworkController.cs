@@ -116,11 +116,12 @@ public class NetworkController : MonoBehaviourPunCallbacks{
         ListPlayers();
     }
     public override void OnPlayerEnteredRoom(Player newPlayer){
-        Debug.Log(newPlayer.NickName+" just joined"+PhotonNetwork.CurrentRoom.Name);
+        Debug.Log(newPlayer.NickName+" just joined "+PhotonNetwork.CurrentRoom.Name);
         ClearPlayerListings();
         ListPlayers();
     }
     public override void OnPlayerLeftRoom(Player newPlayer){
+        Debug.Log(newPlayer.NickName+" just left "+PhotonNetwork.CurrentRoom.Name);
         ClearPlayerListings();
         ListPlayers();
         if(PhotonNetwork.IsMasterClient)startButton.SetActive(true);
@@ -141,6 +142,9 @@ public class NetworkController : MonoBehaviourPunCallbacks{
         PhotonNetwork.LeaveRoom();
         PhotonNetwork.LeaveLobby();
         StartCoroutine(rejoinLobby());
+    }
+    public void Disconnect(){
+        PhotonNetwork.Disconnect();
     }
 
 

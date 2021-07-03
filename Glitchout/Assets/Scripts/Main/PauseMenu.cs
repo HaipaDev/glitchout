@@ -2,8 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
-public class PauseMenu : MonoBehaviour{
+public class PauseMenu : MonoBehaviourPunCallbacks{
     public static PauseMenu instance;
     public static bool GameIsPaused=false;
     public GameObject pauseMenuUI;
@@ -35,18 +36,17 @@ public class PauseMenu : MonoBehaviour{
         GameSession.instance.gameSpeed=prevGameSpeed;
         GameIsPaused=false;
     }
+    [PunRPC]
     public void Pause(){
-        prevGameSpeed=GameSession.instance.gameSpeed;
-        transform.GetChild(0).gameObject.SetActive(true);
-        PauseOpen();
-        //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
-        GameIsPaused=true;
-        GameSession.instance.speedChanged=true;
-        GameSession.instance.gameSpeed=0f;
-        
-        //ParticleSystem.Stop();
-        //var ptSystems = FindObjectOfType<ParticleSystem>();
-        //foreach(ptSystem in ptSystems){ParticleSystem.Pause();}
+        if(PhotonNetwork.IsMasterClient){
+            prevGameSpeed=GameSession.instance.gameSpeed;
+            transform.GetChild(0).gameObject.SetActive(true);
+            PauseOpen();
+            //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
+            GameIsPaused=true;
+            GameSession.instance.speedChanged=true;
+            GameSession.instance.gameSpeed=0f;
+        }
     }
     public void PauseOpen(){
         pauseMenuUI.SetActive(true);

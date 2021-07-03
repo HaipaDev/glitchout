@@ -3,8 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
-public class StartMenu : MonoBehaviour{
+public class StartMenu : MonoBehaviourPunCallbacks{
     public static StartMenu instance;
     public static bool GameIsStarted=false;
     public GameObject startMenuUI;
@@ -19,7 +20,7 @@ public class StartMenu : MonoBehaviour{
         instance=this;
         if(startMenuUI==null){startMenuUI=transform.GetChild(0).gameObject;}
         if(perksMenuUI==null){startMenuUI=transform.GetChild(1).gameObject;}
-        Open();
+        if(GameSession.instance.offlineMode)Open();
         //shop=FindObjectOfType<Shop>();
     }
     void Update(){
@@ -30,21 +31,23 @@ public class StartMenu : MonoBehaviour{
             GameConditions.instance.timer=(timerMin*60)+timerSec;
         }
         if(Input.GetKeyDown(KeyCode.Escape)){
-            if(!GameIsStarted){
-                Level.instance.LoadStartMenu();
-            }
+            if(!GameIsStarted){Leave();}
         }
     }
+    
+    [PunRPC]
     public void StartGame(){
-        startMenuUI.SetActive(false);
-        perksMenuUI.SetActive(false);
-        //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
-        GameSession.instance.speedChanged=false;
-        GameSession.instance.gameSpeed=prevGameSpeed;
-        GameIsStarted=true;
-        foreach(PlayerScript player in GameSession.instance.players){
-            player.GetComponent<PlayerPerks>().SetStartParams();
-            player.GetComponent<PlayerPerks>().RespawnPerks();
+        if(PhotonNetwork.IsMasterClient){
+            startMenuUI.SetActive(false);
+            perksMenuUI.SetActive(false);
+            //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
+            GameSession.instance.speedChanged=false;
+            GameSession.instance.gameSpeed=prevGameSpeed;
+            GameIsStarted=true;
+            foreach(PlayerScript player in GameSession.instance.players){
+                player.GetComponent<PlayerPerks>().SetStartParams();
+                player.GetComponent<PlayerPerks>().RespawnPerks();
+            }
         }
     }
     public void Open(){
@@ -55,6 +58,10 @@ public class StartMenu : MonoBehaviour{
         GameIsStarted=false;
         GameSession.instance.speedChanged=true;
         GameSession.instance.gameSpeed=0f;
+    }
+    public void Leave(){
+        if(PhotonNetwork.IsConnectedAndReady){PhotonNetwork.LeaveRoom();PhotonNetwork.LeaveLobby();Level.instance.LoadOnlineScene();}
+        if(PhotonNetwork.OfflineMode){PreviousGameSpeed();Level.instance.LoadStartMenu();}
     }
 
     public void PerksMenu(int number){

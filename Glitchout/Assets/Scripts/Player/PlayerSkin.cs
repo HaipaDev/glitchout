@@ -8,6 +8,7 @@ public class PlayerSkin : MonoBehaviour{
     public int skinID;
     IEnumerator Start(){
         if(playerID==-1)Debug.Log("PlayerScript ID not set");
+        if(GetComponent<PlayerScript>()!=null)playerID=GetComponent<PlayerScript>().playerNum;
         if(GetComponent<Image>()!=null){//Set SkinID from PlayerScript
             foreach(PlayerScript PlayerScript in FindObjectsOfType<PlayerScript>()){if(PlayerScript.playerNum==this.playerID){this.skinID=PlayerScript.GetComponent<PlayerSkin>().skinID;}}
         }
@@ -18,8 +19,8 @@ public class PlayerSkin : MonoBehaviour{
         if(num!=null&&num.Length>=2)skinID=int.Parse(num[1]);
 
         
-        GameSession.instance.speedChanged=true;
-        GameSession.instance.gameSpeed=0;
+        //GameSession.instance.speedChanged=true;
+        //GameSession.instance.gameSpeed=0;
         yield return new WaitForSecondsRealtime(0.005f);
     }
     void Update(){

@@ -25,6 +25,7 @@ public class GameSession : MonoBehaviour{
     [Range(0.0f, 10.0f)] public float gameSpeed=1f;
     public bool speedChanged;
     [HeaderAttribute("Other")]
+    public bool offlineMode=true;
     public bool cheatmode;
     public bool dmgPopups=true;
     [HideInInspector]public bool resize;

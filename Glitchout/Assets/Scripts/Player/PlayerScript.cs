@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
-public class PlayerScript : MonoBehaviour{
+public class PlayerScript : MonoBehaviourPunCallbacks{
     [HeaderAttribute("Setup")]
     [SerializeField]public int playerNum;
     [SerializeField]public float rotationSpeed=18;
@@ -36,6 +38,7 @@ public class PlayerScript : MonoBehaviour{
 
     GameObject glowVFX;
     void Start(){
+        foreach(PlayerScript p in FindObjectsOfType<PlayerScript>()){if(p!=this)if(p.playerNum<=playerNum)playerNum=p.playerNum+1;gameObject.name=gameObject.name.Split('r')[0]+"r"+playerNum;}
         
         health=maxHealth;
         if(damage==-4)damage=GetComponent<DamageDealer>().GetDmgPlayer();
@@ -52,7 +55,7 @@ public class PlayerScript : MonoBehaviour{
             if(dmgTimer>0)dmgTimer-=Time.deltaTime;
             if(hitTimer>0)hitTimer-=Time.deltaTime;
             else hitTimer=-4;
-            Move();
+            //Move();
             Die();
         }
         var ps=glowVFX.GetComponent<ParticleSystem>().main;
@@ -66,17 +69,19 @@ public class PlayerScript : MonoBehaviour{
         else{em.rateOverTime=2;}
         }
     }
+    void FixedUpdate() {
+        Move();
+    }
     IEnumerator ChangePtDur(ParticleSystem.MainModule ps, float dur){glowVFX.GetComponent<ParticleSystem>().Stop();yield return new WaitForSecondsRealtime(0.05f);ps.duration=dur;glowVFX.GetComponent<ParticleSystem>().Play();}
 
     private void Move(){
-        //if(playerNum==playerNum.One){
-        if(playerNum==0){
+        if((photonView.IsMine)||(PhotonNetwork.OfflineMode&&playerNum==0)){
             keyUp=Input.GetKey(KeyCode.W);
             keyDown=Input.GetKey(KeyCode.S);
             keyLeft=Input.GetKey(KeyCode.A);
             keyRight=Input.GetKey(KeyCode.D);
-        }//else if(playerNum==playerNum.Two){
-        else if(playerNum==1){
+        }
+        else if(PhotonNetwork.OfflineMode&&playerNum==1){
             keyUp=Input.GetKey(KeyCode.UpArrow);
             keyDown=Input.GetKey(KeyCode.DownArrow);
             keyLeft=Input.GetKey(KeyCode.LeftArrow);
@@ -88,9 +93,6 @@ public class PlayerScript : MonoBehaviour{
         else vMove=false;
         if(hMove||vMove){moving=true;AudioManager.instance.Play("Spinning");}
         else moving=false;
-
-        //ypos=transform.position.y;
-        //xpos=transform.position.x;
 
         if(keyUp&&!hMove){
             ypos+=yspeed*Time.timeScale;
@@ -115,9 +117,6 @@ public class PlayerScript : MonoBehaviour{
         
         if(angle>=360)angle=0;
         if(angle<0)angle=360;
-        //Vector3 to=new Vector3(0,0,angle);
-        //Quaternion myQuat=Quaternion.identity;
-        //myQuat.eulerAngles =new Vector3(0,0,angle);
         transform.eulerAngles=new Vector3(0, 0, angle);
     }
 
@@ -125,25 +124,18 @@ public class PlayerScript : MonoBehaviour{
         health-=dmg;
         GetComponent<PlayerPerks>().dmgdTimer=GetComponent<PlayerPerks>().dmgdTime*Mathf.Clamp(dmg,0,10);
         
-        Shake.instance.CamShake(1f*dmg,1f);
+        Shake.instance.CamShake(dmg*1f,1f);
     }
     public void GlitchOut(float xRange,float yRange){
         var xx=Random.Range(-xRange,xRange);
         var yy=Random.Range(-yRange,yRange);
 
-        xpos+=xx;
-        ypos+=yy;
+        xpos+=xx;ypos+=yy;
         GameAssets.instance.VFX("GlitchHit",transform.position,0.2f);
         AudioManager.instance.Play("Hit");
     }
-    public void TpMiddle(){
-        xpos=0;
-        ypos=0;
-        AudioManager.instance.Play("Hit");
-    }public void TpRandom(){
-        xpos=Random.Range(-xBound,xBound);
-        ypos=Random.Range(-yBound,yBound);
-    }
+    public void TpMiddle(){xpos=0;ypos=0;}
+    public void TpRandom(){xpos=Random.Range(-xBound,xBound);ypos=Random.Range(-yBound,yBound);}
 
     private void Die(){
         if(health<=0){
@@ -184,6 +176,8 @@ public class PlayerScript : MonoBehaviour{
         GetComponent<Collider2D>().enabled=true;
     }
 
+
+
     private void OnTriggerEnter2D(Collider2D other){
         //damage=GetComponent<DamageDealer>().GetDmgPlayer();
         if(CompareTag(other.tag)){
@@ -201,7 +195,7 @@ public class PlayerScript : MonoBehaviour{
             var dmgDealer=other.GetComponent<DamageDealer>();
             if(other.GetComponent<HealthPack>()!=null&&other.GetComponent<HealthPack>().timer<=0){health+=25;other.GetComponent<HealthPack>().timer=other.GetComponent<HealthPack>().timerMax;AudioManager.instance.Play("HPCollect");}
             if(other.GetComponent<Saw>()!=null){Damage(dmgDealer.GetDmgSaw()*2);AudioManager.instance.Play("SawHit");int i=Random.Range(0,2);GameAssets.instance.VFX(i.ToString(),transform.position,0.2f);}
-            if(other.GetComponent<Tag_Barrier>()!=null){Damage(dmgDealer.GetDmgZone());TpMiddle();}
+            if(other.GetComponent<Tag_Barrier>()!=null){Damage(dmgDealer.GetDmgZone());TpMiddle();AudioManager.instance.Play("Hit");}
         }
         dmgTimer=0;
     }

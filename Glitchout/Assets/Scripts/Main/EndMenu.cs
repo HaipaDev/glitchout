@@ -11,23 +11,19 @@ public class EndMenu : MonoBehaviour{
     //Shop shop;
     void Start(){
         instance=this;
-        GameSession.instance = FindObjectOfType<GameSession>();
         if(endMenuUI==null){endMenuUI=transform.GetChild(0).gameObject;}
         //Open();
         //shop=FindObjectOfType<Shop>();
     }
-    void Update(){
-        if(GameSession.instance==null)GameSession.instance = FindObjectOfType<GameSession>();
-    }
     public void Open(){
-        prevGameSpeed = GameSession.instance.gameSpeed;
+        prevGameSpeed=GameSession.instance.gameSpeed;
         endMenuUI.SetActive(true);
         StartCoroutine(ChangeWinnerTxt());
         //foreach(GameObject player in GameObject.FindGameObjectsWithTag("Player")){player.SetActive(false);}
         //foreach(GameObject obj in GameObject.FindGameObjectsWithTag("World")){obj.SetActive(false);}
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
         GameSession.instance.speedChanged=true;
-        GameSession.instance.gameSpeed = 0f;
+        GameSession.instance.gameSpeed=0f;
         //ParticleSystem.Stop();
         //var ptSystems = FindObjectOfType<ParticleSystem>();
         //foreach(ptSystem in ptSystems){ParticleSystem.Pause();}
