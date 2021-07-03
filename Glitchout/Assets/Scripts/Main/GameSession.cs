@@ -10,10 +10,7 @@ using UnityEngine.Rendering.PostProcessing;
 public class GameSession : MonoBehaviour{
     public static GameSession instance;
     [HeaderAttribute("Current PlayerScript Values")]
-    public List<PlayerScript> players;
-    public int[] score;
-    public float[] kills;
-    public float[] respawnTimer;
+    public PlayerSession[] players;
     [HeaderAttribute("Score Values")]
     public int score_kill=20;
     public int score_assist=15;
@@ -42,31 +39,22 @@ public class GameSession : MonoBehaviour{
     void Update(){
         if(SceneManager.GetActiveScene().name=="Game"&&resize==false){resize=true;}
         if(SceneManager.GetActiveScene().name=="Game"&&resize==true){
-            players=FindObjectsOfType<PlayerScript>().ToList();
-            Array.Resize(ref score,players.Count);
-            Array.Resize(ref kills,players.Count);
-            Array.Resize(ref respawnTimer,players.Count);
-            for(var i=0;i<respawnTimer.Length;i++){
-                if(respawnTimer[i]==0)respawnTimer[i]=-4;
+            PlayerScript[] allPlayers=FindObjectsOfType<PlayerScript>();
+            Array.Resize(ref players,allPlayers.Length);
+            foreach(PlayerScript player in allPlayers){players[player.playerNum].playerScript=player;}
+
+            for(var i=0;i<players.Length;i++){
+                if(players[i].respawnTimer==0)players[i].respawnTimer=-4;
             }
             resize=false;
         }else{
-            players.Clear();
-            Array.Resize(ref score,0);
-            Array.Resize(ref kills,0);
-            Array.Resize(ref respawnTimer,0);
-        }
-        PlayerScript[] allPlayers=FindObjectsOfType<PlayerScript>();
-        foreach(PlayerScript PlayerScript in allPlayers){
-            players[PlayerScript.playerNum]=PlayerScript;
+            Array.Resize(ref players,0);
         }
 
-        for(var i=0;i<score.Length;i++){
-            score[i]=Mathf.Clamp(score[i],0,99999);
-        }
-        for(var r=0;r<respawnTimer.Length;r++){
-            if(respawnTimer[r]>0)respawnTimer[r]-=Time.deltaTime;
-            if(respawnTimer[r]<=0&&respawnTimer[r]!=-4){players[r].Respawn();respawnTimer[r]=-4;}
+        for(var i=0;i<players.Length;i++){
+            players[i].score=Mathf.Clamp(players[i].score,0,99999);
+            if(players[i].respawnTimer>0)players[i].respawnTimer-=Time.deltaTime;
+            if(players[i].respawnTimer<=0&&players[i].respawnTimer!=-4){players[i].playerScript.Respawn();players[i].respawnTimer=-4;}
         }
 
         if(SceneManager.GetActiveScene().name=="Game"&&PauseMenu.GameIsPaused==true){gameSpeed=0;}
@@ -102,29 +90,27 @@ public class GameSession : MonoBehaviour{
     public void Die(int playerNum, float hitTimer){
         if(playerNum==0){
             AddSubScore(playerNum,score_death,false);
-            respawnTimer[playerNum]=respawnTime;
-            if(hitTimer>0){AddSubScore(playerNum+1,score_kill);kills[playerNum+1]++;}
+            players[playerNum].respawnTimer=respawnTime;
+            if(hitTimer>0){AddSubScore(playerNum+1,score_kill);players[playerNum+1].kills++;}
         }else if(playerNum==1){
             AddSubScore(playerNum,score_death,false);
-            respawnTimer[playerNum]=respawnTime;
-            if(hitTimer>0){AddSubScore(playerNum-1,score_kill);kills[playerNum-1]++;}
+            players[playerNum].respawnTimer=respawnTime;
+            if(hitTimer>0){AddSubScore(playerNum-1,score_kill);players[playerNum-1].kills++;}
         }
     }
 
     public void AddSubScore(int i,int scoreValue,bool add=true){
-        if(add)score[i]+=scoreValue;//Mathf.RoundToInt(scoreValue*scoreMulti);
-        else score[i]-=scoreValue;//Mathf.RoundToInt(scoreValue*scoreMulti);
+        if(add)players[i].score+=scoreValue;//Mathf.RoundToInt(scoreValue*scoreMulti);
+        else players[i].score-=scoreValue;//Mathf.RoundToInt(scoreValue*scoreMulti);
     }
 
     public void MultiplyScore(int i,float multipl){
-        int result=Mathf.RoundToInt(score[i] * multipl);
-        score[i]=result;
+        int result=Mathf.RoundToInt(players[i].score*multipl);
+        players[i].score=result;
     }
 
     public void ResetScore(){
-        Array.Clear(score,0,score.Length);
-        Array.Clear(kills,0,kills.Length);
-        Array.Clear(respawnTimer,0,respawnTimer.Length);
+        Array.Clear(players,0,players.Length);
     }
     public void SaveSettings(){SaveSerial.instance.SaveSettings();}
     public void Save(){ /*SaveSerial.instance.Save();*/ SaveSerial.instance.SaveSettings(); }
@@ -197,4 +183,12 @@ public class GameSession : MonoBehaviour{
         xppopupHud.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="-"+Mathf.Abs(xp).ToString();
     }*/
     //public void PlayDenySFX(){AudioManager.instance.Play("Deny");}
+}
+
+[System.Serializable]
+public class PlayerSession{
+    public PlayerScript playerScript;
+    public int score;
+    public int kills;
+    public float respawnTimer;
 }

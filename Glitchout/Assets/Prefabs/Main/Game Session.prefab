@@ -44,9 +44,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   players: []
-  score: 
-  kills: []
-  respawnTimer: []
   score_kill: 20
   score_assist: 15
   score_death: 10

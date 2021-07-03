@@ -8,7 +8,6 @@ public class ValueDisplay : MonoBehaviour{
     [SerializeField]string value;
     [SerializeField]bool update=true;
     string txt;
-    [SerializeField] PlayerScript[] players;
     void Start(){
         //if(value=="timerSetting"){var timer=GameConditions.instance.timer; float min=timer/60; float sec=Mathf.RoundToInt(timer-(float)(System.Math.Truncate(min)*60f)); if(sec>=60){min+=1;sec=0;} string textSec=sec.ToString(); if(sec<10){textSec="0"+sec;} txt=System.Math.Truncate(min).ToString()+"."+textSec;}
         if(value=="timerMin"){txt=StartMenu.instance.timerMin.ToString();}
@@ -22,17 +21,12 @@ public class ValueDisplay : MonoBehaviour{
 
     void Update(){
         if(value.Contains("gameVersion")){txt=SaveSerial.instance.settingsData.gameVersion;}
-        PlayerScript[] allPlayers=FindObjectsOfType<PlayerScript>();
-        if(allPlayers.Length>0){
-            if(players.Length!=allPlayers.Length)Array.Resize(ref players,allPlayers.Length);
-            foreach(PlayerScript player in allPlayers){
-                players[player.playerNum]=player;
-            }
-            if(value.Contains("health_")){string x=value.Split('_')[1];int xx=int.Parse(x); if(players.Length>xx)if(players[xx].hidden!=true){txt=Mathf.RoundToInt(players[xx].health).ToString();}else{txt=Math.Round(GameSession.instance.respawnTimer[xx],1).ToString();}}
-            if(value.Contains("score_")){string x=value.Split('_')[1];if(GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled==true){value="kills_"+x;}int xx=int.Parse(x); if(players.Length>xx&&GameSession.instance.score.Length>xx)txt=GameSession.instance.score[xx].ToString();}//GameSession.instance.score[int.Parse(value.Split(["_"]))];}
-            if(value.Contains("kills_")){string x=value.Split('_')[1];if(GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled!=true){value="score_"+x;}int xx=int.Parse(x); if(players.Length>xx&&GameSession.instance.kills.Length>xx)txt=GameSession.instance.kills[xx].ToString();}
-            if(value.Contains("perkCount_")){string x=value.Split('_')[1];int xx=int.Parse(x); List<perks> pCount=null;if(players.Length>xx){
-            if(players[xx].GetComponent<PlayerPerks>()!=null)pCount=players[xx].GetComponent<PlayerPerks>().playPerks.FindAll(p=>p!=perks.empty);
+        if(GameSession.instance.players.Length>0){
+            if(value.Contains("health_")){string x=value.Split('_')[1];int xx=int.Parse(x); if(GameSession.instance.players.Length>xx)if(GameSession.instance.players[xx].playerScript.hidden!=true){txt=Mathf.RoundToInt(GameSession.instance.players[xx].playerScript.health).ToString();}else{txt=Math.Round(GameSession.instance.players[xx].respawnTimer,1).ToString();}}
+            if(value.Contains("score_")){string x=value.Split('_')[1];if(GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled==true){value="kills_"+x;}int xx=int.Parse(x); if(GameSession.instance.players.Length>xx)txt=GameSession.instance.players[xx].score.ToString();}//GameSession.instance.score[int.Parse(value.Split(["_"]))];}
+            if(value.Contains("kills_")){string x=value.Split('_')[1];if(GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled!=true){value="score_"+x;}int xx=int.Parse(x); if(GameSession.instance.players.Length>xx)txt=GameSession.instance.players[xx].kills.ToString();}
+            if(value.Contains("perkCount_")){string x=value.Split('_')[1];int xx=int.Parse(x); List<perks> pCount=null;if(GameSession.instance.players.Length>xx){
+            if(GameSession.instance.players[xx].playerScript.GetComponent<PlayerPerks>()!=null)pCount=GameSession.instance.players[xx].playerScript.GetComponent<PlayerPerks>().playPerks.FindAll(p=>p!=perks.empty);
             if(pCount.Count>0){
             txt=pCount.Count.ToString()+"/"+
             PerksList.instance.perkList.Length+" PERKS";}else{txt="PERKS";}}}

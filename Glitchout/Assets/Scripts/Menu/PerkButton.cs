@@ -29,7 +29,7 @@ public class PerkButton : MonoBehaviour{
         txtTitleGo.text=txtTitle;
         txtGo.text=txt;
 
-        var player=GameSession.instance.players[StartMenu.instance.editPerksID];
+        var player=GameSession.instance.players[StartMenu.instance.editPerksID].playerScript;
         if(player.GetComponent<PlayerPerks>().playPerks.Contains(perkEnum)){GetComponent<Image>().color= new Color(177,255,0);}
         else{GetComponent<Image>().color=Color.white;}
     }

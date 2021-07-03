@@ -20,7 +20,8 @@ public class StartMenu : MonoBehaviourPunCallbacks{
         instance=this;
         if(startMenuUI==null){startMenuUI=transform.GetChild(0).gameObject;}
         if(perksMenuUI==null){startMenuUI=transform.GetChild(1).gameObject;}
-        if(GameSession.instance.offlineMode)Open();
+        Open();
+        if(!GameSession.instance.offlineMode)StartGame();
         //shop=FindObjectOfType<Shop>();
     }
     void Update(){
@@ -44,9 +45,9 @@ public class StartMenu : MonoBehaviourPunCallbacks{
             GameSession.instance.speedChanged=false;
             GameSession.instance.gameSpeed=prevGameSpeed;
             GameIsStarted=true;
-            foreach(PlayerScript player in GameSession.instance.players){
-                player.GetComponent<PlayerPerks>().SetStartParams();
-                player.GetComponent<PlayerPerks>().RespawnPerks();
+            foreach(PlayerSession player in GameSession.instance.players){
+                player.playerScript.GetComponent<PlayerPerks>().SetStartParams();
+                player.playerScript.GetComponent<PlayerPerks>().RespawnPerks();
             }
         }
     }
@@ -76,7 +77,7 @@ public class StartMenu : MonoBehaviourPunCallbacks{
 
 
     public void SetPerk(perks enumPerk){
-        var player=GameSession.instance.players[editPerksID];
+        var player=GameSession.instance.players[editPerksID].playerScript;
         var playerPerks=player.GetComponent<PlayerPerks>();
         if(playerPerks.playPerks.Contains(enumPerk)){var usedprkID=playerPerks.playPerks.FindIndex(0,playerPerks.playPerks.Count,(x) => x == enumPerk);playerPerks.playPerks[usedprkID]=perks.empty;return;}
         for(var i=0; i<playerPerks.playPerks.Count;i++){
