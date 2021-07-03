@@ -5,7 +5,7 @@ using UnityEngine;
 using Photon.Pun;
 using Photon.Realtime;
 
-public class PlayerScript : MonoBehaviourPunCallbacks{
+public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
     [HeaderAttribute("Setup")]
     [SerializeField]public int playerNum;
     [SerializeField]public float rotationSpeed=18;
@@ -38,7 +38,8 @@ public class PlayerScript : MonoBehaviourPunCallbacks{
 
     GameObject glowVFX;
     void Start(){
-        foreach(PlayerScript p in FindObjectsOfType<PlayerScript>()){if(p!=this)if(p.playerNum<=playerNum)playerNum=p.playerNum+1;gameObject.name=gameObject.name.Split('r')[0]+"r"+playerNum;}
+        if(!PhotonNetwork.OfflineMode)playerNum=((photonView.ViewID-1)/1000)-1;
+        else foreach(PlayerScript p in FindObjectsOfType<PlayerScript>()){if(p!=this)if(p.playerNum<=playerNum)playerNum=p.playerNum+1;gameObject.name=gameObject.name.Split('r')[0]+"r"+playerNum;}
         
         health=maxHealth;
         if(damage==-4)damage=GetComponent<DamageDealer>().GetDmgPlayer();
@@ -72,10 +73,10 @@ public class PlayerScript : MonoBehaviourPunCallbacks{
     void FixedUpdate() {
         Move();
     }
-    IEnumerator ChangePtDur(ParticleSystem.MainModule ps, float dur){glowVFX.GetComponent<ParticleSystem>().Stop();yield return new WaitForSecondsRealtime(0.05f);ps.duration=dur;glowVFX.GetComponent<ParticleSystem>().Play();}
+    IEnumerator ChangePtDur(ParticleSystem.MainModule ps, float dur){glowVFX.GetComponent<ParticleSystem>().Stop();yield return new WaitForSecondsRealtime(0.1f);ps.duration=dur;glowVFX.GetComponent<ParticleSystem>().Play();}
 
-    private void Move(){
-        if((photonView.IsMine)||(PhotonNetwork.OfflineMode&&playerNum==0)){
+    void Move(){
+        if((!PhotonNetwork.OfflineMode&&photonView.IsMine)||(PhotonNetwork.OfflineMode&&playerNum==0)){
             keyUp=Input.GetKey(KeyCode.W);
             keyDown=Input.GetKey(KeyCode.S);
             keyLeft=Input.GetKey(KeyCode.A);
@@ -115,11 +116,11 @@ public class PlayerScript : MonoBehaviourPunCallbacks{
 
         transform.position=new Vector2(xpos,ypos);
         
-        if(angle>=360)angle=0;
-        if(angle<0)angle=360;
-        transform.eulerAngles=new Vector3(0, 0, angle);
+        if(angle>=360)angle=0;if(angle<0)angle=360;
+        transform.eulerAngles=new Vector3(0,0,angle);
     }
 
+    [PunRPC]
     public void Damage(float dmg){
         health-=dmg;
         GetComponent<PlayerPerks>().dmgdTimer=GetComponent<PlayerPerks>().dmgdTime*Mathf.Clamp(dmg,0,10);
@@ -212,6 +213,19 @@ public class PlayerScript : MonoBehaviourPunCallbacks{
                 if(other.GetComponent<Saw>()!=null){Damage(dmgDealer.GetDmgSaw());AudioManager.instance.Play("SawHit");int i=Random.Range(0,2);GameAssets.instance.VFX(i.ToString(),transform.position,0.2f);}
             }
             dmgTimer=dmgFreq;
+        }
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){
+        if(stream.IsWriting){// We own this player: send the others our data
+            stream.SendNext(xpos);
+            stream.SendNext(ypos);
+            stream.SendNext(angle);
+        }
+        else{// Network player, receive data
+            this.xpos=(float)stream.ReceiveNext();
+            this.ypos=(float)stream.ReceiveNext();
+            this.angle=(float)stream.ReceiveNext();
         }
     }
 }

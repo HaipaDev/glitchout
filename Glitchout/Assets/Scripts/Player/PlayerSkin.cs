@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
-public class PlayerSkin : MonoBehaviour{
+public class PlayerSkin : MonoBehaviour, IPunObservable{
     public int playerID=-1;
     public int skinID;
     IEnumerator Start(){
@@ -47,4 +48,12 @@ public class PlayerSkin : MonoBehaviour{
             skinID=0;for(;s.skinID==skinID;skinID++);
         }
     }}}
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){
+        if(stream.IsWriting){// We own this player: send the others our data
+            stream.SendNext(skinID);
+        }
+        else{// Network player, receive data
+            this.skinID=(int)stream.ReceiveNext();
+        }
+    }
 }

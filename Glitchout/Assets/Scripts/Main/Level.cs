@@ -68,6 +68,10 @@ public class Level : MonoBehaviour{
         if(scene=="Options"){
             LoadStartMenu();
         }
+        if(scene=="OnlineMatchmaking"){
+            Photon.Pun.PhotonNetwork.Disconnect();
+            LoadStartMenu();
+        }
     }}
 
     void LoadLevel(string sceneName){
