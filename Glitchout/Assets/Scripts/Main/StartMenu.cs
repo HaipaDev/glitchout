@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Photon.Pun;
 
@@ -10,19 +11,18 @@ public class StartMenu : MonoBehaviourPunCallbacks{
     public static bool GameIsStarted=false;
     public GameObject startMenuUI;
     public GameObject perksMenuUI;
-    [HideInInspector]public float prevGameSpeed=1f;
+    [SerializeField] GameObject[] skinObj;
     public int editPerksID;
     [HideInInspector]public float timerMin=2;
     [HideInInspector]public float timerSec=30;
+    [HideInInspector]public float prevGameSpeed=1f;
 
-    //Shop shop;
     void Start(){
         instance=this;
         if(startMenuUI==null){startMenuUI=transform.GetChild(0).gameObject;}
-        if(perksMenuUI==null){startMenuUI=transform.GetChild(1).gameObject;}
+        if(perksMenuUI==null){perksMenuUI=transform.GetChild(1).gameObject;}
         Open();
         if(!GameSession.instance.offlineMode)StartGame();
-        //shop=FindObjectOfType<Shop>();
     }
     void Update(){
         if(!GameIsStarted){
@@ -34,6 +34,24 @@ public class StartMenu : MonoBehaviourPunCallbacks{
         if(Input.GetKeyDown(KeyCode.Escape)){
             if(!GameIsStarted){Leave();}
         }
+
+        //Set skins
+        for(var s=0;s<skinObj.Length;s++){
+        if(GameSession.instance.players[s]!=null){
+            var skinID=GameSession.instance.players[s].skinID;
+            //Check others for same skin
+            for(var s2=0;s2<skinObj.Length;s2++){if(s2!=s){
+                var skinID2=GameSession.instance.players[s2].skinID;
+                if(skinID2==skinID){
+                    skinID++;
+                    //Wrap skins outside and dont allow the same one
+                    //if(skinID==GameAssets.instance.skins.Length-1){skinID=0;/*for(;skinID2==skinID;skinID++);*/}
+                }
+            }}
+            if(skinID>=0&&skinID<GameAssets.instance.skins.Length){
+                skinObj[s].GetComponent<Image>().sprite=GameAssets.instance.GetSkin(skinID);
+            }
+        }}
     }
     
     [PunRPC]
@@ -77,23 +95,42 @@ public class StartMenu : MonoBehaviourPunCallbacks{
 
 
     public void SetPerk(perks enumPerk){
-        var player=GameSession.instance.players[editPerksID].playerScript;
-        var playerPerks=player.GetComponent<PlayerPerks>();
-        if(playerPerks.playPerks.Contains(enumPerk)){var usedprkID=playerPerks.playPerks.FindIndex(0,playerPerks.playPerks.Count,(x) => x == enumPerk);playerPerks.playPerks[usedprkID]=perks.empty;return;}
-        for(var i=0; i<playerPerks.playPerks.Count;i++){
-            if(playerPerks.playPerks[i]==perks.empty){if(!playerPerks.playPerks.Contains(enumPerk)){playerPerks.playPerks[i]=enumPerk;}}
+        //var player=GameSession.instance.players[editPerksID].playerScript;var playerPerks=player.GetComponent<PlayerPerks>().playPerks;
+        var playerPerks=GameSession.instance.players[editPerksID].playPerks;
+        if(playerPerks.Contains(enumPerk)){var usedprkID=playerPerks.FindIndex(0,playerPerks.Count,(x) => x==enumPerk);playerPerks[usedprkID]=perks.empty;return;}
+        for(var i=0; i<playerPerks.Count;i++){
+            if(playerPerks[i]==perks.empty){if(!playerPerks.Contains(enumPerk)){playerPerks[i]=enumPerk;}}
         }
     }
+    public void SkinPrev(int ID){//for(var s=0;s<skinObj.Length;s++){
+        var p=GameSession.instance.players;
+        var skinID=p[ID].skinID;
+        for(var s2=0;s2<GameSession.instance.players.Length;s2++){if(s2!=ID){
+            var skinID2=p[s2].skinID;
+            if(skinID>0){
+                if(skinID2!=skinID-1){skinID--;}else if(skinID2==skinID-1&&skinID>1){skinID-=2;}else{skinID=GameAssets.instance.skins.Length-1;}
+            }else if(skinID==0){//Wrap skins outside and dont allow the same one
+                skinID=GameAssets.instance.skins.Length-1;for(;skinID2==skinID&&skinID>0;skinID--);
+            }
+        }}
+        GameSession.instance.players[ID].skinID=skinID;
+    }//}
+    public void SkinNext(int ID){//for(var s=0;s<skinObj.Length;s++){
+        var p=GameSession.instance.players;
+        var skinID=p[ID].skinID;
+        for(var s2=0;s2<GameSession.instance.players.Length;s2++){if(s2!=ID){
+            var skinID2=p[s2].skinID;
+            if(skinID<GameAssets.instance.skins.Length-1){
+                if(skinID2!=skinID+1){skinID++;}else if(skinID2==skinID+1&&skinID<GameAssets.instance.skins.Length-2){skinID+=2;}else{skinID=0;}
+            }else if(skinID==GameAssets.instance.skins.Length-1){//Wrap skins outside and dont allow the same one
+                skinID=0;for(;skinID2==skinID;skinID++);
+            }
+        }}
+        GameSession.instance.players[ID].skinID=skinID;
+    }//}
+
     public void SetTimeMinutes(TMPro.TMP_InputField txt){if(Application.isPlaying)timerMin=int.Parse(txt.text);if(int.Parse(txt.text)>404){txt.text="404";}}
     public void SetTimeSeconds(TMPro.TMP_InputField txt){if(Application.isPlaying)timerSec=int.Parse(txt.text);if(int.Parse(txt.text)>59){txt.text="59";}}
-    /*public void SetGameTimeLimit(TMPro.TMP_InputField txt){
-    if(Application.isPlaying){
-        GameConditions.instance.scoreLimit=int.Parse(txt.text);
-        txt.text=System.Math.Round((float.Parse(txt.text)),2).ToString();
-        float min=(float)System.Math.Truncate(float.Parse(txt.text));
-        float sec=float.Parse(txt.text)-min;
-        GameConditions.instance.timer=(min*60)+(sec*100); //float.Parse(txt.text);
-    }}*/
     public void SetScoreLimit(TMPro.TMP_InputField txt){
         if(Application.isPlaying)GameConditions.instance.scoreLimit=int.Parse(txt.text);
     }public void SetKillsLimit(TMPro.TMP_InputField txt){

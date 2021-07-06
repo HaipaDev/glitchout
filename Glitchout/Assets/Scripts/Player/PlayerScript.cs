@@ -8,6 +8,7 @@ using Photon.Realtime;
 public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
     [HeaderAttribute("Setup")]
     [SerializeField]public int playerNum;
+    [SerializeField]public int skinID;
     [SerializeField]public float rotationSpeed=18;
     [SerializeField]public float xspeed=0.05f;
     [SerializeField]public float yspeed=0.05f;
@@ -59,22 +60,12 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
             //Move();
             Die();
         }
-        var ps=glowVFX.GetComponent<ParticleSystem>().main;
-        var em=glowVFX.GetComponent<ParticleSystem>().emission;
-        if(health>0){
-        var dur=Mathf.Clamp(0.05f/(health/maxHealth)*Mathf.Clamp((0.3f/(health/maxHealth)),0,1),0.05f,1.5f);
-        if(ps.duration!=dur){StartCoroutine(ChangePtDur(ps,dur));}
-        ps.startLifetime=(float)System.Math.Round(Mathf.Clamp(0.5f/(health/maxHealth),0.5f,1.5f),1);
-        ps.maxParticles=(int)Mathf.Clamp((10*(float)System.Math.Round((health/maxHealth),1)),1,10);
-        if(health<maxHealth/2){em.rateOverTime=1;}
-        else{em.rateOverTime=2;}
-        }
+        SetGlow();
+        SetSkin();
     }
     void FixedUpdate() {
         Move();
     }
-    IEnumerator ChangePtDur(ParticleSystem.MainModule ps, float dur){glowVFX.GetComponent<ParticleSystem>().Stop();yield return new WaitForSecondsRealtime(0.1f);ps.duration=dur;glowVFX.GetComponent<ParticleSystem>().Play();}
-
     void Move(){
         if((!PhotonNetwork.OfflineMode&&photonView.IsMine)||(PhotonNetwork.OfflineMode&&playerNum==0)){
             keyUp=Input.GetKey(KeyCode.W);
@@ -215,6 +206,19 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
             dmgTimer=dmgFreq;
         }
     }
+    private void SetSkin(){GetComponent<SpriteRenderer>().sprite=GameAssets.instance.GetSkin(skinID);}
+    private void SetGlow(){
+    var ps=glowVFX.GetComponent<ParticleSystem>().main;
+    var em=glowVFX.GetComponent<ParticleSystem>().emission;
+    if(health>0){
+        var dur=Mathf.Clamp(0.05f/(health/maxHealth)*Mathf.Clamp((0.3f/(health/maxHealth)),0,1),0.05f,1.5f);
+        if(ps.duration!=dur){StartCoroutine(ChangePtDur(ps,dur));}
+        ps.startLifetime=(float)System.Math.Round(Mathf.Clamp(0.5f/(health/maxHealth),0.5f,1.5f),1);
+        ps.maxParticles=(int)Mathf.Clamp((10*(float)System.Math.Round((health/maxHealth),1)),1,10);
+        if(health<maxHealth/2){em.rateOverTime=1;}
+        else{em.rateOverTime=2;}
+    }}
+    IEnumerator ChangePtDur(ParticleSystem.MainModule ps, float dur){glowVFX.GetComponent<ParticleSystem>().Stop();glowVFX.GetComponent<ParticleSystem>().Clear();yield return new WaitForSecondsRealtime(0f);ps.duration=dur;glowVFX.GetComponent<ParticleSystem>().Play();}
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){
         if(stream.IsWriting){// We own this player: send the others our data

@@ -9,62 +9,50 @@ using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 public class GameSession : MonoBehaviour{
     public static GameSession instance;
-    [HeaderAttribute("Current PlayerScript Values")]
+    [HeaderAttribute("Current Player Values")]
     public PlayerSession[] players;
-    [HeaderAttribute("Score Values")]
+    int defPlayerCount=2;
+    [HeaderAttribute("Game Values")]
     public int score_kill=20;
     public int score_assist=15;
     public int score_death=10;
     public int score_staying=5;
     public float stayingTimeReq=4f;
+    public float respawnTime=3f;
     [HeaderAttribute("Settings")]
-    public float respawnTime;
     [Range(0.0f, 10.0f)] public float gameSpeed=1f;
     public bool speedChanged;
     [HeaderAttribute("Other")]
     public bool offlineMode=true;
     public bool cheatmode;
     public bool dmgPopups=true;
-    [HideInInspector]public bool resize;
+    public bool resize;
 
-    PlayerScript PlayerScript;
     PostProcessVolume postProcessVolume;
     //public string gameVersion;
 
     void Awake(){if(instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}}
-
     void Start(){
-        
+        //if(SceneManager.GetActiveScene().name=="Game"&&resize==false){resize=true;}
+        Resize();
+    }
+    void OnValidate(){
+        var allPerks=Enum.GetValues(typeof(perks));
+        foreach(PlayerSession p in players){if(p.playPerks.Count==0)foreach(var pk in allPerks)if((perks)pk!=perks.empty)p.playPerks.Add(perks.empty);}//Resize playPerks
     }
     void Update(){
-        if(SceneManager.GetActiveScene().name=="Game"&&resize==false){resize=true;}
-        if(SceneManager.GetActiveScene().name=="Game"&&resize==true){
-            PlayerScript[] allPlayers=FindObjectsOfType<PlayerScript>();
-            Array.Resize(ref players,allPlayers.Length);
-            foreach(PlayerScript player in allPlayers){players[player.playerNum].playerScript=player;}
+        Resize();
 
-            for(var i=0;i<players.Length;i++){
-                if(players[i].respawnTimer==0)players[i].respawnTimer=-4;
-            }
-            resize=false;
-        }else{
-            Array.Resize(ref players,0);
-        }
-
-        for(var i=0;i<players.Length;i++){
+        for(var i=0;i<players.Length;i++){if(players[i]!=null){
             players[i].score=Mathf.Clamp(players[i].score,0,99999);
             if(players[i].respawnTimer>0)players[i].respawnTimer-=Time.deltaTime;
             if(players[i].respawnTimer<=0&&players[i].respawnTimer!=-4){players[i].playerScript.Respawn();players[i].respawnTimer=-4;}
-        }
-
-        if(SceneManager.GetActiveScene().name=="Game"&&PauseMenu.GameIsPaused==true){gameSpeed=0;}
+        }}
 
         Time.timeScale=gameSpeed;
-        //Set speed to normal
+        if(SceneManager.GetActiveScene().name=="Game"&&PauseMenu.GameIsPaused==true){gameSpeed=0;}
         if(speedChanged!=true){gameSpeed=1;}
         //if(SceneManager.GetActiveScene().name!="Game"){gameSpeed=1;}
-        //if(Shop.shopOpen==false&&Shop.shopOpened==false){gameSpeed=1;}
-        //if(FindObjectOfType<PlayerScript>()==null){gameSpeed=1;}
         
         //Restart with R or Space/Resume with Space
         /*if(SceneManager.GetActiveScene().name=="Game"){
@@ -85,6 +73,28 @@ public class GameSession : MonoBehaviour{
 
 
         CheckCodes(".",".");
+    }
+    void Resize(){
+        //if(SceneManager.GetActiveScene().name=="Game"&&resize==false){resize=true;}
+        if(SceneManager.GetActiveScene().name=="Game"){//&&resize==true){
+            if(players==null){players=new PlayerSession[defPlayerCount];}
+            if(players.Length==0){Array.Resize(ref players,defPlayerCount);for(var pi=0;pi<defPlayerCount;pi++){players[pi]=new PlayerSession();}}
+            PlayerScript[] allPlayers=FindObjectsOfType<PlayerScript>();
+            if(players.Length!=allPlayers.Length)Array.Resize(ref players,allPlayers.Length);
+            foreach(PlayerScript player in allPlayers){if(player!=null)if(players[player.playerNum]!=null)players[player.playerNum].playerScript=allPlayers[player.playerNum];}
+            var allPerks=Enum.GetValues(typeof(perks));
+            foreach(PlayerSession p in players){if(p!=null){
+                if(p.playPerks==null){p.playPerks=new List<perks>();}//Resize playPerks
+                if(p.playPerks.Count==0)foreach(var pk in allPerks)p.playPerks.Add(perks.empty);
+                
+                if(p.respawnTimer==0)p.respawnTimer=-4;
+                if(p.playerScript!=null)p.playerScript.skinID=p.skinID;
+                if(p.playerScript!=null)if(p.playerScript.GetComponent<PlayerPerks>()!=null)p.playerScript.GetComponent<PlayerPerks>().playPerks=p.playPerks;
+            }}
+            //resize=false;
+        }else if(SceneManager.GetActiveScene().name!="Game"){
+            if(players.Length!=0)Array.Resize(ref players,0);
+        }
     }
 
     public void Die(int playerNum, float hitTimer){
@@ -109,7 +119,7 @@ public class GameSession : MonoBehaviour{
         players[i].score=result;
     }
 
-    public void ResetScore(){
+    public void ResetPlayers(){
         Array.Clear(players,0,players.Length);
     }
     public void SaveSettings(){SaveSerial.instance.SaveSettings();}
@@ -124,9 +134,8 @@ public class GameSession : MonoBehaviour{
         SaveSerial.instance.SaveSettings();
         var s=FindObjectOfType<SettingsMenu>();
     }
-    public void ResetMusicPitch(){
-        if(FindObjectOfType<MusicPlayer>()!=null)FindObjectOfType<MusicPlayer>().GetComponent<AudioSource>().pitch=1;
-    }
+    public void ResetMusicPitch(){if(FindObjectOfType<MusicPlayer>()!=null)FindObjectOfType<MusicPlayer>().GetComponent<AudioSource>().pitch=1;} 
+    #region
     public void CheckCodes(string fkey, string nkey){
         //if(fkey=="0"&&nkey=="0"){}
         if(Input.GetKey(KeyCode.Delete) || fkey=="Del"){
@@ -183,12 +192,15 @@ public class GameSession : MonoBehaviour{
         xppopupHud.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="-"+Mathf.Abs(xp).ToString();
     }*/
     //public void PlayDenySFX(){AudioManager.instance.Play("Deny");}
+    #endregion
 }
 
 [System.Serializable]
 public class PlayerSession{
     public PlayerScript playerScript;
-    public int score;
-    public int kills;
-    public float respawnTimer;
+    public int skinID=0;
+    public List<perks> playPerks=new List<perks>();
+    public int score=0;
+    public int kills=0;
+    public float respawnTimer=-4;
 }

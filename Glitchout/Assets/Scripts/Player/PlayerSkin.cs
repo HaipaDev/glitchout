@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Photon.Pun;
 
-public class PlayerSkin : MonoBehaviour, IPunObservable{
+public class PlayerSkin : MonoBehaviour{
     public int playerID=-1;
     public int skinID;
     IEnumerator Start(){
@@ -24,7 +24,7 @@ public class PlayerSkin : MonoBehaviour, IPunObservable{
         //GameSession.instance.gameSpeed=0;
         yield return new WaitForSecondsRealtime(0.005f);
     }
-    void Update(){
+    /*void Update(){
         if(skinID>=0&&skinID<GameAssets.instance.skins.Length){
             if(GetComponent<PlayerScript>()!=null){//Set SkinID for PlayerScript from config
                 foreach(PlayerSkin skin in FindObjectsOfType<PlayerSkin>()){if(skin.playerID==GetComponent<PlayerScript>().playerNum){GetComponent<PlayerSkin>().skinID=skin.skinID;}}
@@ -55,5 +55,5 @@ public class PlayerSkin : MonoBehaviour, IPunObservable{
         else{// Network player, receive data
             this.skinID=(int)stream.ReceiveNext();
         }
-    }
+    }*/
 }

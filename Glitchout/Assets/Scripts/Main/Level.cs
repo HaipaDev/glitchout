@@ -37,17 +37,17 @@ public class Level : MonoBehaviour{
         GameSession.instance.offlineMode=true;
         SceneManager.LoadScene("Game");
         GameSession.instance.resize=true;
-        GameSession.instance.ResetScore();
+        GameSession.instance.ResetPlayers();
         GameSession.instance.gameSpeed=1f;
     }
-    public void LoadOnlineScene(){GameSession.instance.offlineMode=false;SceneManager.LoadScene("OnlineMatchmaking");}
+    public void LoadOnlineScene(){GameSession.instance.offlineMode=false;SceneManager.LoadScene("OnlineMatchmaking");GameSession.instance.ResetPlayers();}
     public void LoadOptionsScene(){SceneManager.LoadScene("Options");}
     public void LoadInventoryScene(){SceneManager.LoadScene("Inventory");}
     public void RestartGame(){
         //PauseMenu.GameIsPaused=false;
         /*GameSession.instance.SaveHighscore();
         GameSession.instance.ResetMusicPitch();*/
-        GameSession.instance.ResetScore();
+        GameSession.instance.ResetPlayers();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         GameSession.instance.gameSpeed=1f;
     }public void RestartScene(){

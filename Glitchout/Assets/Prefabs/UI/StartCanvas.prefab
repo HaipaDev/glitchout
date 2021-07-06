@@ -702,7 +702,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: perksFor
   update: 1
-  players: []
 --- !u!1 &1488702167
 GameObject:
   m_ObjectHideFlags: 0
@@ -1495,7 +1494,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: perkCount_1
   update: 1
-  players: []
 --- !u!1 &2965699374162805094
 GameObject:
   m_ObjectHideFlags: 0
@@ -1698,7 +1696,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: timerMin
   update: 0
-  players: []
 --- !u!1 &3042581240409265511
 GameObject:
   m_ObjectHideFlags: 0
@@ -2036,7 +2033,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: timerSec
   update: 0
-  players: []
 --- !u!1 &6094303738350827588
 GameObject:
   m_ObjectHideFlags: 0
@@ -2503,14 +2499,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6094303740350939271}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 8477995699316811455}
+        m_TargetAssemblyTypeName: StartMenu, Assembly-CSharp
         m_MethodName: SkinNext
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2635,14 +2631,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6094303740350939271}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 8477995699316811455}
+        m_TargetAssemblyTypeName: StartMenu, Assembly-CSharp
         m_MethodName: SkinPrev
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2767,10 +2763,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6094303739307011587}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 8477995699316811455}
+        m_TargetAssemblyTypeName: StartMenu, Assembly-CSharp
         m_MethodName: SkinNext
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3251,7 +3247,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: timerSetting
   update: 0
-  players: []
 --- !u!1 &6094303738856128234
 GameObject:
   m_ObjectHideFlags: 0
@@ -4198,7 +4193,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: killSetting
   update: 0
-  players: []
 --- !u!1 &6094303739307011585
 GameObject:
   m_ObjectHideFlags: 0
@@ -4282,7 +4276,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6094303739307011585}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb524b619675054b8252f1291fc009e, type: 3}
   m_Name: 
@@ -4813,7 +4807,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: scoreSetting
   update: 0
-  players: []
 --- !u!1 &6094303739757881964
 GameObject:
   m_ObjectHideFlags: 0
@@ -5394,10 +5387,10 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6094303739307011587}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 8477995699316811455}
+        m_TargetAssemblyTypeName: StartMenu, Assembly-CSharp
         m_MethodName: SkinPrev
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -6375,7 +6368,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6094303740350939270}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb524b619675054b8252f1291fc009e, type: 3}
   m_Name: 
@@ -6935,7 +6928,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: perkCount_0
   update: 1
-  players: []
 --- !u!1 &8477995699316811454
 GameObject:
   m_ObjectHideFlags: 0
@@ -7052,10 +7044,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startMenuUI: {fileID: 8477995700257097744}
   perksMenuUI: {fileID: 1024317908}
-  prevGameSpeed: 1
+  skinObj:
+  - {fileID: 6094303739307011585}
+  - {fileID: 6094303740350939270}
   editPerksID: 0
   timerMin: 2
   timerSec: 30
+  prevGameSpeed: 1
 --- !u!1 &8477995699691137545
 GameObject:
   m_ObjectHideFlags: 0

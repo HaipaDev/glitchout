@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerNum: 0
+  skinID: 0
   rotationSpeed: 18
   xspeed: 0.05
   yspeed: 0.05
@@ -188,7 +189,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7011926872291180623}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0fb524b619675054b8252f1291fc009e, type: 3}
   m_Name: 
@@ -252,7 +253,6 @@ MonoBehaviour:
   observableSearch: 0
   ObservedComponents:
   - {fileID: 7011926872291180626}
-  - {fileID: 2075338119}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0

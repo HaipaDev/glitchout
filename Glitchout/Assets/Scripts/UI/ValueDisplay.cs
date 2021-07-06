@@ -20,19 +20,23 @@ public class ValueDisplay : MonoBehaviour{
     }
 
     void Update(){
-        if(value.Contains("gameVersion")){txt=SaveSerial.instance.settingsData.gameVersion;}
         if(GameSession.instance.players.Length>0){
-            if(value.Contains("health_")){string x=value.Split('_')[1];int xx=int.Parse(x); if(GameSession.instance.players.Length>xx)if(GameSession.instance.players[xx].playerScript.hidden!=true){txt=Mathf.RoundToInt(GameSession.instance.players[xx].playerScript.health).ToString();}else{txt=Math.Round(GameSession.instance.players[xx].respawnTimer,1).ToString();}}
-            if(value.Contains("score_")){string x=value.Split('_')[1];if(GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled==true){value="kills_"+x;}int xx=int.Parse(x); if(GameSession.instance.players.Length>xx)txt=GameSession.instance.players[xx].score.ToString();}//GameSession.instance.score[int.Parse(value.Split(["_"]))];}
-            if(value.Contains("kills_")){string x=value.Split('_')[1];if(GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled!=true){value="score_"+x;}int xx=int.Parse(x); if(GameSession.instance.players.Length>xx)txt=GameSession.instance.players[xx].kills.ToString();}
-            if(value.Contains("perkCount_")){string x=value.Split('_')[1];int xx=int.Parse(x); List<perks> pCount=null;if(GameSession.instance.players.Length>xx){
-            if(GameSession.instance.players[xx].playerScript.GetComponent<PlayerPerks>()!=null)pCount=GameSession.instance.players[xx].playerScript.GetComponent<PlayerPerks>().playPerks.FindAll(p=>p!=perks.empty);
-            if(pCount.Count>0){
-            txt=pCount.Count.ToString()+"/"+
-            PerksList.instance.perkList.Length+" PERKS";}else{txt="PERKS";}}}
-        }
+        string x="0";int xx=0;if(value.Contains("_")){x=value.Split('_')[1];xx=int.Parse(x);}
+        if(GameSession.instance.players.Length>xx&&GameSession.instance.players[xx]!=null){
+                if(value.Contains("score_")){if(GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled==true){value="kills_"+x;}if(GameSession.instance.players.Length>xx)txt=GameSession.instance.players[xx].score.ToString();}//GameSession.instance.score[int.Parse(value.Split(["_"]))];}
+                if(value.Contains("kills_")){if(GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled!=true){value="score_"+x;}if(GameSession.instance.players.Length>xx)txt=GameSession.instance.players[xx].kills.ToString();}
+                if(GameSession.instance.players[xx].playerScript!=null){
+                    if(value.Contains("health_")){if(GameSession.instance.players[xx].playerScript.hidden!=true){txt=Mathf.RoundToInt(GameSession.instance.players[xx].playerScript.health).ToString();}else{txt=Math.Round(GameSession.instance.players[xx].respawnTimer,1).ToString();}}
+                    if(value.Contains("perkCount_")){List<perks> pCount=null;
+                    if(GameSession.instance.players[xx].playerScript.GetComponent<PlayerPerks>()!=null)pCount=GameSession.instance.players[xx].playerScript.GetComponent<PlayerPerks>().playPerks.FindAll(p=>p!=perks.empty);
+                    if(pCount.Count>0){
+                    txt=pCount.Count.ToString()+"/"+
+                    PerksList.instance.perkList.Length+" PERKS";}else{txt="PERKS";}}
+                }else{Debug.LogWarning("No PlayerScript attached to Player "+xx);}
+        }}
+        if(value.Contains("gameVersion")){txt=SaveSerial.instance.settingsData.gameVersion;}
         if(value=="scoreDesc"){if((GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled!=true)||GameConditions.instance.scoreEnabled){txt="Score:";}else if((GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled)||GameConditions.instance.killsEnabled){txt="Kills:";}}
-        if(value=="perksFor"){txt="CHANGE PERKS FOR PlayerScript "+(StartMenu.instance.editPerksID+1).ToString();}
+        if(value=="perksFor"){txt="CHANGE PERKS FOR Player "+(StartMenu.instance.editPerksID+1).ToString();}
 
         if(value=="timer"){GetComponent<TMPro.TextMeshProUGUI>().enabled=GameConditions.instance.timerEnabled;
             var timer=GameConditions.instance.timer;if(timer>0){float min=timer/60; float sec=Mathf.RoundToInt(timer-(float)(System.Math.Truncate(min)*60f)); if(sec>=60){min+=1;sec=0;} string textSec=sec.ToString(); if(sec<10){textSec="0"+sec;} txt=System.Math.Truncate(min).ToString()+":"+textSec;}else{txt="0:00";}}//160/60=2\.6 | 160-2*60=160-120=40
