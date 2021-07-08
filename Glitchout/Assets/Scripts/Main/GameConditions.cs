@@ -18,7 +18,8 @@ public class GameConditions : MonoBehaviour{
     public bool wonBySKLimit;
     public bool doubleScoreDisplay;
     void Start(){
-        if(instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}
+        instance=this;
+        //if(instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}
         ChangeSettings();
     }
     public void ChangeSettings(){

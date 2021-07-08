@@ -9,8 +9,8 @@ using Photon.Pun;
 public class StartMenu : MonoBehaviourPunCallbacks{
     public static StartMenu instance;
     public static bool GameIsStarted=false;
-    public GameObject startMenuUI;
-    public GameObject perksMenuUI;
+    public GameObject mainPanel;
+    public GameObject perksPanel;
     [SerializeField] GameObject[] skinObj;
     public int editPerksID;
     [HideInInspector]public float timerMin=2;
@@ -18,11 +18,13 @@ public class StartMenu : MonoBehaviourPunCallbacks{
     [HideInInspector]public float prevGameSpeed=1f;
 
     void Start(){
+        if((!GameSession.instance.offlineMode&&SceneManager.GetActiveScene().name=="Game")){StartGame();Destroy(transform.root.gameObject);}
+        GameSession.instance.resize=true;
         instance=this;
-        if(startMenuUI==null){startMenuUI=transform.GetChild(0).gameObject;}
-        if(perksMenuUI==null){perksMenuUI=transform.GetChild(1).gameObject;}
+        //if(instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}
+        if(mainPanel==null){mainPanel=transform.GetChild(0).gameObject;}if(perksPanel==null){perksPanel=transform.GetChild(1).gameObject;}
+        mainPanel.SetActive(false);perksPanel.SetActive(false);
         Open();
-        if(!GameSession.instance.offlineMode)StartGame();
     }
     void Update(){
         if(!GameIsStarted){
@@ -37,6 +39,7 @@ public class StartMenu : MonoBehaviourPunCallbacks{
 
         //Set skins
         for(var s=0;s<skinObj.Length;s++){
+        if(GameSession.instance.players.Length>skinObj.Length){
         if(GameSession.instance.players[s]!=null){
             var skinID=GameSession.instance.players[s].skinID;
             //Check others for same skin
@@ -51,30 +54,27 @@ public class StartMenu : MonoBehaviourPunCallbacks{
             if(skinID>=0&&skinID<GameAssets.instance.skins.Length){
                 skinObj[s].GetComponent<Image>().sprite=GameAssets.instance.GetSkin(skinID);
             }
-        }}
+        }}}
     }
     
     [PunRPC]
     public void StartGame(){
+        if(!PhotonNetwork.OfflineMode){if(FindObjectOfType<NetworkController>()!=null)FindObjectOfType<NetworkController>().StartGame();}
         if(PhotonNetwork.IsMasterClient){
-            startMenuUI.SetActive(false);
-            perksMenuUI.SetActive(false);
+            mainPanel.SetActive(false);
+            perksPanel.SetActive(false);
             //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
             GameSession.instance.speedChanged=false;
             GameSession.instance.gameSpeed=prevGameSpeed;
             GameIsStarted=true;
-            foreach(PlayerSession player in GameSession.instance.players){
-                player.playerScript.GetComponent<PlayerPerks>().SetStartParams();
-                player.playerScript.GetComponent<PlayerPerks>().RespawnPerks();
-            }
+            //Setting start params in NetworkController
         }
     }
     public void Open(){
         prevGameSpeed=GameSession.instance.gameSpeed;
-        startMenuUI.SetActive(true);
-        perksMenuUI.SetActive(false);
+        mainPanel.SetActive(true);
+        perksPanel.SetActive(false);
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
-        GameIsStarted=false;
         GameSession.instance.speedChanged=true;
         GameSession.instance.gameSpeed=0f;
     }
@@ -85,15 +85,15 @@ public class StartMenu : MonoBehaviourPunCallbacks{
 
     public void PerksMenu(int number){
         editPerksID=number;
-        startMenuUI.SetActive(false);
-        perksMenuUI.SetActive(true);
+        mainPanel.SetActive(false);
+        perksPanel.SetActive(true);
     }
     public void BackStartMenu(){
-        perksMenuUI.SetActive(false);
-        startMenuUI.SetActive(true);
+        perksPanel.SetActive(false);
+        mainPanel.SetActive(true);
     }
 
-
+    [PunRPC]
     public void SetPerk(perks enumPerk){
         //var player=GameSession.instance.players[editPerksID].playerScript;var playerPerks=player.GetComponent<PlayerPerks>().playPerks;
         var playerPerks=GameSession.instance.players[editPerksID].playPerks;
@@ -102,6 +102,7 @@ public class StartMenu : MonoBehaviourPunCallbacks{
             if(playerPerks[i]==perks.empty){if(!playerPerks.Contains(enumPerk)){playerPerks[i]=enumPerk;}}
         }
     }
+    [PunRPC]
     public void SkinPrev(int ID){//for(var s=0;s<skinObj.Length;s++){
         var p=GameSession.instance.players;
         var skinID=p[ID].skinID;
@@ -115,6 +116,7 @@ public class StartMenu : MonoBehaviourPunCallbacks{
         }}
         GameSession.instance.players[ID].skinID=skinID;
     }//}
+    [PunRPC]
     public void SkinNext(int ID){//for(var s=0;s<skinObj.Length;s++){
         var p=GameSession.instance.players;
         var skinID=p[ID].skinID;

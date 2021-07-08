@@ -25,6 +25,7 @@ public class ValueDisplay : MonoBehaviour{
         if(GameSession.instance.players.Length>xx&&GameSession.instance.players[xx]!=null){
                 if(value.Contains("score_")){if(GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled==true){value="kills_"+x;}if(GameSession.instance.players.Length>xx)txt=GameSession.instance.players[xx].score.ToString();}//GameSession.instance.score[int.Parse(value.Split(["_"]))];}
                 if(value.Contains("kills_")){if(GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled!=true){value="score_"+x;}if(GameSession.instance.players.Length>xx)txt=GameSession.instance.players[xx].kills.ToString();}
+                if(value.Contains("nick_")){if(GameSession.instance.players.Length>xx)if(!String.IsNullOrEmpty(GameSession.instance.players[xx].nick)){txt=GameSession.instance.players[xx].nick;}else{txt="Player"+(xx+1).ToString();}}
                 if(GameSession.instance.players[xx].playerScript!=null){
                     if(value.Contains("health_")){if(GameSession.instance.players[xx].playerScript.hidden!=true){txt=Mathf.RoundToInt(GameSession.instance.players[xx].playerScript.health).ToString();}else{txt=Math.Round(GameSession.instance.players[xx].respawnTimer,1).ToString();}}
                     if(value.Contains("perkCount_")){List<perks> pCount=null;
@@ -32,7 +33,7 @@ public class ValueDisplay : MonoBehaviour{
                     if(pCount.Count>0){
                     txt=pCount.Count.ToString()+"/"+
                     PerksList.instance.perkList.Length+" PERKS";}else{txt="PERKS";}}
-                }else{Debug.LogWarning("No PlayerScript attached to Player "+xx);}
+                }else{Debug.LogWarning("No PlayerScript attached to Player"+xx);}
         }}
         if(value.Contains("gameVersion")){txt=SaveSerial.instance.settingsData.gameVersion;}
         if(value=="scoreDesc"){if((GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled!=true)||GameConditions.instance.scoreEnabled){txt="Score:";}else if((GameConditions.instance.timerEnabled&&GameConditions.instance.timeKillsEnabled)||GameConditions.instance.killsEnabled){txt="Kills:";}}

@@ -30,6 +30,8 @@ public class NetworkController : MonoBehaviourPunCallbacks{
         lobbyPanel.SetActive(false);
         roomPanel.SetActive(false);
         lobbyConnectButton.SetActive(false);
+        GameSession.instance.gameSpeed=1;
+        GameSession.instance.speedChanged=false;
         if(PlayerPrefs.HasKey("NickName")){
             if(!string.IsNullOrEmpty(PlayerPrefs.GetString("NickName"))){
                playerNameInput.text=PlayerPrefs.GetString("NickName");
@@ -70,11 +72,12 @@ public class NetworkController : MonoBehaviourPunCallbacks{
         }
     }
     void ListRooms(RoomInfo room){
+        if(roomListingPrefab!=null&&roomsContainer!=null&&roomsContainer.gameObject.activeSelf){
         if(room.IsOpen&&room.IsVisible){
             GameObject tempListing=Instantiate(roomListingPrefab,roomsContainer);
             RoomButton tempButton=tempListing.GetComponent<RoomButton>();
             tempButton.SetRoom(room.Name,room.MaxPlayers,room.PlayerCount);
-        }
+        }}else if(playerListingPrefab==null||playersContainer==null){Debug.Log("PlayerContainer or PlayerListing prefab is not asigned");}
     }
     public void PlayerNameUpdate(string nameInput){PhotonNetwork.NickName=nameInput;PlayerPrefs.SetString("NickName",nameInput);}
     public void OnRoomNameChanged(string nameIn){roomName=nameIn;}
@@ -100,36 +103,50 @@ public class NetworkController : MonoBehaviourPunCallbacks{
         }
     }
     void ListPlayers(){
+        if(playerListingPrefab!=null&&playersContainer!=null&&playersContainer.gameObject.activeSelf){
         foreach(Player player in PhotonNetwork.PlayerList){
             GameObject tempListing=Instantiate(playerListingPrefab,playersContainer);
             TMPro.TextMeshProUGUI tempText=tempListing.transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
             tempText.text=player.NickName;
-        }
+        }}else if(playerListingPrefab==null||playersContainer==null){Debug.Log("PlayerContainer or PlayerListing prefab is not asigned");}
     }
     public override void OnJoinedRoom(){
         roomPanel.SetActive(true);
         lobbyPanel.SetActive(false);
         roomNameDisplay.text=PhotonNetwork.CurrentRoom.Name;
-        if(PhotonNetwork.IsMasterClient)startButton.SetActive(true);
-        else startButton.SetActive(false);
+        //if(PhotonNetwork.IsMasterClient)startButton.SetActive(true);
+        //else startButton.SetActive(false);
         ClearPlayerListings();
         ListPlayers();
+        if(GameSession.instance.players==null)GameSession.instance.players=new PlayerSession[1];
+        GameSession.instance.players[0].nick=PhotonNetwork.PlayerList[0].NickName;
     }
     public override void OnPlayerEnteredRoom(Player newPlayer){
         Debug.Log(newPlayer.NickName+" just joined "+PhotonNetwork.CurrentRoom.Name);
+        foreach(PlayerSession ps in GameSession.instance.players){
+            if(string.IsNullOrEmpty(ps.nick)){ps.nick=newPlayer.NickName;}
+        }
         ClearPlayerListings();
         ListPlayers();
     }
     public override void OnPlayerLeftRoom(Player newPlayer){
         Debug.Log(newPlayer.NickName+" just left "+PhotonNetwork.CurrentRoom.Name);
+        System.Array.Find(GameSession.instance.players,x=>x.nick==newPlayer.NickName).nick="";//Reset nick
         ClearPlayerListings();
         ListPlayers();
-        if(PhotonNetwork.IsMasterClient)startButton.SetActive(true);
+        //if(PhotonNetwork.IsMasterClient)startButton.SetActive(true);
     }
     public void StartGame(){
         if(PhotonNetwork.IsMasterClient){
             PhotonNetwork.CurrentRoom.IsOpen=false;
             PhotonNetwork.LoadLevel("Game");
+            //from StartMenu
+            foreach(PlayerSession player in GameSession.instance.players){
+                if(player.playerScript!=null){
+                    player.playerScript.GetComponent<PlayerPerks>().SetStartParams();
+                    player.playerScript.GetComponent<PlayerPerks>().RespawnPerks();
+                }else{Debug.LogWarning("No PlayerScript attached to "+System.Array.FindIndex(GameSession.instance.players,0,GameSession.instance.players.Length,x=>x==player));}
+            }
         }
     }
     IEnumerator rejoinLobby(){

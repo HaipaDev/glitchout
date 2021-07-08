@@ -17,10 +17,10 @@ public class PauseMenu : MonoBehaviourPunCallbacks{
         Resume();
     }
     void Update(){
-        if(Input.GetKeyDown(KeyCode.Escape)&&StartMenu.GameIsStarted){
+        if(Input.GetKeyDown(KeyCode.Escape)&&(!PhotonNetwork.OfflineMode||(GameSession.instance.offlineMode&&StartMenu.GameIsStarted))){
             if(GameIsPaused&&!optionsUI.activeSelf){
                 Resume();
-            }else if(optionsUI.activeSelf){
+            }else if(GameIsPaused&&optionsUI.activeSelf){
                 PauseOpen();
             }else{
                 Pause();
@@ -30,7 +30,7 @@ public class PauseMenu : MonoBehaviourPunCallbacks{
         }
     }
     public void Resume(){
-        transform.GetChild(0).gameObject.SetActive(false);
+        pauseMenuUI.SetActive(false);
         optionsUI.SetActive(false);
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
         GameSession.instance.gameSpeed=prevGameSpeed;
@@ -40,7 +40,7 @@ public class PauseMenu : MonoBehaviourPunCallbacks{
     public void Pause(){
         if(PhotonNetwork.IsMasterClient){
             prevGameSpeed=GameSession.instance.gameSpeed;
-            transform.GetChild(0).gameObject.SetActive(true);
+            pauseMenuUI.SetActive(true);
             PauseOpen();
             //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
             GameIsPaused=true;

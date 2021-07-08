@@ -36,7 +36,6 @@ public class Level : MonoBehaviour{
     public void LoadGameScene(){
         GameSession.instance.offlineMode=true;
         SceneManager.LoadScene("Game");
-        GameSession.instance.resize=true;
         GameSession.instance.ResetPlayers();
         GameSession.instance.gameSpeed=1f;
     }

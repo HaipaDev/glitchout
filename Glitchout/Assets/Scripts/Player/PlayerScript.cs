@@ -40,7 +40,9 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
     GameObject glowVFX;
     void Start(){
         if(!PhotonNetwork.OfflineMode)playerNum=((photonView.ViewID-1)/1000)-1;
-        else foreach(PlayerScript p in FindObjectsOfType<PlayerScript>()){if(p!=this)if(p.playerNum<=playerNum)playerNum=p.playerNum+1;gameObject.name=gameObject.name.Split('r')[0]+"r"+playerNum;}
+        //if(!PhotonNetwork.OfflineMode)for(var i=0;i<GameSession.instance.players.Length;i++){if(GameSession.instance.players[i].playerScript==null)playerNum=i;}
+        else foreach(PlayerScript p in FindObjectsOfType<PlayerScript>()){if(p!=this)if(p.playerNum<=playerNum)playerNum=p.playerNum+1;}
+        gameObject.name=gameObject.name.Split('r')[0]+"r"+playerNum;
         
         health=maxHealth;
         if(damage==-4)damage=GetComponent<DamageDealer>().GetDmgPlayer();
@@ -57,11 +59,10 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
             if(dmgTimer>0)dmgTimer-=Time.deltaTime;
             if(hitTimer>0)hitTimer-=Time.deltaTime;
             else hitTimer=-4;
-            //Move();
             Die();
         }
-        SetGlow();
         SetSkin();
+        SetGlow();
     }
     void FixedUpdate() {
         Move();
