@@ -39,22 +39,18 @@ public class StartMenu : MonoBehaviourPunCallbacks{
 
         //Set skins
         for(var s=0;s<skinObj.Length;s++){
-        if(GameSession.instance.players.Length>skinObj.Length){
+        //if(GameSession.instance.players.Length>=skinObj.Length){
         if(GameSession.instance.players[s]!=null){
             var skinID=GameSession.instance.players[s].skinID;
             //Check others for same skin
             for(var s2=0;s2<skinObj.Length;s2++){if(s2!=s){
                 var skinID2=GameSession.instance.players[s2].skinID;
-                if(skinID2==skinID){
-                    skinID++;
-                    //Wrap skins outside and dont allow the same one
-                    //if(skinID==GameAssets.instance.skins.Length-1){skinID=0;/*for(;skinID2==skinID;skinID++);*/}
-                }
+                if(skinID2==skinID){skinID++;}
             }}
             if(skinID>=0&&skinID<GameAssets.instance.skins.Length){
                 skinObj[s].GetComponent<Image>().sprite=GameAssets.instance.GetSkin(skinID);
             }
-        }}}
+        }}//}
     }
     
     [PunRPC]

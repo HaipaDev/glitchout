@@ -2387,6 +2387,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7603354187114730107, guid: 9e860eac6069d2b4b8f14ced58b7d6e7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8146325234785568192, guid: 9e860eac6069d2b4b8f14ced58b7d6e7,
         type: 3}
       propertyPath: m_Name
@@ -2407,45 +2412,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1356848116064518939, guid: 6287919f62db61f41ae7635289717c73,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3488338451981396405, guid: 6287919f62db61f41ae7635289717c73,
-        type: 3}
-      propertyPath: m_TextStyleHashCode
-      value: -1183493901
-      objectReference: {fileID: 0}
-    - target: {fileID: 3549751479590890386, guid: 6287919f62db61f41ae7635289717c73,
-        type: 3}
-      propertyPath: m_TextStyleHashCode
-      value: -1183493901
-      objectReference: {fileID: 0}
-    - target: {fileID: 4504730806975031334, guid: 6287919f62db61f41ae7635289717c73,
-        type: 3}
-      propertyPath: m_TextStyleHashCode
-      value: -1183493901
-      objectReference: {fileID: 0}
-    - target: {fileID: 6749051870511581147, guid: 6287919f62db61f41ae7635289717c73,
-        type: 3}
-      propertyPath: m_TextStyleHashCode
-      value: -1183493901
-      objectReference: {fileID: 0}
-    - target: {fileID: 6749051870831652988, guid: 6287919f62db61f41ae7635289717c73,
-        type: 3}
-      propertyPath: m_TextStyleHashCode
-      value: -1183493901
-      objectReference: {fileID: 0}
     - target: {fileID: 6749051870857392631, guid: 6287919f62db61f41ae7635289717c73,
         type: 3}
       propertyPath: m_Name
       value: Game Canvas
-      objectReference: {fileID: 0}
-    - target: {fileID: 6749051870857392631, guid: 6287919f62db61f41ae7635289717c73,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6749051870857392635, guid: 6287919f62db61f41ae7635289717c73,
         type: 3}
@@ -2551,21 +2521,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6786064715664771080, guid: 6287919f62db61f41ae7635289717c73,
-        type: 3}
-      propertyPath: m_TextStyleHashCode
-      value: -1183493901
-      objectReference: {fileID: 0}
-    - target: {fileID: 7209439449924522601, guid: 6287919f62db61f41ae7635289717c73,
-        type: 3}
-      propertyPath: m_TextStyleHashCode
-      value: -1183493901
-      objectReference: {fileID: 0}
-    - target: {fileID: 7867233074296464715, guid: 6287919f62db61f41ae7635289717c73,
-        type: 3}
-      propertyPath: m_TextStyleHashCode
-      value: -1183493901
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6287919f62db61f41ae7635289717c73, type: 3}

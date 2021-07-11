@@ -29,21 +29,25 @@ public class PauseMenu : MonoBehaviourPunCallbacks{
             Level.instance.RestartGame();
         }
     }
+    [PunRPC]
     public void Resume(){
-        pauseMenuUI.SetActive(false);
-        optionsUI.SetActive(false);
-        //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
-        GameSession.instance.gameSpeed=prevGameSpeed;
+        transform.GetChild(0).gameObject.SetActive(false);
+        PauseClose();
         GameIsPaused=false;
+        //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
+        if(PhotonNetwork.IsMasterClient){
+            GameSession.instance.speedChanged=false;
+            GameSession.instance.gameSpeed=prevGameSpeed;
+        }
     }
     [PunRPC]
     public void Pause(){
+        transform.GetChild(0).gameObject.SetActive(true);
+        PauseOpen();
+        GameIsPaused=true;
+        //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
         if(PhotonNetwork.IsMasterClient){
             prevGameSpeed=GameSession.instance.gameSpeed;
-            pauseMenuUI.SetActive(true);
-            PauseOpen();
-            //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
-            GameIsPaused=true;
             GameSession.instance.speedChanged=true;
             GameSession.instance.gameSpeed=0f;
         }
@@ -53,6 +57,10 @@ public class PauseMenu : MonoBehaviourPunCallbacks{
         optionsUI.SetActive(false);
     }
     public void Options(){
+        optionsUI.SetActive(true);
+        pauseMenuUI.SetActive(false);
+    }
+    public void PauseClose(){
         optionsUI.SetActive(true);
         pauseMenuUI.SetActive(false);
     }
