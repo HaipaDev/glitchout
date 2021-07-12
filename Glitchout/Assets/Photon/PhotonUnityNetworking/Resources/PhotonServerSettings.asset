@@ -45,6 +45,9 @@ MonoBehaviour:
   - SkinNext
   - SkinPrev
   - Resume
+  - SetPerkRPC
+  - SkinNextRPC
+  - SkinPrevRPC
   DisableAutoOpenWizard: 1
   ShowSettings: 0
   DevRegionSetOnce: 1

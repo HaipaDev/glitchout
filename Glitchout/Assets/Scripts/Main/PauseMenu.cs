@@ -15,6 +15,8 @@ public class PauseMenu : MonoBehaviourPunCallbacks{
     void Start(){
         instance=this;
         Resume();
+        GameSession.instance.speedChanged=false;
+        GameSession.instance.gameSpeed=1;
     }
     void Update(){
         if(Input.GetKeyDown(KeyCode.Escape)&&(!PhotonNetwork.OfflineMode||(GameSession.instance.offlineMode&&StartMenu.GameIsStarted))){
@@ -51,6 +53,11 @@ public class PauseMenu : MonoBehaviourPunCallbacks{
             GameSession.instance.speedChanged=true;
             GameSession.instance.gameSpeed=0f;
         }
+    }
+    public void Menu(){
+        if(!PhotonNetwork.OfflineMode){PhotonNetwork.LeaveRoom();PhotonNetwork.LeaveLobby();}
+        PreviousGameSpeed();
+        Level.instance.LoadStartMenu();
     }
     public void PauseOpen(){
         pauseMenuUI.SetActive(true);

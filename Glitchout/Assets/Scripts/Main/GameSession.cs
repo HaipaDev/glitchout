@@ -9,7 +9,7 @@ using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 using Photon.Pun;
 using Photon.Realtime;
-public class GameSession : MonoBehaviour, IPunObservable{
+public class GameSession : MonoBehaviour{//, IPunObservable{
     public static GameSession instance;
     [HeaderAttribute("Current Player Values")]
     public PlayerSession[] players;
@@ -51,9 +51,9 @@ public class GameSession : MonoBehaviour, IPunObservable{
         }}
 
         Time.timeScale=gameSpeed;
-        if(SceneManager.GetActiveScene().name=="Game"&&PauseMenu.GameIsPaused==true){gameSpeed=0;}
         if(speedChanged!=true){gameSpeed=1;}
-        //if(SceneManager.GetActiveScene().name!="Game"){gameSpeed=1;}
+        //if(SceneManager.GetActiveScene().name=="Game"&&PauseMenu.GameIsPaused==true){gameSpeed=0;}
+        
         
         //Restart with R or Space/Resume with Space
         /*if(SceneManager.GetActiveScene().name=="Game"){
@@ -99,16 +99,6 @@ public class GameSession : MonoBehaviour, IPunObservable{
                 }
                 
             }}
-            /*if(!offlineMode){
-                for(var p=0;p<players.Length;p++){
-                    for(var pr=0;pr<PhotonNetwork.PlayerList.Length;pr++){
-                        players[p].nick=PhotonNetwork.PlayerList[pr].NickName;
-                    }
-                }
-            }*/
-            //((photonView.ViewID-1)/1000)-1
-        }else{
-            if(players.Length!=0)Array.Resize(ref players,0);
         }
     }
 
@@ -136,14 +126,6 @@ public class GameSession : MonoBehaviour, IPunObservable{
 
     public void ResetPlayers(){
         Array.Clear(players,0,players.Length);
-    }
-    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){
-        if(stream.IsWriting){// We own this player: send the others our data
-            stream.SendNext(players);
-        }
-        else{// Network player, receive data
-            this.players=(PlayerSession[])stream.ReceiveNext();
-        }
     }
     public void SaveSettings(){SaveSerial.instance.SaveSettings();}
     public void Save(){ /*SaveSerial.instance.Save();*/ SaveSerial.instance.SaveSettings(); }
@@ -216,10 +198,32 @@ public class GameSession : MonoBehaviour, IPunObservable{
     }*/
     //public void PlayDenySFX(){AudioManager.instance.Play("Deny");}
     #endregion
+
+
+    /*public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){
+        if(stream.IsWriting){// We own this player: send the others our data
+            for(var i=0;i<GameSession.instance.players.Length;i++)stream.SendNext(GameSession.instance.players[i].nick);
+            //stream.SendNext(players);
+        }
+        else{// Network player, receive data
+            for(var i=0;i<GameSession.instance.players.Length;i++)GameSession.instance.players[i].nick=(string)stream.ReceiveNext();
+            //this.players=(PlayerSession[])stream.ReceiveNext();
+        }
+    }*/
 }
 
 [System.Serializable]
 public class PlayerSession{
+    public byte Id{get;set;}
+    public static byte[] Serialize(object customType){
+        var c=(PlayerSession)customType;
+        return new byte[]{c.Id};
+    }
+    public static object Deserialize(byte[] data){
+        var result=new PlayerSession();
+        result.Id=data[0];
+        return result;
+    }
     public PlayerScript playerScript;
     public string nick;
     public int skinID=0;

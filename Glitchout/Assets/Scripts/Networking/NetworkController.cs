@@ -123,9 +123,10 @@ public class NetworkController : MonoBehaviourPunCallbacks{
     }
     public override void OnPlayerEnteredRoom(Player newPlayer){
         Debug.Log(newPlayer.NickName+" just joined "+PhotonNetwork.CurrentRoom.Name);
-        foreach(PlayerSession ps in GameSession.instance.players){
+        if(FindObjectOfType<StartMenu>()!=null){foreach(PlayerSession ps in GameSetup.instance.players){
             if(string.IsNullOrEmpty(ps.nick)){ps.nick=newPlayer.NickName;}
-        }
+        }}
+        foreach(PlayerSession ps in GameSession.instance.players){if(string.IsNullOrEmpty(ps.nick)){ps.nick=newPlayer.NickName;}}
         ClearPlayerListings();
         ListPlayers();
     }
@@ -138,6 +139,7 @@ public class NetworkController : MonoBehaviourPunCallbacks{
     }
     public void StartGame(){
         if(PhotonNetwork.IsMasterClient){
+            DontDestroyOnLoad(GameSetup.instance.gameObject);
             PhotonNetwork.CurrentRoom.IsOpen=false;
             PhotonNetwork.LoadLevel("Game");
             //from StartMenu
