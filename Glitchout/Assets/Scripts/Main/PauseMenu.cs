@@ -19,7 +19,7 @@ public class PauseMenu : MonoBehaviourPunCallbacks{
         GameSession.instance.gameSpeed=1;
     }
     void Update(){
-        if(Input.GetKeyDown(KeyCode.Escape)&&(!PhotonNetwork.OfflineMode||(GameSession.instance.offlineMode&&StartMenu.GameIsStarted))){
+        if(Input.GetKeyDown(KeyCode.Escape)&&(!PhotonNetwork.OfflineMode||(GameSession.instance.offlineMode&&GameManager.GameIsStarted))){
             if(GameIsPaused&&!optionsUI.activeSelf){
                 Resume();
             }else if(GameIsPaused&&optionsUI.activeSelf){

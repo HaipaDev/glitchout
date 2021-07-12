@@ -136,19 +136,6 @@ public class NetworkController : MonoBehaviourPunCallbacks{
         ListPlayers();
         //if(PhotonNetwork.IsMasterClient)startButton.SetActive(true);
     }
-    public void StartGame(){
-        if(PhotonNetwork.IsMasterClient){
-            PhotonNetwork.CurrentRoom.IsOpen=false;
-            PhotonNetwork.LoadLevel("Game");
-            //from StartMenu
-            foreach(PlayerSession player in GameManager.instance.players){
-                if(player.playerScript!=null){
-                    player.playerScript.GetComponent<PlayerPerks>().SetStartParams();
-                    player.playerScript.GetComponent<PlayerPerks>().RespawnPerks();
-                }else{Debug.LogWarning("No PlayerScript attached to "+System.Array.FindIndex(GameManager.instance.players,0,GameManager.instance.players.Length,x=>x==player));}
-            }
-        }
-    }
     IEnumerator rejoinLobby(){
         yield return new WaitForSeconds(1);
         PhotonNetwork.JoinLobby();

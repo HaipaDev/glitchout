@@ -35,7 +35,7 @@ public class GameConditions : MonoBehaviour{
                 GameObject.Find("DoubleScore1").transform.GetChild(0).gameObject.SetActive(false);GameObject.Find("DoubleScore2").transform.GetChild(0).gameObject.SetActive(false);
             }
         }
-        if(SceneManager.GetActiveScene().name=="Game"&&StartMenu.GameIsStarted==true){
+        if(SceneManager.GetActiveScene().name=="Game"&&GameManager.GameIsStarted==true){
             if(startCond.timerEnabled==true){
                 if(timer>0&&Time.timeScale>0.0001f){timer-=Time.deltaTime;}
                 if(timer<=0){timer=-4;matchFinished=true;}
@@ -57,7 +57,7 @@ public class GameConditions : MonoBehaviour{
                 //GameSession.instance.gameSpeed=0;
             }
         }
-        if(!StartMenu.GameIsStarted){matchFinished=false;}
+        if(!GameManager.GameIsStarted){matchFinished=false;}
     }
     void SetWinningPlayer(){
         if(startCond.timerEnabled==true&&!wonBySKLimit){

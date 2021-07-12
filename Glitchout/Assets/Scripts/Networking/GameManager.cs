@@ -10,6 +10,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
     public PlayerSession[] players;
     int defPlayerCount=2;
     [SerializeReference] public GameStartConditions startCond=new GameStartConditions();
+    public static bool GameIsStarted=false;
     [Range(0f,10f)]public float gameSpeed=1;
     void Start(){instance=this;Resize();
         PhotonNetwork.SerializationRate=6000;//60/s
@@ -42,12 +43,28 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
             }
         }}
         for(var i=0;i<players.Length;i++){if(players[i]!=null){
-            players[i].nick=PhotonNetwork.PlayerList[i].NickName;
+            if(PhotonNetwork.PlayerList.Length>i)players[i].nick=PhotonNetwork.PlayerList[i].NickName;
             players[i].score=Mathf.Clamp(players[i].score,0,44444);
             if(players[i].respawnTimer>0)players[i].respawnTimer-=Time.deltaTime;
             if(players[i].respawnTimer<=0&&players[i].respawnTimer!=-4){players[i].playerScript.Respawn();players[i].respawnTimer=-4;}
         }}
         //if(SceneManager.GetActiveScene().name=="Game")
+    }
+
+    [PunRPC]
+    void StartGameRPC(){
+        PhotonNetwork.CurrentRoom.IsOpen=false;
+        StartMenu.instance.mainPanel.SetActive(false);
+        StartMenu.instance.perksPanel.SetActive(false);
+        //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
+        GameManager.instance.gameSpeed=1;
+        GameManager.GameIsStarted=true;
+        foreach(PlayerSession player in GameManager.instance.players){
+            if(player.playerScript!=null){
+                player.playerScript.GetComponent<PlayerPerks>().SetStartParams();
+                player.playerScript.GetComponent<PlayerPerks>().RespawnPerks();
+            }else{Debug.LogWarning("No PlayerScript attached to "+System.Array.FindIndex(GameManager.instance.players,0,GameManager.instance.players.Length,x=>x==player));}
+        }
     }
 
     [PunRPC]

@@ -8,7 +8,6 @@ using Photon.Pun;
 
 public class StartMenu : MonoBehaviourPunCallbacks{
     public static StartMenu instance;
-    public static bool GameIsStarted=false;
     public GameObject mainPanel;
     public GameObject perksPanel;
     [SerializeField] GameObject[] skinObj;
@@ -16,25 +15,25 @@ public class StartMenu : MonoBehaviourPunCallbacks{
     [HideInInspector]public float timerMin=2;
     [HideInInspector]public float timerSec=30;
     void Start(){
-        //if((!GameSession.instance.offlineMode&&SceneManager.GetActiveScene().name=="Game")){StartGame();Destroy(transform.root.gameObject);}
         instance=this;
-        //if(instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}
         if(mainPanel==null){mainPanel=transform.GetChild(0).gameObject;}if(perksPanel==null){perksPanel=transform.GetChild(1).gameObject;}
         mainPanel.SetActive(false);perksPanel.SetActive(false);
         Open();
     }
     void Update(){
-        if(!GameIsStarted){
+        if(!GameManager.GameIsStarted){
+            //GameManager.instance.gameSpeed=0.0005f;
             //Sum up timer
             timerMin=Mathf.Clamp(timerMin,0,404);
             timerSec=Mathf.Clamp(timerSec,0,59);
             GameConditions.instance.startCond.timerSet=(timerMin*60)+timerSec;
         }
         if(Input.GetKeyDown(KeyCode.Escape)){
-            if(!GameIsStarted){Leave();}
+            if(!GameManager.GameIsStarted){Leave();}
         }
 
         //Set skins
+        if(GameManager.instance.players[0].skinID==0&&GameManager.instance.players[1].skinID==0){GameManager.instance.players[1].skinID=1;}
         for(var s=0;s<skinObj.Length;s++){
         //if(GameSession.instance.players.Length>=skinObj.Length){
         if(GameManager.instance.players[s]!=null){
@@ -50,18 +49,7 @@ public class StartMenu : MonoBehaviourPunCallbacks{
         }}//}
     }
     
-    [PunRPC]
-    public void StartGame(){
-        if(!PhotonNetwork.OfflineMode){if(FindObjectOfType<NetworkController>()!=null)FindObjectOfType<NetworkController>().StartGame();}
-        if(PhotonNetwork.IsMasterClient){
-            mainPanel.SetActive(false);
-            perksPanel.SetActive(false);
-            //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
-            GameManager.instance.gameSpeed=1;
-            GameIsStarted=true;
-            //Setting start params in NetworkController
-        }
-    }
+    public void StartGame(){if(PhotonNetwork.IsMasterClient)PhotonView.Get(GameManager.instance).RPC("StartGameRPC",RpcTarget.All);}
     public void Open(){
         mainPanel.SetActive(true);
         perksPanel.SetActive(false);

@@ -54,7 +54,7 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
     }
 
     void Update(){
-        if(Time.timeScale>0.0001f&&hidden==false){
+        if(Time.timeScale>0.0001f&&hidden==false&&GameManager.GameIsStarted){
             health=Mathf.Clamp(health,0,maxHealth);
             if(dmgTimer>0)dmgTimer-=Time.deltaTime;
             if(hitTimer>0)hitTimer-=Time.deltaTime;
@@ -65,7 +65,7 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
         SetGlow();
     }
     void FixedUpdate() {
-        Move();
+        if(GameManager.GameIsStarted)Move();
     }
     void Move(){
         if((!PhotonNetwork.OfflineMode&&photonView.IsMine)||(PhotonNetwork.OfflineMode&&playerNum==0)){
