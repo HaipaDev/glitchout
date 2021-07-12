@@ -111,43 +111,41 @@ public class NetworkController : MonoBehaviourPunCallbacks{
         }}else if(playerListingPrefab==null||playersContainer==null){Debug.Log("PlayerContainer or PlayerListing prefab is not asigned");}
     }
     public override void OnJoinedRoom(){
-        roomPanel.SetActive(true);
-        lobbyPanel.SetActive(false);
+        //roomPanel.SetActive(true);
+        //lobbyPanel.SetActive(false);
+        PhotonNetwork.LoadLevel("Game");
+        GameManager.instance.gameSpeed=0;
         roomNameDisplay.text=PhotonNetwork.CurrentRoom.Name;
         //if(PhotonNetwork.IsMasterClient)startButton.SetActive(true);
         //else startButton.SetActive(false);
         ClearPlayerListings();
         ListPlayers();
-        if(GameSession.instance.players==null)GameSession.instance.players=new PlayerSession[1];
-        GameSession.instance.players[0].nick=PhotonNetwork.PlayerList[0].NickName;
+        if(GameManager.instance.players==null)GameManager.instance.players=new PlayerSession[1];
+        GameManager.instance.players[0].nick=PhotonNetwork.PlayerList[0].NickName;
     }
     public override void OnPlayerEnteredRoom(Player newPlayer){
         Debug.Log(newPlayer.NickName+" just joined "+PhotonNetwork.CurrentRoom.Name);
-        if(FindObjectOfType<StartMenu>()!=null){foreach(PlayerSession ps in GameSetup.instance.players){
-            if(string.IsNullOrEmpty(ps.nick)){ps.nick=newPlayer.NickName;}
-        }}
-        foreach(PlayerSession ps in GameSession.instance.players){if(string.IsNullOrEmpty(ps.nick)){ps.nick=newPlayer.NickName;}}
+        foreach(PlayerSession ps in GameManager.instance.players){if(string.IsNullOrEmpty(ps.nick)){ps.nick=newPlayer.NickName;}}
         ClearPlayerListings();
         ListPlayers();
     }
     public override void OnPlayerLeftRoom(Player newPlayer){
         Debug.Log(newPlayer.NickName+" just left "+PhotonNetwork.CurrentRoom.Name);
-        System.Array.Find(GameSession.instance.players,x=>x.nick==newPlayer.NickName).nick="";//Reset nick
+        System.Array.Find(GameManager.instance.players,x=>x.nick==newPlayer.NickName).nick="";//Reset nick
         ClearPlayerListings();
         ListPlayers();
         //if(PhotonNetwork.IsMasterClient)startButton.SetActive(true);
     }
     public void StartGame(){
         if(PhotonNetwork.IsMasterClient){
-            DontDestroyOnLoad(GameSetup.instance.gameObject);
             PhotonNetwork.CurrentRoom.IsOpen=false;
             PhotonNetwork.LoadLevel("Game");
             //from StartMenu
-            foreach(PlayerSession player in GameSession.instance.players){
+            foreach(PlayerSession player in GameManager.instance.players){
                 if(player.playerScript!=null){
                     player.playerScript.GetComponent<PlayerPerks>().SetStartParams();
                     player.playerScript.GetComponent<PlayerPerks>().RespawnPerks();
-                }else{Debug.LogWarning("No PlayerScript attached to "+System.Array.FindIndex(GameSession.instance.players,0,GameSession.instance.players.Length,x=>x==player));}
+                }else{Debug.LogWarning("No PlayerScript attached to "+System.Array.FindIndex(GameManager.instance.players,0,GameManager.instance.players.Length,x=>x==player));}
             }
         }
     }

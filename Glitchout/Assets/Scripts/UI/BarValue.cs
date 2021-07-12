@@ -17,13 +17,13 @@ public class BarValue : MonoBehaviour{
     [SerializeField] float maxValue;
 
     void Update(){
-        if(GameSession.instance.players.Length>0){
+        if(GameManager.instance.players.Length>0){
         string x="0";int xx=0;if(valueName.Contains("_")){x=valueName.Split('_')[1];xx=int.Parse(x);}
-        if(GameSession.instance.players.Length>xx&&GameSession.instance.players[xx]!=null){
-            if(GameSession.instance.players[xx].playerScript!=null){
+        if(GameManager.instance.players.Length>xx&&GameManager.instance.players[xx]!=null){
+            if(GameManager.instance.players[xx].playerScript!=null){
                 if(valueName.Contains("health_")){
-                    if(GameSession.instance.players[xx].playerScript.hidden!=true){value=GameSession.instance.players[xx].playerScript.health;maxValue=GameSession.instance.players[xx].playerScript.maxHealth;}
-                    else{if(GameSession.instance.players.Length>xx)value=GameSession.instance.players[xx].respawnTimer;maxValue=GameSession.instance.respawnTime;}
+                    if(GameManager.instance.players[xx].playerScript.hidden!=true){value=GameManager.instance.players[xx].playerScript.health;maxValue=GameManager.instance.players[xx].playerScript.maxHealth;}
+                    else{if(GameManager.instance.players.Length>xx)value=GameManager.instance.players[xx].respawnTimer;maxValue=GameSession.instance.respawnTime;}
                 }
                 //if(valueName.Contains("score_")){string[] x=valueName.Split('_');int xx=int.Parse(x[1]); if(GameSession.instance.players.Length>xx)value=GameSession.instance.players[xx].score;maxValue=GameSession.instance.players[xx].score;}
             }

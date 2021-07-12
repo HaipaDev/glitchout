@@ -139,7 +139,7 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
             }
         }
     }public void Death(){
-        GameSession.instance.Die(playerNum,hitTimer);
+        GameManager.instance.Die(playerNum,hitTimer);
         //gameObject.SetActive(false);
         Hide();
         Shake.instance.CamShake(4f,0.4f);

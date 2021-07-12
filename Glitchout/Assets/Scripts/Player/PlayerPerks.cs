@@ -165,7 +165,7 @@ public class PlayerPerks : MonoBehaviour{
         //for(var i=0;i<3;i++){
             GameObject go=Instantiate(GameAssets.instance.Get("SplitBt"),transform.position,Quaternion.identity);
             go.GetComponent<SplitBullet>().playerID=player.playerNum;
-            go.GetComponent<SplitBullet>().coords=GameSession.instance.players.Where(x => x.playerScript.playerNum != player.playerNum).SingleOrDefault().playerScript.transform.position;
+            go.GetComponent<SplitBullet>().coords=GameManager.instance.players.Where(x=>x.playerScript.playerNum!=player.playerNum).SingleOrDefault().playerScript.transform.position;
             go.GetComponent<SpriteRenderer>().sprite=GetComponent<SpriteRenderer>().sprite;
             if(id==0)go.GetComponent<SpriteRenderer>().color=Color.red;
             if(id==1)go.GetComponent<SpriteRenderer>().color=Color.green;

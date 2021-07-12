@@ -15,10 +15,8 @@ public class StartMenu : MonoBehaviourPunCallbacks{
     public int editPerksID;
     [HideInInspector]public float timerMin=2;
     [HideInInspector]public float timerSec=30;
-    [HideInInspector]public float prevGameSpeed=1f;
     void Start(){
-        if((!GameSession.instance.offlineMode&&SceneManager.GetActiveScene().name=="Game")){StartGame();Destroy(transform.root.gameObject);}
-        GameSession.instance.resize=true;
+        //if((!GameSession.instance.offlineMode&&SceneManager.GetActiveScene().name=="Game")){StartGame();Destroy(transform.root.gameObject);}
         instance=this;
         //if(instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}
         if(mainPanel==null){mainPanel=transform.GetChild(0).gameObject;}if(perksPanel==null){perksPanel=transform.GetChild(1).gameObject;}
@@ -30,7 +28,7 @@ public class StartMenu : MonoBehaviourPunCallbacks{
             //Sum up timer
             timerMin=Mathf.Clamp(timerMin,0,404);
             timerSec=Mathf.Clamp(timerSec,0,59);
-            GameSetup.instance.startCond.timerSet=(timerMin*60)+timerSec;
+            GameConditions.instance.startCond.timerSet=(timerMin*60)+timerSec;
         }
         if(Input.GetKeyDown(KeyCode.Escape)){
             if(!GameIsStarted){Leave();}
@@ -39,11 +37,11 @@ public class StartMenu : MonoBehaviourPunCallbacks{
         //Set skins
         for(var s=0;s<skinObj.Length;s++){
         //if(GameSession.instance.players.Length>=skinObj.Length){
-        if(GameSession.instance.players[s]!=null){
-            var skinID=GameSession.instance.players[s].skinID;
+        if(GameManager.instance.players[s]!=null){
+            var skinID=GameManager.instance.players[s].skinID;
             //Check others for same skin
             for(var s2=0;s2<skinObj.Length;s2++){if(s2!=s){
-                var skinID2=GameSession.instance.players[s2].skinID;
+                var skinID2=GameManager.instance.players[s2].skinID;
                 if(skinID2==skinID){skinID++;}
             }}
             if(skinID>=0&&skinID<GameAssets.instance.skins.Length){
@@ -59,23 +57,20 @@ public class StartMenu : MonoBehaviourPunCallbacks{
             mainPanel.SetActive(false);
             perksPanel.SetActive(false);
             //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
-            GameSession.instance.speedChanged=false;
-            GameSession.instance.gameSpeed=prevGameSpeed;
+            GameManager.instance.gameSpeed=1;
             GameIsStarted=true;
             //Setting start params in NetworkController
         }
     }
     public void Open(){
-        prevGameSpeed=GameSession.instance.gameSpeed;
         mainPanel.SetActive(true);
         perksPanel.SetActive(false);
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
-        GameSession.instance.speedChanged=true;
-        GameSession.instance.gameSpeed=0f;
+        GameManager.instance.gameSpeed=0f;
     }
     public void Leave(){
         if(PhotonNetwork.IsConnectedAndReady){PhotonNetwork.LeaveRoom();PhotonNetwork.LeaveLobby();Level.instance.LoadOnlineScene();}
-        if(PhotonNetwork.OfflineMode){PreviousGameSpeed();Level.instance.LoadStartMenu();}
+        if(PhotonNetwork.OfflineMode){GameManager.instance.gameSpeed=1;Level.instance.LoadStartMenu();}
     }
 
     public void PerksMenu(int number){
@@ -88,72 +83,34 @@ public class StartMenu : MonoBehaviourPunCallbacks{
         mainPanel.SetActive(true);
     }
 
-    public void SetPerk(perks enumPerk){PhotonView.Get(this).RPC("SetPerkRPC",RpcTarget.All,enumPerk);}
-    [PunRPC]
-    void SetPerkRPC(perks enumPerk){
-        //var player=GameSession.instance.players[editPerksID].playerScript;var playerPerks=player.GetComponent<PlayerPerks>().playPerks;
-        var playerPerks=GameSession.instance.players[editPerksID].playPerks;
-        if(playerPerks.Contains(enumPerk)){var usedprkID=playerPerks.FindIndex(0,playerPerks.Count,(x) => x==enumPerk);playerPerks[usedprkID]=perks.empty;return;}
-        for(var i=0; i<playerPerks.Count;i++){
-            if(playerPerks[i]==perks.empty){if(!playerPerks.Contains(enumPerk)){playerPerks[i]=enumPerk;}}
-        }
-    }
     
-    public void SkinPrev(int ID){PhotonView.Get(this).RPC("SkinPrevRPC",RpcTarget.All,ID);}
-    [PunRPC]
-    void SkinPrevRPC(int ID){
-        //for(var s=0;s<skinObj.Length;s++){
-        var skinID=GameSession.instance.players[ID].skinID;
-        for(var s2=0;s2<GameSession.instance.players.Length;s2++){if(s2!=ID){
-            var skinID2=GameSession.instance.players[s2].skinID;
-            if(skinID>0){
-                if(skinID2!=skinID-1){skinID--;}else if(skinID2==skinID-1&&skinID>1){skinID-=2;}else{skinID=GameAssets.instance.skins.Length-1;}
-            }else if(skinID==0){//Wrap skins outside and dont allow the same one
-                skinID=GameAssets.instance.skins.Length-1;for(;skinID2==skinID&&skinID>0;skinID--);
-            }
-        }}
-        GameSession.instance.players[ID].skinID=skinID;
-    }//}
-    public void SkinNext(int ID){PhotonView.Get(this).RPC("SkinNextRPC",RpcTarget.All,ID);}
-    [PunRPC]
-    public void SkinNextRPC(int ID){//for(var s=0;s<skinObj.Length;s++){
-        var skinID=GameSession.instance.players[ID].skinID;
-        for(var s2=0;s2<GameSession.instance.players.Length;s2++){if(s2!=ID){
-            var skinID2=GameSession.instance.players[s2].skinID;
-            if(skinID<GameAssets.instance.skins.Length-1){
-                if(skinID2!=skinID+1){skinID++;}else if(skinID2==skinID+1&&skinID<GameAssets.instance.skins.Length-2){skinID+=2;}else{skinID=0;}
-            }else if(skinID==GameAssets.instance.skins.Length-1){//Wrap skins outside and dont allow the same one
-                skinID=0;for(;skinID2==skinID;skinID++);
-            }
-        }}
-        GameSession.instance.players[ID].skinID=skinID;
-    }//}
+    public void SkinPrev(int ID){PhotonView.Get(GameManager.instance).RPC("SkinPrevRPC",RpcTarget.All,ID);}
+    public void SkinNext(int ID){PhotonView.Get(GameManager.instance).RPC("SkinNextRPC",RpcTarget.All,ID);}
+    public void SetPerk(perks enumPerk){PhotonView.Get(GameManager.instance).RPC("SetPerkRPC",RpcTarget.All,enumPerk);}
 
     public void SetTimeMinutes(TMPro.TMP_InputField txt){if(Application.isPlaying)timerMin=int.Parse(txt.text);if(int.Parse(txt.text)>404){txt.text="404";}}
     public void SetTimeSeconds(TMPro.TMP_InputField txt){if(Application.isPlaying)timerSec=int.Parse(txt.text);if(int.Parse(txt.text)>59){txt.text="59";}}
     public void SetScoreLimit(TMPro.TMP_InputField txt){
-        if(Application.isPlaying)GameSetup.instance.startCond.scoreLimit=int.Parse(txt.text);
+        if(Application.isPlaying)GameManager.instance.startCond.scoreLimit=int.Parse(txt.text);
     }public void SetKillsLimit(TMPro.TMP_InputField txt){
-        if(Application.isPlaying)GameSetup.instance.startCond.killsLimit=int.Parse(txt.text);
+        if(Application.isPlaying)GameManager.instance.startCond.killsLimit=int.Parse(txt.text);
     }
 
 
     public void SetTimeLimitEnabled(bool isTimeLimit){
-        if(Application.isPlaying)GameSetup.instance.startCond.timerEnabled=isTimeLimit;
+        if(Application.isPlaying)GameManager.instance.startCond.timerEnabled=isTimeLimit;
     }public void SetTimeLimitKills(bool isTimeLimitKills){
     if(Application.isPlaying){
-        if(GameSetup.instance.startCond.timerEnabled){
-            GameSetup.instance.startCond.timeKillsEnabled=isTimeLimitKills;
+        if(GameManager.instance.startCond.timerEnabled){
+            GameManager.instance.startCond.timeKillsEnabled=isTimeLimitKills;
             var ck=GameObject.Find("CheckmarkKS").GetComponent<TMPro.TextMeshProUGUI>();
             if(isTimeLimitKills)ck.text="K";else ck.text="S";
         }
     }}
     public void SetScoreLimitEnabled(bool isScoreLimit){
-        if(Application.isPlaying)GameSetup.instance.startCond.scoreEnabled=isScoreLimit;
+        if(Application.isPlaying)GameManager.instance.startCond.scoreEnabled=isScoreLimit;
     }
     public void SetKillsLimitEnabled(bool isKillsLimit){
-        if(Application.isPlaying)GameSetup.instance.startCond.killsEnabled=isKillsLimit;
+        if(Application.isPlaying)GameManager.instance.startCond.killsEnabled=isKillsLimit;
     }
-
-    public void PreviousGameSpeed(){GameSession.instance.gameSpeed=prevGameSpeed;}
 }

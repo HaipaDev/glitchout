@@ -41,12 +41,12 @@ public class GameConditions : MonoBehaviour{
                 if(timer<=0){timer=-4;matchFinished=true;}
             }
             if(startCond.scoreEnabled==true&&matchFinished!=true){
-                for(var i=0;i<GameSession.instance.players.Length;i++){
-                    if(GameSession.instance.players[i].score>=startCond.scoreLimit){matchFinished=true;wonBySKLimit=true;winningPlayer=i+1;}
+                for(var i=0;i<GameManager.instance.players.Length;i++){
+                    if(GameManager.instance.players[i].score>=startCond.scoreLimit){matchFinished=true;wonBySKLimit=true;winningPlayer=i+1;}
                 }
             }if(startCond.killsEnabled==true&&matchFinished!=true){
-                for(var i=0;i<GameSession.instance.players.Length;i++){
-                    if(GameSession.instance.players[i].kills>=startCond.killsLimit){matchFinished=true;wonBySKLimit=true;winningPlayer=i+1;}
+                for(var i=0;i<GameManager.instance.players.Length;i++){
+                    if(GameManager.instance.players[i].kills>=startCond.killsLimit){matchFinished=true;wonBySKLimit=true;winningPlayer=i+1;}
                 }
             }
 
@@ -62,12 +62,12 @@ public class GameConditions : MonoBehaviour{
     void SetWinningPlayer(){
         if(startCond.timerEnabled==true&&!wonBySKLimit){
             if(!startCond.timeKillsEnabled){
-                if(GameSession.instance.players[0].score>GameSession.instance.players[1].score){winningPlayer=0;}
-                else if(GameSession.instance.players[1].score>GameSession.instance.players[0].score){winningPlayer=1;}
+                if(GameManager.instance.players[0].score>GameManager.instance.players[1].score){winningPlayer=0;}
+                else if(GameManager.instance.players[1].score>GameManager.instance.players[0].score){winningPlayer=1;}
                 else{winningPlayer=-1;}
             }else{
-                if(GameSession.instance.players[0].kills>GameSession.instance.players[1].kills){winningPlayer=0;}
-                else if(GameSession.instance.players[1].kills>GameSession.instance.players[0].kills){winningPlayer=1;}
+                if(GameManager.instance.players[0].kills>GameManager.instance.players[1].kills){winningPlayer=0;}
+                else if(GameManager.instance.players[1].kills>GameManager.instance.players[0].kills){winningPlayer=1;}
                 else{winningPlayer=-1;}
             }
         }

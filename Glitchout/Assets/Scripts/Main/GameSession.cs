@@ -9,11 +9,8 @@ using UnityEngine.UI;
 using UnityEngine.Rendering.PostProcessing;
 using Photon.Pun;
 using Photon.Realtime;
-public class GameSession : MonoBehaviour{//, IPunObservable{
+public class GameSession : MonoBehaviour{
     public static GameSession instance;
-    [HeaderAttribute("Current Player Values")]
-    public PlayerSession[] players;
-    int defPlayerCount=2;
     [HeaderAttribute("Game Values")]
     public int score_kill=20;
     public int score_assist=15;
@@ -34,23 +31,9 @@ public class GameSession : MonoBehaviour{//, IPunObservable{
     //public string gameVersion;
 
     void Awake(){if(instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}}
-    void Start(){
-        Resize();
-    }
-    void OnValidate(){
-        var allPerks=Enum.GetValues(typeof(perks));
-        foreach(PlayerSession p in players){if(p.playPerks.Count==0)foreach(var pk in allPerks)if((perks)pk!=perks.empty)p.playPerks.Add(perks.empty);}//Resize playPerks
-    }
     void Update(){
-        Resize();
-
-        for(var i=0;i<players.Length;i++){if(players[i]!=null){
-            players[i].score=Mathf.Clamp(players[i].score,0,99999);
-            if(players[i].respawnTimer>0)players[i].respawnTimer-=Time.deltaTime;
-            if(players[i].respawnTimer<=0&&players[i].respawnTimer!=-4){players[i].playerScript.Respawn();players[i].respawnTimer=-4;}
-        }}
-
-        Time.timeScale=gameSpeed;
+        if(SceneManager.GetActiveScene().name!="Game")Time.timeScale=gameSpeed;
+        else Time.timeScale=GameManager.instance.gameSpeed;
         if(speedChanged!=true){gameSpeed=1;}
         //if(SceneManager.GetActiveScene().name=="Game"&&PauseMenu.GameIsPaused==true){gameSpeed=0;}
         
@@ -74,58 +57,6 @@ public class GameSession : MonoBehaviour{//, IPunObservable{
 
 
         CheckCodes(".",".");
-    }
-    void Resize(){
-        if(SceneManager.GetActiveScene().name=="Game")resize=true;
-        else if(SceneManager.GetActiveScene().name=="OnlineMatchmaking"){}
-        else resize=false;
-        if(resize){
-            if(players==null){players=new PlayerSession[defPlayerCount];}
-            if(players.Length==0){Array.Resize(ref players,defPlayerCount);for(var pi=0;pi<defPlayerCount;pi++){players[pi]=new PlayerSession();}}
-            PlayerScript[] allPlayers=FindObjectsOfType<PlayerScript>();
-            if(allPlayers.Length>0)if(players.Length!=allPlayers.Length)Array.Resize(ref players,allPlayers.Length);
-            for(var ap=0;ap<allPlayers.Length;ap++){if(allPlayers[ap]!=null){
-                if(players[ap]!=null){players[ap].playerScript=Array.Find(allPlayers,x=>x.playerNum==ap);}else{players[ap]=new PlayerSession();}}
-            else{Debug.Log("No PlayerScript found for ID "+ap);}}
-            var allPerks=Enum.GetValues(typeof(perks));
-            foreach(PlayerSession p in players){if(p!=null){
-                if(p.playPerks==null){p.playPerks=new List<perks>();}//Resize playPerks
-                if(p.playPerks.Count==0)foreach(var pk in allPerks)p.playPerks.Add(perks.empty);
-                
-                if(p.respawnTimer==0)p.respawnTimer=-4;
-                if(p.playerScript!=null){
-                    p.playerScript.skinID=p.skinID;
-                    if(p.playerScript.GetComponent<PlayerPerks>()!=null)p.playerScript.GetComponent<PlayerPerks>().playPerks=p.playPerks;
-                }
-                
-            }}
-        }
-    }
-
-    public void Die(int playerNum, float hitTimer){
-        if(playerNum==0){
-            AddSubScore(playerNum,score_death,false);
-            players[playerNum].respawnTimer=respawnTime;
-            if(hitTimer>0){AddSubScore(playerNum+1,score_kill);players[playerNum+1].kills++;}
-        }else if(playerNum==1){
-            AddSubScore(playerNum,score_death,false);
-            players[playerNum].respawnTimer=respawnTime;
-            if(hitTimer>0){AddSubScore(playerNum-1,score_kill);players[playerNum-1].kills++;}
-        }
-    }
-
-    public void AddSubScore(int i,int scoreValue,bool add=true){
-        if(add)players[i].score+=scoreValue;//Mathf.RoundToInt(scoreValue*scoreMulti);
-        else players[i].score-=scoreValue;//Mathf.RoundToInt(scoreValue*scoreMulti);
-    }
-
-    public void MultiplyScore(int i,float multipl){
-        int result=Mathf.RoundToInt(players[i].score*multipl);
-        players[i].score=result;
-    }
-
-    public void ResetPlayers(){
-        Array.Clear(players,0,players.Length);
     }
     public void SaveSettings(){SaveSerial.instance.SaveSettings();}
     public void Save(){ /*SaveSerial.instance.Save();*/ SaveSerial.instance.SaveSettings(); }
@@ -198,37 +129,4 @@ public class GameSession : MonoBehaviour{//, IPunObservable{
     }*/
     //public void PlayDenySFX(){AudioManager.instance.Play("Deny");}
     #endregion
-
-
-    /*public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){
-        if(stream.IsWriting){// We own this player: send the others our data
-            for(var i=0;i<GameSession.instance.players.Length;i++)stream.SendNext(GameSession.instance.players[i].nick);
-            //stream.SendNext(players);
-        }
-        else{// Network player, receive data
-            for(var i=0;i<GameSession.instance.players.Length;i++)GameSession.instance.players[i].nick=(string)stream.ReceiveNext();
-            //this.players=(PlayerSession[])stream.ReceiveNext();
-        }
-    }*/
-}
-
-[System.Serializable]
-public class PlayerSession{
-    public byte Id{get;set;}
-    public static byte[] Serialize(object customType){
-        var c=(PlayerSession)customType;
-        return new byte[]{c.Id};
-    }
-    public static object Deserialize(byte[] data){
-        var result=new PlayerSession();
-        result.Id=data[0];
-        return result;
-    }
-    public PlayerScript playerScript;
-    public string nick;
-    public int skinID=0;
-    public List<perks> playPerks=new List<perks>();
-    public int score=0;
-    public int kills=0;
-    public float respawnTimer=-4;
 }
