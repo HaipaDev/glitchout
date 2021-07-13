@@ -50,8 +50,8 @@ public class NetworkController : MonoBehaviourPunCallbacks{
     public void JoinLobby(){
         loginPanel.SetActive(false);
         lobbyPanel.SetActive(true);
-        if(!string.IsNullOrEmpty(playerNameInput.text))PhotonNetwork.NickName="Player"+Random.Range(0,1000);
-        else PlayerPrefs.SetString("NickName","Player"+Random.Range(0,1000));
+        if(!string.IsNullOrEmpty(playerNameInput.text))PhotonNetwork.NickName=playerNameInput.text;
+        else {PlayerPrefs.SetString("NickName","Player"+Random.Range(0,1000));PhotonNetwork.NickName=PlayerPrefs.GetString("NickName");}
         PhotonNetwork.JoinLobby();
     }
     public override void OnRoomListUpdate(List<RoomInfo> roomList){

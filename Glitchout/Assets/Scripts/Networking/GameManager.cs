@@ -10,7 +10,8 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
     public PlayerSession[] players;
     int defPlayerCount=2;
     [SerializeReference] public GameStartConditions startCond=new GameStartConditions();
-    public static bool GameIsStarted=false;
+    public bool GameIsStarted=false;
+    public bool TimeIs0=false;
     [Range(0f,10f)]public float gameSpeed=1;
     void Start(){instance=this;Resize();
         PhotonNetwork.SerializationRate=6000;//60/s
@@ -18,7 +19,10 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
         if(PhotonNetwork.IsConnectedAndReady){var go=PhotonNetwork.Instantiate(playerPrefab.name,Vector2.zero,Quaternion.identity);}//go.name="Player"+go.GetComponent<PlayerScript>().playerNum;}
         if(PhotonNetwork.OfflineMode){var go=PhotonNetwork.Instantiate(playerPrefab.name,Vector2.zero,Quaternion.identity);}//Instantiate second player on OfflineMode}
     }
-    void Update(){Resize();}
+    void Update(){
+        Resize();
+        if(!GameIsStarted||PauseMenu.GameIsPaused||Time.timeScale<0.0001f){TimeIs0=true;}else{TimeIs0=false;}
+    }
     void OnValidate() {
         var allPerks=Enum.GetValues(typeof(perks));
         foreach(PlayerSession p in players){if(p.playPerks.Count==0)foreach(var pk in allPerks)if((perks)pk!=perks.empty)p.playPerks.Add(perks.empty);}//Resize playPerks
@@ -43,7 +47,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
             }
         }}
         for(var i=0;i<players.Length;i++){if(players[i]!=null){
-            if(PhotonNetwork.PlayerList.Length>i)players[i].nick=PhotonNetwork.PlayerList[i].NickName;
+            if(!PhotonNetwork.OfflineMode&&PhotonNetwork.PlayerList.Length>i)players[i].nick=PhotonNetwork.PlayerList[i].NickName;
             players[i].score=Mathf.Clamp(players[i].score,0,44444);
             if(players[i].respawnTimer>0)players[i].respawnTimer-=Time.deltaTime;
             if(players[i].respawnTimer<=0&&players[i].respawnTimer!=-4){players[i].playerScript.Respawn();players[i].respawnTimer=-4;}
@@ -57,13 +61,13 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
         StartMenu.instance.mainPanel.SetActive(false);
         StartMenu.instance.perksPanel.SetActive(false);
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
-        GameManager.instance.gameSpeed=1;
-        GameManager.GameIsStarted=true;
-        foreach(PlayerSession player in GameManager.instance.players){
+        gameSpeed=1;
+        GameIsStarted=true;
+        foreach(PlayerSession player in players){
             if(player.playerScript!=null){
                 player.playerScript.GetComponent<PlayerPerks>().SetStartParams();
                 player.playerScript.GetComponent<PlayerPerks>().RespawnPerks();
-            }else{Debug.LogWarning("No PlayerScript attached to "+System.Array.FindIndex(GameManager.instance.players,0,GameManager.instance.players.Length,x=>x==player));}
+            }else{Debug.LogWarning("No PlayerScript attached to "+System.Array.FindIndex(players,0,players.Length,x=>x==player));}
         }
     }
 

@@ -21,19 +21,18 @@ public class StartMenu : MonoBehaviourPunCallbacks{
         Open();
     }
     void Update(){
-        if(!GameManager.GameIsStarted){
-            //GameManager.instance.gameSpeed=0.0005f;
+        if(!GameManager.instance.GameIsStarted){
             //Sum up timer
             timerMin=Mathf.Clamp(timerMin,0,404);
             timerSec=Mathf.Clamp(timerSec,0,59);
             GameConditions.instance.startCond.timerSet=(timerMin*60)+timerSec;
         }
         if(Input.GetKeyDown(KeyCode.Escape)){
-            if(!GameManager.GameIsStarted){Leave();}
+            if(!GameManager.instance.GameIsStarted){Leave();}
         }
 
         //Set skins
-        if(GameManager.instance.players[0].skinID==0&&GameManager.instance.players[1].skinID==0){GameManager.instance.players[1].skinID=1;}
+        if(GameManager.instance.players.Length>1)if(GameManager.instance.players[0].skinID==0&&GameManager.instance.players[1].skinID==0){GameManager.instance.players[1].skinID=1;}
         for(var s=0;s<skinObj.Length;s++){
         //if(GameSession.instance.players.Length>=skinObj.Length){
         if(GameManager.instance.players[s]!=null){
@@ -54,11 +53,10 @@ public class StartMenu : MonoBehaviourPunCallbacks{
         mainPanel.SetActive(true);
         perksPanel.SetActive(false);
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
-        GameManager.instance.gameSpeed=0f;
     }
     public void Leave(){
         if(PhotonNetwork.IsConnectedAndReady){PhotonNetwork.LeaveRoom();PhotonNetwork.LeaveLobby();Level.instance.LoadOnlineScene();}
-        if(PhotonNetwork.OfflineMode){GameManager.instance.gameSpeed=1;Level.instance.LoadStartMenu();}
+        if(PhotonNetwork.OfflineMode){PhotonNetwork.LeaveRoom();Level.instance.LoadStartMenu();}
     }
 
     public void PerksMenu(int number){

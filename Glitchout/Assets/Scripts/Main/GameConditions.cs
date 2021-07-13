@@ -35,9 +35,9 @@ public class GameConditions : MonoBehaviour{
                 GameObject.Find("DoubleScore1").transform.GetChild(0).gameObject.SetActive(false);GameObject.Find("DoubleScore2").transform.GetChild(0).gameObject.SetActive(false);
             }
         }
-        if(SceneManager.GetActiveScene().name=="Game"&&GameManager.GameIsStarted==true){
+        if(SceneManager.GetActiveScene().name=="Game"&&GameManager.instance.GameIsStarted==true){
             if(startCond.timerEnabled==true){
-                if(timer>0&&Time.timeScale>0.0001f){timer-=Time.deltaTime;}
+                if(timer>0&&!GameManager.instance.TimeIs0){timer-=Time.deltaTime;}
                 if(timer<=0){timer=-4;matchFinished=true;}
             }
             if(startCond.scoreEnabled==true&&matchFinished!=true){
@@ -57,7 +57,7 @@ public class GameConditions : MonoBehaviour{
                 //GameSession.instance.gameSpeed=0;
             }
         }
-        if(!GameManager.GameIsStarted){matchFinished=false;}
+        if(!GameManager.instance.GameIsStarted){matchFinished=false;}
     }
     void SetWinningPlayer(){
         if(startCond.timerEnabled==true&&!wonBySKLimit){

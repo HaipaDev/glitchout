@@ -54,7 +54,7 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
     }
 
     void Update(){
-        if(Time.timeScale>0.0001f&&hidden==false&&GameManager.GameIsStarted){
+        if(!GameManager.instance.TimeIs0&&hidden==false){
             health=Mathf.Clamp(health,0,maxHealth);
             if(dmgTimer>0)dmgTimer-=Time.deltaTime;
             if(hitTimer>0)hitTimer-=Time.deltaTime;
@@ -65,7 +65,7 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
         SetGlow();
     }
     void FixedUpdate() {
-        if(GameManager.GameIsStarted)Move();
+        if(!GameManager.instance.TimeIs0)Move();
     }
     void Move(){
         if((!PhotonNetwork.OfflineMode&&photonView.IsMine)||(PhotonNetwork.OfflineMode&&playerNum==0)){
@@ -171,7 +171,7 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
 
 
 
-    private void OnTriggerEnter2D(Collider2D other){
+    private void OnTriggerEnter2D(Collider2D other){if(!GameManager.instance.TimeIs0){
         //damage=GetComponent<DamageDealer>().GetDmgPlayer();
         if(CompareTag(other.tag)){
             //PlayerScript
@@ -191,8 +191,8 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
             if(other.GetComponent<Tag_Barrier>()!=null){Damage(dmgDealer.GetDmgZone());TpMiddle();AudioManager.instance.Play("Hit");}
         }
         dmgTimer=0;
-    }
-    private void OnTriggerStay2D(Collider2D other){
+    }}
+    private void OnTriggerStay2D(Collider2D other){if(!GameManager.instance.TimeIs0){
         if(dmgTimer<=0){
             //damage=GetComponent<DamageDealer>().GetDmgPlayerStay();
             if(CompareTag(other.tag)){
@@ -206,7 +206,7 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
             }
             dmgTimer=dmgFreq;
         }
-    }
+    }}
     private void SetSkin(){GetComponent<SpriteRenderer>().sprite=GameAssets.instance.GetSkin(skinID);}
     private void SetGlow(){
     var ps=glowVFX.GetComponent<ParticleSystem>().main;
