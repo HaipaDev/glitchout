@@ -11,6 +11,9 @@ public class StartMenu : MonoBehaviourPunCallbacks{
     public GameObject mainPanel;
     public GameObject perksPanel;
     [SerializeField] GameObject[] skinObj;
+    [SerializeField] TMPro.TextMeshProUGUI[] playersReadyTxt;
+    public GameObject startButton;
+    public TMPro.TextMeshProUGUI roomNameTxt;
     public int editPerksID;
     [HideInInspector]public float timerMin=2;
     [HideInInspector]public float timerSec=30;
@@ -19,6 +22,7 @@ public class StartMenu : MonoBehaviourPunCallbacks{
         if(mainPanel==null){mainPanel=transform.GetChild(0).gameObject;}if(perksPanel==null){perksPanel=transform.GetChild(1).gameObject;}
         mainPanel.SetActive(false);perksPanel.SetActive(false);
         Open();
+        if(!PhotonNetwork.OfflineMode){roomNameTxt.text=PhotonNetwork.CurrentRoom.Name;startButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="Ready";}
     }
     void Update(){
         if(!GameManager.instance.GameIsStarted){
@@ -46,9 +50,24 @@ public class StartMenu : MonoBehaviourPunCallbacks{
                 skinObj[s].GetComponent<Image>().sprite=GameAssets.instance.GetSkin(skinID);
             }
         }}//}
+
+        if(!PhotonNetwork.OfflineMode){
+            for(var i=0;i<playersReadyTxt.Length;i++){
+                if(GameManager.instance.players[i].ready){playersReadyTxt[i].text="Ready";playersReadyTxt[i].color=Color.green;}
+                else{playersReadyTxt[i].text="Not Ready";playersReadyTxt[i].color=Color.grey;}
+            }
+            if(GameManager.instance.players[GameManager.instance.GetLocalPlayerID()].ready){
+                startButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="Unready";
+            }else{
+                startButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="Ready";
+            }
+        }else{
+            roomNameTxt.text="";
+            startButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="Start";
+        }
     }
     
-    public void StartGame(){if(PhotonNetwork.IsMasterClient)PhotonView.Get(GameManager.instance).RPC("StartGameRPC",RpcTarget.All);}
+    public void StartGame(){PhotonView.Get(GameManager.instance).RPC("StartGameRPC",RpcTarget.All,GameManager.instance.GetLocalPlayerID());}
     public void Open(){
         mainPanel.SetActive(true);
         perksPanel.SetActive(false);
@@ -70,6 +89,7 @@ public class StartMenu : MonoBehaviourPunCallbacks{
     }
 
     
+    public void GiveMaster(int ID){if(PhotonNetwork.IsMasterClient)PhotonNetwork.SetMasterClient(PhotonNetwork.PlayerList[ID]);}
     public void SkinPrev(int ID){PhotonView.Get(GameManager.instance).RPC("SkinPrevRPC",RpcTarget.All,ID);}
     public void SkinNext(int ID){PhotonView.Get(GameManager.instance).RPC("SkinNextRPC",RpcTarget.All,ID);}
     public void SetPerk(perks enumPerk){PhotonView.Get(GameManager.instance).RPC("SetPerkRPC",RpcTarget.All,enumPerk);}

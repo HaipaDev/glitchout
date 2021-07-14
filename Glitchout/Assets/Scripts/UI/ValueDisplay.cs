@@ -25,7 +25,10 @@ public class ValueDisplay : MonoBehaviour{
         if(GameManager.instance.players.Length>xx&&GameManager.instance.players[xx]!=null){
                 if(value.Contains("score_")){if(GameConditions.instance.startCond.timerEnabled&&GameConditions.instance.startCond.timeKillsEnabled==true){value="kills_"+x;}if(GameManager.instance.players.Length>xx)txt=GameManager.instance.players[xx].score.ToString();}//GameSession.instance.score[int.Parse(value.Split(["_"]))];}
                 if(value.Contains("kills_")){if(GameConditions.instance.startCond.timerEnabled&&GameConditions.instance.startCond.timeKillsEnabled!=true){value="score_"+x;}if(GameManager.instance.players.Length>xx)txt=GameManager.instance.players[xx].kills.ToString();}
-                if(value.Contains("nick_")){if(GameManager.instance.players.Length>xx)if(!String.IsNullOrEmpty(GameManager.instance.players[xx].nick)){txt=GameManager.instance.players[xx].nick;}else{txt="Player"+(xx+1).ToString();}}
+                if(value.Contains("nick_")){if(GameManager.instance.players.Length>xx)if(!String.IsNullOrEmpty(GameManager.instance.players[xx].nick)){
+                    txt=GameManager.instance.players[xx].nick;
+                    if(transform.root.GetComponentInChildren<StartMenu>()!=null)if(Photon.Pun.PhotonNetwork.PlayerList[xx].IsMasterClient){GetComponent<TMPro.TextMeshProUGUI>().color=Color.cyan;}else{GetComponent<TMPro.TextMeshProUGUI>().color=Color.white;}}
+                    else{txt="Player"+(xx+1).ToString();}}
                 if(GameManager.instance.players[xx].playerScript!=null){
                     if(value.Contains("health_")){if(GameManager.instance.players[xx].playerScript.hidden!=true){txt=Mathf.RoundToInt(GameManager.instance.players[xx].playerScript.health).ToString();}else{txt=Math.Round(GameManager.instance.players[xx].respawnTimer,1).ToString();}}
                     if(value.Contains("perkCount_")){List<perks> pCount=null;

@@ -31,22 +31,22 @@ public class PauseMenu : MonoBehaviourPunCallbacks{
             Level.instance.RestartGame();
         }
     }
-    [PunRPC]
     public void Resume(){
         transform.GetChild(0).gameObject.SetActive(false);
         PauseClose();
         GameIsPaused=false;
+        if(!PhotonNetwork.OfflineMode)PhotonView.Get(GameManager.instance).RPC("SetPaused",RpcTarget.All,GameManager.instance.GetLocalPlayerID(),false);
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
         if(PhotonNetwork.IsMasterClient){
             GameSession.instance.speedChanged=false;
             GameSession.instance.gameSpeed=prevGameSpeed;
         }
     }
-    [PunRPC]
     public void Pause(){
         transform.GetChild(0).gameObject.SetActive(true);
         PauseOpen();
         GameIsPaused=true;
+        if(!PhotonNetwork.OfflineMode)PhotonView.Get(GameManager.instance).RPC("SetPaused",RpcTarget.All,GameManager.instance.GetLocalPlayerID(),true);
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
         if(PhotonNetwork.IsMasterClient){
             prevGameSpeed=GameSession.instance.gameSpeed;
@@ -55,8 +55,7 @@ public class PauseMenu : MonoBehaviourPunCallbacks{
         }
     }
     public void Menu(){
-        if(!PhotonNetwork.OfflineMode){PhotonNetwork.LeaveRoom();PhotonNetwork.LeaveLobby();}
-        PreviousGameSpeed();
+        if(!GameSession.instance.offlineMode){PhotonNetwork.LeaveRoom();PhotonNetwork.LeaveLobby();}
         Level.instance.LoadStartMenu();
     }
     public void PauseOpen(){

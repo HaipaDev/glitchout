@@ -113,9 +113,9 @@ public class NetworkController : MonoBehaviourPunCallbacks{
     public override void OnJoinedRoom(){
         //roomPanel.SetActive(true);
         //lobbyPanel.SetActive(false);
+        //roomNameDisplay.text=PhotonNetwork.CurrentRoom.Name;
         PhotonNetwork.LoadLevel("Game");
-        GameManager.instance.gameSpeed=0;
-        roomNameDisplay.text=PhotonNetwork.CurrentRoom.Name;
+        StartMenu.instance.startButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="Ready";
         //if(PhotonNetwork.IsMasterClient)startButton.SetActive(true);
         //else startButton.SetActive(false);
         ClearPlayerListings();

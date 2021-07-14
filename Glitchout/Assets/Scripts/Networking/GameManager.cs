@@ -10,7 +10,9 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
     public PlayerSession[] players;
     int defPlayerCount=2;
     [SerializeReference] public GameStartConditions startCond=new GameStartConditions();
+    public float startTimer=-4;
     public bool GameIsStarted=false;
+    public bool GameIsPaused=false;
     public bool TimeIs0=false;
     [Range(0f,10f)]public float gameSpeed=1;
     void Start(){instance=this;Resize();
@@ -20,8 +22,15 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
         if(PhotonNetwork.OfflineMode){var go=PhotonNetwork.Instantiate(playerPrefab.name,Vector2.zero,Quaternion.identity);}//Instantiate second player on OfflineMode}
     }
     void Update(){
+        if(!GameIsStarted||GameIsPaused||Time.timeScale<0.0001f){TimeIs0=true;}else{TimeIs0=false;}
         Resize();
-        if(!GameIsStarted||PauseMenu.GameIsPaused||Time.timeScale<0.0001f){TimeIs0=true;}else{TimeIs0=false;}
+        StartGame();
+        if(!PhotonNetwork.OfflineMode){
+            var pausedCount=Array.FindAll(players,x=>x.paused).Length;
+            if(pausedCount!=players.Length){GameIsPaused=false;}else{GameIsPaused=true;}
+        }else{
+            if(PauseMenu.GameIsPaused)GameIsPaused=true;else GameIsPaused=false;
+        }
     }
     void OnValidate() {
         var allPerks=Enum.GetValues(typeof(perks));
@@ -54,20 +63,39 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
         }}
         //if(SceneManager.GetActiveScene().name=="Game")
     }
+    void StartGame(){
+        if(startTimer<=0&&startTimer!=-4){
+            PhotonNetwork.CurrentRoom.IsOpen=false;
+            StartMenu.instance.mainPanel.SetActive(false);
+            StartMenu.instance.perksPanel.SetActive(false);
+            //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
+            gameSpeed=1;
+            GameIsStarted=true;
+            foreach(PlayerSession player in players){
+                if(player.playerScript!=null){
+                    player.playerScript.GetComponent<PlayerPerks>().SetStartParams();
+                    player.playerScript.GetComponent<PlayerPerks>().RespawnPerks();
+                }else{Debug.LogWarning("No PlayerScript attached to "+System.Array.FindIndex(players,0,players.Length,x=>x==player));}
+            }
+        }
+        if(startTimer>0)startTimer-=Time.unscaledDeltaTime;
+        var readyCount=Array.FindAll(players,x=>x.ready).Length;
+        if(readyCount!=players.Length){return;}else{if(startTimer==-4){startTimer=3;}}//else{startTimer=-5;return;}}
+    }
 
     [PunRPC]
-    void StartGameRPC(){
-        PhotonNetwork.CurrentRoom.IsOpen=false;
-        StartMenu.instance.mainPanel.SetActive(false);
-        StartMenu.instance.perksPanel.SetActive(false);
-        //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
-        gameSpeed=1;
-        GameIsStarted=true;
-        foreach(PlayerSession player in players){
-            if(player.playerScript!=null){
-                player.playerScript.GetComponent<PlayerPerks>().SetStartParams();
-                player.playerScript.GetComponent<PlayerPerks>().RespawnPerks();
-            }else{Debug.LogWarning("No PlayerScript attached to "+System.Array.FindIndex(players,0,players.Length,x=>x==player));}
+    void SetPaused(int ID, bool set){players[ID].paused=set;}
+    [PunRPC]
+    void StartGameRPC(int ID){
+        if(!PhotonNetwork.OfflineMode){
+        //Debug.Log("Local player ID="+ID+" | It's ready status is: "+players[ID].ready);
+        //Debug.Log("Local players NickName: "+PhotonNetwork.LocalPlayer.NickName+" | Player list nick: "+players[GetLocalPlayerID()].nick);
+        if(!players[ID].ready){players[ID].ready=true;}
+        else{players[ID].ready=false;startTimer=-4;}
+        //var readyCount=Array.FindAll(players,x=>x.ready).Length;
+        //if(readyCount==players.Length/*&&PhotonNetwork.IsMasterClient*/){if(startTimer<=0&&startTimer!=-4){startTimer=3;return;}else{startTimer=-4;players[ID].ready=false;return;}}
+        }else{
+            startTimer=0;
         }
     }
 
@@ -139,20 +167,42 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){
         if(stream.IsWriting){// We own this player: send the others our data
             stream.SendNext(gameSpeed);
-            for(var i=0;i<players.Length;i++)stream.SendNext(players[i].nick);
+            for(var i=0;i<players.Length;i++){
+                if(!GameIsStarted){
+                stream.SendNext(players[i].nick);
+                stream.SendNext(players[i].ready);
+                }
+                stream.SendNext(players[i].score);
+                stream.SendNext(players[i].kills);
+                stream.SendNext(players[i].paused);
+            }
+            stream.SendNext(GameIsPaused);
             //for(var i=0;i<players.Length;i++)stream.SendNext(players[i].nick);
             //stream.SendNext(players);
             //stream.SendNext(startCond);
         }
         else{// Network player, receive data
             gameSpeed=(float)stream.ReceiveNext();
-            for(var i=0;i<this.players.Length;i++)this.players[i].nick=(string)stream.ReceiveNext();
+            for(var i=0;i<this.players.Length;i++){
+                if(!GameIsStarted){
+                this.players[i].nick=(string)stream.ReceiveNext();
+                this.players[i].ready=(bool)stream.ReceiveNext();
+                }
+                this.players[i].score=(int)stream.ReceiveNext();
+                this.players[i].kills=(int)stream.ReceiveNext();
+                this.players[i].paused=(bool)stream.ReceiveNext();
+            }
+            this.GameIsPaused=(bool)stream.ReceiveNext();
             //this.players=(PlayerSession[])stream.ReceiveNext();
             //this.startCond=(GameStartConditions)stream.ReceiveNext();
         }
     }
     public override void OnConnectedToMaster(){
         Debug.Log("OfflineMode: "+PhotonNetwork.OfflineMode);
+    }
+    public int GetLocalPlayerID(){
+        return Array.FindIndex(players,0,players.Length,x=>x.nick==PhotonNetwork.LocalPlayer.NickName);
+        //Array.FindIndex(players,0,players.Length,x=>Array.IndexOf(players,x)==Array.FindIndex(PhotonNetwork.PlayerList,x=>x==PhotonNetwork.LocalPlayer));
     }
 }
 
@@ -166,4 +216,6 @@ public class PlayerSession{
     public int score=0;
     public int kills=0;
     public float respawnTimer=-4;
+    public bool ready;
+    public bool paused;
 }

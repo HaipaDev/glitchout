@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3476277972439097711}
   - component: {fileID: 1050638798}
+  - component: {fileID: 2845157881375084301}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -45,3 +46,46 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerPrefab: {fileID: 7011926872291180623, guid: c1a7bd4c78edf5c48a14508f091f013a,
     type: 3}
+  players: []
+  startCond:
+    id: 0
+  startTimer: -4
+  GameIsStarted: 0
+  GameIsPaused: 0
+  TimeIs0: 0
+  gameSpeed: 1
+  references:
+    version: 1
+    00000000:
+      type: {class: GameStartConditions, ns: , asm: Assembly-CSharp}
+      data:
+        timerSet: 150
+        timerEnabled: 1
+        timeKillsEnabled: 0
+        scoreLimit: 0
+        scoreEnabled: 0
+        killsLimit: 0
+        killsEnabled: 0
+--- !u!114 &2845157881375084301
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5544494608357549591}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ObservedComponentsFoldoutOpen: 1
+  Group: 0
+  prefixField: -1
+  Synchronization: 3
+  OwnershipTransfer: 0
+  observableSearch: 2
+  ObservedComponents:
+  - {fileID: 1050638798}
+  sceneViewId: 0
+  InstantiationId: 0
+  isRuntimeInstantiated: 0

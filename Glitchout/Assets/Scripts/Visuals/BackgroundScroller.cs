@@ -15,6 +15,6 @@ public class BackgroundScroller : MonoBehaviour{
     }
 
     void Update(){
-        if((SceneManager.GetActiveScene().name=="Game"&&GameManager.instance.GameIsStarted&&!PauseMenu.GameIsPaused)||SceneManager.GetActiveScene().name!="Game")myMat.mainTextureOffset+=offSet*Time.deltaTime;
+        if((SceneManager.GetActiveScene().name=="Game"&&!GameManager.instance.TimeIs0)||SceneManager.GetActiveScene().name!="Game")myMat.mainTextureOffset+=offSet*Time.deltaTime;
     }
 }
