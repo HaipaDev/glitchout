@@ -76,16 +76,6 @@ public class GameConditions : MonoBehaviour{
 }
 [System.Serializable]
 public class GameStartConditions{
-    public byte Id{get;set;}
-    public static byte[] Serialize(object customType){
-        var c=(GameStartConditions)customType;
-        return new byte[]{c.Id};
-    }
-    public static object Deserialize(byte[] data){
-        var result=new GameStartConditions();
-        result.Id=data[0];
-        return result;
-    }
     public float timerSet=150;
     public bool timerEnabled=true;
     public bool timeKillsEnabled;

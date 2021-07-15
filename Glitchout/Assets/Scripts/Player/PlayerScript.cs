@@ -112,8 +112,11 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
         transform.eulerAngles=new Vector3(0,0,angle);
     }
 
-    [PunRPC]
     public void Damage(float dmg){
+        PhotonView.Get(this).RPC("DamageRPC",RpcTarget.All,dmg);
+    }
+    [PunRPC]
+    public void DamageRPC(float dmg){
         health-=dmg;
         GetComponent<PlayerPerks>().dmgdTimer=GetComponent<PlayerPerks>().dmgdTime*Mathf.Clamp(dmg,0,10);
         
@@ -187,7 +190,7 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
         }else{
             var dmgDealer=other.GetComponent<DamageDealer>();
             if(other.GetComponent<HealthPack>()!=null&&other.GetComponent<HealthPack>().timer<=0){health+=25;other.GetComponent<HealthPack>().timer=other.GetComponent<HealthPack>().timerMax;AudioManager.instance.Play("HPCollect");}
-            if(other.GetComponent<Saw>()!=null){Damage(dmgDealer.GetDmgSaw()*2);AudioManager.instance.Play("SawHit");int i=Random.Range(0,2);GameAssets.instance.VFX(i.ToString(),transform.position,0.2f);}
+            if(other.GetComponent<Saw>()!=null){Damage(dmgDealer.GetDmgSaw());AudioManager.instance.Play("SawHit");int i=Random.Range(0,2);GameAssets.instance.VFX(i.ToString(),transform.position,0.2f);}
             if(other.GetComponent<Tag_Barrier>()!=null){Damage(dmgDealer.GetDmgZone());TpMiddle();AudioManager.instance.Play("Hit");}
         }
         dmgTimer=0;
@@ -226,11 +229,13 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
             stream.SendNext(xpos);
             stream.SendNext(ypos);
             stream.SendNext(angle);
+            stream.SendNext(health);
         }
         else{// Network player, receive data
             this.xpos=(float)stream.ReceiveNext();
             this.ypos=(float)stream.ReceiveNext();
             this.angle=(float)stream.ReceiveNext();
+            this.health=(float)stream.ReceiveNext();
         }
     }
 }

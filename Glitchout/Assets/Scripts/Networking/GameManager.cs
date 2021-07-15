@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
     [Range(0f,10f)]public float gameSpeed=1;
     void Start(){instance=this;Resize();
         PhotonNetwork.SerializationRate=6000;//60/s
-        if(GameSession.instance.offlineMode){PhotonNetwork.OfflineMode=true;PhotonNetwork.CreateRoom("");}
+        if(GameSession.instance.offlineMode){PhotonNetwork.LeaveLobby();PhotonNetwork.OfflineMode=true;PhotonNetwork.CreateRoom("");}
         if(PhotonNetwork.IsConnectedAndReady){var go=PhotonNetwork.Instantiate(playerPrefab.name,Vector2.zero,Quaternion.identity);}//go.name="Player"+go.GetComponent<PlayerScript>().playerNum;}
         if(PhotonNetwork.OfflineMode){var go=PhotonNetwork.Instantiate(playerPrefab.name,Vector2.zero,Quaternion.identity);}//Instantiate second player on OfflineMode}
     }
