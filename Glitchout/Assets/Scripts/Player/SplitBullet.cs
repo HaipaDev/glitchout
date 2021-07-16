@@ -10,17 +10,12 @@ public class SplitBullet : MonoBehaviour{
     [HeaderAttribute("Params")]
     public int playerID;
     public Vector2 coords;
-    Vector2 pos;
-    void Start(){
-        
-    }
 
     void Update(){
-        pos=new Vector2(transform.position.x,transform.position.y);
         var step=speed*Time.deltaTime;
         if(coords!=null){//Vector2 coordsFar=coords*3;
             transform.position=Vector2.MoveTowards(transform.position,coords,step);}
-        if(pos==coords){Destroy(gameObject);}
+        if((Vector2)transform.position==coords){Destroy(gameObject);}
         lifeTime-=Time.deltaTime;
         if(lifeTime<=0){Destroy(gameObject);}
 

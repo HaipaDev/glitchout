@@ -18,7 +18,7 @@ public class Spectre : MonoBehaviour{
     }
 
     void Update(){
-        player=GameManager.instance.players.Where(x => x.playerScript.GetComponent<PlayerScript>().playerNum == playerID).SingleOrDefault().playerScript;
+        player=GameManager.instance.players.Where(x=>x.playerScript.GetComponent<PlayerScript>().playerNum==playerID).SingleOrDefault().playerScript;
         transform.rotation=player.transform.rotation;
         if(player.hidden!=true){
             var ps=glowVFX.GetComponent<ParticleSystem>().main;

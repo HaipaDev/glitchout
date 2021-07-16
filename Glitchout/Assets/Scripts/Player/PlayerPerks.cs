@@ -55,7 +55,7 @@ public class PlayerPerks : MonoBehaviour{
     }
 
     void Update(){
-        if(Time.timeScale>0.0001f){
+        if(!GameManager.instance.TimeIs0){
         foreach(perks perk in playPerks){
             if(perk==perks.autofix){
                 if(dmgdTimer>0){afixRegTimer=-4;dmgdTimer-=Time.deltaTime;}
@@ -141,7 +141,7 @@ public class PlayerPerks : MonoBehaviour{
                 for(var i=0;i<spectres.Length;i++){
                     GameObject go=Instantiate(GameAssets.instance.Get("Spectre"),parent.transform);
                     spectres[i]=go;
-                    go.name="Spectre"+(i+1).ToString();
+                    go.name="Spectre"+(i).ToString();
                     go.GetComponent<SpriteRenderer>().sprite=GetComponent<SpriteRenderer>().sprite;
                     go.GetComponent<Spectre>().playerID=player.playerNum;
 

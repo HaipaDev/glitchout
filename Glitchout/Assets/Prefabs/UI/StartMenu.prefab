@@ -739,8 +739,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
+      - m_Target: {fileID: 8109063281981824597}
+        m_TargetAssemblyTypeName: StartMenu, Assembly-CSharp
         m_MethodName: BackStartMenu
         m_Mode: 1
         m_Arguments:

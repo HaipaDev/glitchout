@@ -47,7 +47,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
         var allPerks=Enum.GetValues(typeof(perks));
         foreach(PlayerSession p in players){if(p!=null){
             if(p.playPerks==null){p.playPerks=new List<perks>();}//Resize playPerks
-            if(p.playPerks.Count==0)foreach(var pk in allPerks)p.playPerks.Add(perks.empty);
+            if(p.playPerks.Count==0){foreach(var pk in allPerks){p.playPerks.Add(perks.empty);}p.playPerks.Remove(p.playPerks[0]);}
             
             if(p.respawnTimer==0)p.respawnTimer=-4;
             if(p.playerScript!=null){
@@ -64,19 +64,18 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
         //if(SceneManager.GetActiveScene().name=="Game")
     }
     void StartGame(){
-        if(startTimer<=0&&startTimer!=-4){
+        if(startTimer<=0&&startTimer!=-4&&!GameIsStarted){
             PhotonNetwork.CurrentRoom.IsOpen=false;
             StartMenu.instance.mainPanel.SetActive(false);
             StartMenu.instance.perksPanel.SetActive(false);
             //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
-            gameSpeed=1;
-            GameIsStarted=true;
             foreach(PlayerSession player in players){
                 if(player.playerScript!=null){
                     player.playerScript.GetComponent<PlayerPerks>().SetStartParams();
                     player.playerScript.GetComponent<PlayerPerks>().RespawnPerks();
                 }else{Debug.LogWarning("No PlayerScript attached to "+System.Array.FindIndex(players,0,players.Length,x=>x==player));}
             }
+            GameIsStarted=true;
         }
         if(startTimer>0)startTimer-=Time.unscaledDeltaTime;
         var readyCount=Array.FindAll(players,x=>x.ready).Length;
@@ -127,12 +126,14 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
         players[ID].skinID=skinID;
     }//}
     [PunRPC]
-    void SetPerkRPC(perks enumPerk){
+    void SetPerkRPC(perks enumPerk,int editPerksID){
         //var player=GameSession.instance.players[editPerksID].playerScript;var playerPerks=player.GetComponent<PlayerPerks>().playPerks;
-        var playerPerks=players[StartMenu.instance.editPerksID].playPerks;
-        if(playerPerks.Contains(enumPerk)){var usedprkID=playerPerks.FindIndex(0,playerPerks.Count,(x)=>x==enumPerk);playerPerks[usedprkID]=perks.empty;return;}
-        for(var i=0; i<playerPerks.Count;i++){
-            if(playerPerks[i]==perks.empty){if(!playerPerks.Contains(enumPerk)){playerPerks[i]=enumPerk;}}
+        var playerPerks=players[editPerksID].playPerks;
+        if(playerPerks.Contains(enumPerk)){var usedprkID=playerPerks.FindIndex(0,playerPerks.Count,x=>x==enumPerk);playerPerks[usedprkID]=perks.empty;return;}
+        else{
+            for(var i=0;i<playerPerks.Count;i++){
+                if(playerPerks[i]==perks.empty){playerPerks[i]=enumPerk;return;}
+            }
         }
     }
 
@@ -171,6 +172,9 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
                 if(!GameIsStarted){
                 stream.SendNext(players[i].nick);
                 stream.SendNext(players[i].ready);
+                for(var p=0;p<this.players[i].playPerks.Count;p++){
+                    stream.SendNext((int)players[i].playPerks[p]);
+                }
                 }
                 stream.SendNext(players[i].score);
                 stream.SendNext(players[i].kills);
@@ -187,6 +191,9 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
                 if(!GameIsStarted){
                 this.players[i].nick=(string)stream.ReceiveNext();
                 this.players[i].ready=(bool)stream.ReceiveNext();
+                for(var p=0;p<this.players[i].playPerks.Count;p++){
+                    this.players[i].playPerks[p]=(perks)((int)stream.ReceiveNext());
+                }
                 }
                 this.players[i].score=(int)stream.ReceiveNext();
                 this.players[i].kills=(int)stream.ReceiveNext();
@@ -197,9 +204,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
             //this.startCond=(GameStartConditions)stream.ReceiveNext();
         }
     }
-    public override void OnConnectedToMaster(){
-        Debug.Log("OfflineMode: "+PhotonNetwork.OfflineMode);
-    }
+    //public override void OnConnectedToMaster(){Debug.Log("OfflineMode: "+PhotonNetwork.OfflineMode);}
     public int GetLocalPlayerID(){
         return Array.FindIndex(players,0,players.Length,x=>x.nick==PhotonNetwork.LocalPlayer.NickName);
         //Array.FindIndex(players,0,players.Length,x=>Array.IndexOf(players,x)==Array.FindIndex(PhotonNetwork.PlayerList,x=>x==PhotonNetwork.LocalPlayer));

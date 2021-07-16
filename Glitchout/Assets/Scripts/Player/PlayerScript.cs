@@ -166,10 +166,12 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
         hidden=true;
         GetComponent<SpriteRenderer>().enabled=false;
         GetComponent<Collider2D>().enabled=false;
+        GetComponent<PlayerPerks>().spectres[0].transform.parent.gameObject.SetActive(false);
     }private void UnHide(){
         hidden=false;
         GetComponent<SpriteRenderer>().enabled=true;
         GetComponent<Collider2D>().enabled=true;
+        GetComponent<PlayerPerks>().spectres[0].transform.parent.gameObject.SetActive(true);
     }
 
 
@@ -237,5 +239,9 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
             this.angle=(float)stream.ReceiveNext();
             this.health=(float)stream.ReceiveNext();
         }
+    }
+
+    void OnOffAllChildren(bool on=false){
+        foreach(Transform t in transform){t.gameObject.SetActive(on);}
     }
 }

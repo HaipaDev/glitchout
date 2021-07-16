@@ -32,7 +32,10 @@ public class StartMenu : MonoBehaviourPunCallbacks{
             GameConditions.instance.startCond.timerSet=(timerMin*60)+timerSec;
         }
         if(Input.GetKeyDown(KeyCode.Escape)){
-            if(!GameManager.instance.GameIsStarted){Leave();}
+            if(!GameManager.instance.GameIsStarted){
+                if(perksPanel.activeSelf)BackStartMenu();
+                else Leave();
+            }
         }
 
         //Set skins
@@ -92,7 +95,7 @@ public class StartMenu : MonoBehaviourPunCallbacks{
     public void GiveMaster(int ID){if(PhotonNetwork.IsMasterClient)PhotonNetwork.SetMasterClient(PhotonNetwork.PlayerList[ID]);}
     public void SkinPrev(int ID){PhotonView.Get(GameManager.instance).RPC("SkinPrevRPC",RpcTarget.All,ID);}
     public void SkinNext(int ID){PhotonView.Get(GameManager.instance).RPC("SkinNextRPC",RpcTarget.All,ID);}
-    public void SetPerk(perks enumPerk){PhotonView.Get(GameManager.instance).RPC("SetPerkRPC",RpcTarget.All,enumPerk);}
+    public void SetPerk(perks enumPerk){PhotonView.Get(GameManager.instance).RPC("SetPerkRPC",RpcTarget.All,enumPerk,editPerksID);}
 
     public void SetTimeMinutes(TMPro.TMP_InputField txt){if(Application.isPlaying)timerMin=int.Parse(txt.text);if(int.Parse(txt.text)>404){txt.text="404";}}
     public void SetTimeSeconds(TMPro.TMP_InputField txt){if(Application.isPlaying)timerSec=int.Parse(txt.text);if(int.Parse(txt.text)>59){txt.text="59";}}

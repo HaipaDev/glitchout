@@ -28,14 +28,16 @@ public class ValueDisplay : MonoBehaviour{
                 if(value.Contains("nick_")){if(GameManager.instance.players.Length>xx)if(!String.IsNullOrEmpty(GameManager.instance.players[xx].nick)){
                     txt=GameManager.instance.players[xx].nick;
                     if(transform.root.GetComponentInChildren<StartMenu>()!=null)if(Photon.Pun.PhotonNetwork.PlayerList[xx].IsMasterClient){GetComponent<TMPro.TextMeshProUGUI>().color=Color.cyan;}else{GetComponent<TMPro.TextMeshProUGUI>().color=Color.white;}}
-                    else{txt="Player"+(xx+1).ToString();}}
-                if(GameManager.instance.players[xx].playerScript!=null){
-                    if(value.Contains("health_")){if(GameManager.instance.players[xx].playerScript.hidden!=true){txt=Mathf.RoundToInt(GameManager.instance.players[xx].playerScript.health).ToString();}else{txt=Math.Round(GameManager.instance.players[xx].respawnTimer,1).ToString();}}
-                    if(value.Contains("perkCount_")){List<perks> pCount=null;
-                    if(GameManager.instance.players[xx].playerScript.GetComponent<PlayerPerks>()!=null)pCount=GameManager.instance.players[xx].playerScript.GetComponent<PlayerPerks>().playPerks.FindAll(p=>p!=perks.empty);
+                    else{txt="Player"+(xx+1).ToString();}
+                }
+                if(value.Contains("perkCount_")){List<perks> pCount=new List<perks>();
+                    if(GameManager.instance.players[xx].playPerks!=null)pCount=GameManager.instance.players[xx].playPerks.FindAll(p=>p!=perks.empty);
                     if(pCount.Count>0){
                     txt=pCount.Count.ToString()+"/"+
-                    PerksList.instance.perkList.Length+" PERKS";}else{txt="PERKS";}}
+                    GameManager.instance.players[xx].playPerks.Count+" PERKS";}else{txt="PERKS";}
+                }
+                if(GameManager.instance.players[xx].playerScript!=null){
+                    if(value.Contains("health_")){if(GameManager.instance.players[xx].playerScript.hidden!=true){txt=Mathf.RoundToInt(GameManager.instance.players[xx].playerScript.health).ToString();}else{txt=Math.Round(GameManager.instance.players[xx].respawnTimer,1).ToString();}}
                 }else{Debug.LogWarning("No PlayerScript attached to Player"+xx);}
         }}
         if(value.Contains("gameVersion")){txt=SaveSerial.instance.settingsData.gameVersion;}
@@ -44,7 +46,7 @@ public class ValueDisplay : MonoBehaviour{
             ||GameConditions.instance.startCond.scoreEnabled){txt="Score:";}
             else if((GameConditions.instance.startCond.timerEnabled&&GameConditions.instance.startCond.timeKillsEnabled)
             ||GameConditions.instance.startCond.killsEnabled){txt="Kills:";}}
-        if(value=="perksFor"){txt="CHANGE PERKS FOR Player "+(StartMenu.instance.editPerksID+1).ToString();}
+        if(value=="perksFor"){txt="CHANGE PERKS FOR "+GameManager.instance.players[StartMenu.instance.editPerksID].nick;}
 
         if(value=="timer"){GetComponent<TMPro.TextMeshProUGUI>().enabled=GameConditions.instance.startCond.timerEnabled;
             var timer=GameConditions.instance.timer;if(timer>0){float min=timer/60; float sec=Mathf.RoundToInt(timer-(float)(System.Math.Truncate(min)*60f)); if(sec>=60){min+=1;sec=0;} string textSec=sec.ToString(); if(sec<10){textSec="0"+sec;} txt=System.Math.Truncate(min).ToString()+":"+textSec;}else{txt="0:00";}}//160/60=2\.6 | 160-2*60=160-120=40
