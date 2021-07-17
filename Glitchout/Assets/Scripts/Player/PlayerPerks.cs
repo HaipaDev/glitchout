@@ -45,17 +45,17 @@ public class PlayerPerks : MonoBehaviour{
 
     int splitId;
 
-    Player player;
-
-    private void Awake() {
-        
+    PlayerScript player;
+    void Start(){
+        player=GetComponent<PlayerScript>();
     }
-    private void Start(){
-        player=GetComponent<Player>();
+    void OnValidate() {
+        var allPerks=Enum.GetValues(typeof(perks));
+        if(playPerks.Count==0)foreach(var pk in allPerks)if((perks)pk!=perks.empty)playPerks.Add(perks.empty);//Resize playPerks
     }
 
-    private void Update(){
-        if(Time.timeScale>0.0001f){
+    void Update(){
+        if(!GameManager.instance.TimeIs0){
         foreach(perks perk in playPerks){
             if(perk==perks.autofix){
                 if(dmgdTimer>0){afixRegTimer=-4;dmgdTimer-=Time.deltaTime;}
@@ -97,8 +97,8 @@ public class PlayerPerks : MonoBehaviour{
                 if(spectres[rndm]!=null){   
                     Vector2 selfPos=transform.position;
                     Vector2 spectrePos=spectres[rndm].transform.position;
-                    GetComponent<Player>().xpos=spectrePos.x;
-                    GetComponent<Player>().ypos=spectrePos.y;
+                    player.xpos=spectrePos.x;
+                    player.ypos=spectrePos.y;
                     foreach(GameObject spectre in spectres){var spectrePosC=spectre.transform.position;spectre.GetComponent<FollowStrict>().xx=spectrePos.x-spectrePosC.x;spectre.GetComponent<FollowStrict>().yy=spectrePos.y-spectrePosC.y;}
                     spectres[rndm].transform.position=selfPos;
                     //spectres[rndm].GetComponent<FollowStrict>().targetObj=null;
@@ -141,9 +141,9 @@ public class PlayerPerks : MonoBehaviour{
                 for(var i=0;i<spectres.Length;i++){
                     GameObject go=Instantiate(GameAssets.instance.Get("Spectre"),parent.transform);
                     spectres[i]=go;
-                    go.name="Spectre"+(i+1).ToString();
+                    go.name="Spectre"+(i).ToString();
                     go.GetComponent<SpriteRenderer>().sprite=GetComponent<SpriteRenderer>().sprite;
-                    go.GetComponent<Spectre>().playerID=GetComponent<Player>().playerNum;
+                    go.GetComponent<Spectre>().playerID=player.playerNum;
 
                     Vector2 pos=transform.position;
                     float xs=0.3f;float xm=1.2f;
@@ -164,8 +164,8 @@ public class PlayerPerks : MonoBehaviour{
     void MakeSplit(int id){
         //for(var i=0;i<3;i++){
             GameObject go=Instantiate(GameAssets.instance.Get("SplitBt"),transform.position,Quaternion.identity);
-            go.GetComponent<SplitBullet>().playerID=GetComponent<Player>().playerNum;
-            go.GetComponent<SplitBullet>().coords=GameSession.instance.players.Where(x => x.GetComponent<Player>().playerNum != GetComponent<Player>().playerNum).SingleOrDefault().transform.position;
+            go.GetComponent<SplitBullet>().playerID=player.playerNum;
+            go.GetComponent<SplitBullet>().coords=GameManager.instance.players.Where(x=>x.playerScript.playerNum!=player.playerNum).SingleOrDefault().playerScript.transform.position;
             go.GetComponent<SpriteRenderer>().sprite=GetComponent<SpriteRenderer>().sprite;
             if(id==0)go.GetComponent<SpriteRenderer>().color=Color.red;
             if(id==1)go.GetComponent<SpriteRenderer>().color=Color.green;

@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Options.unity
     guid: a473676dea843b543a34f0d0d4699e25
+  - enabled: 1
+    path: Assets/Scenes/OnlineMatchmaking.unity
+    guid: 7675b52ca3a16e44e9b93adf4f8f8a37
   m_configObjects: {}

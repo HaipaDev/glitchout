@@ -11,6 +11,7 @@ using BayatGames.SaveGameFree.Serializers;
 public class SaveSerial : MonoBehaviour{
 	public static SaveSerial instance;
 	void Awake(){if(instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}}
+	//void OnValidate(){Photon.Pun.PhotonNetwork.GameVersion=settingsData.gameVersion;}
 	[SerializeField] string filename = "playerData";
 	bool dataEncode=true;
 	[SerializeField] string filenameSettings = "gameSettings.cfg";

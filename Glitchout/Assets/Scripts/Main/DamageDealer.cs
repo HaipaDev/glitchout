@@ -19,7 +19,7 @@ public class DamageDealer : MonoBehaviour{
     float dmgPlayerStay = 1;
     float dmgSplit = 2.24f;
     float dmgLaser = 2;
-    float dmgSaw = 0.1f;
+    float dmgSaw = 0.2f;
 
     public float GetDmg(){return dmg;}
     public float GetDmgZone(){return dmgZone;}

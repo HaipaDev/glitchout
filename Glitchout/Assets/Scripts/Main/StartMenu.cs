@@ -2,113 +2,128 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
-public class StartMenu : MonoBehaviour{
+public class StartMenu : MonoBehaviourPunCallbacks{
     public static StartMenu instance;
-    public static bool GameIsStarted=false;
-    public GameObject startMenuUI;
-    public GameObject perksMenuUI;
-    [HideInInspector]public float prevGameSpeed=1f;
+    public GameObject mainPanel;
+    public GameObject perksPanel;
+    [SerializeField] GameObject[] skinObj;
+    [SerializeField] TMPro.TextMeshProUGUI[] playersReadyTxt;
+    public GameObject startButton;
+    public TMPro.TextMeshProUGUI roomNameTxt;
     public int editPerksID;
-    [HideInInspector]public float timerMin=2;
-    [HideInInspector]public float timerSec=30;
-
-    //Shop shop;
     void Start(){
         instance=this;
-        if(startMenuUI==null){startMenuUI=transform.GetChild(0).gameObject;}
-        if(perksMenuUI==null){startMenuUI=transform.GetChild(1).gameObject;}
+        if(mainPanel==null){mainPanel=transform.GetChild(0).gameObject;}if(perksPanel==null){perksPanel=transform.GetChild(1).gameObject;}
+        mainPanel.SetActive(false);perksPanel.SetActive(false);
         Open();
-        //shop=FindObjectOfType<Shop>();
+        if(!PhotonNetwork.OfflineMode){roomNameTxt.text=PhotonNetwork.CurrentRoom.Name;startButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="Ready";}
     }
     void Update(){
-        if(!GameIsStarted){
-            //Sum up timer
-            timerMin=Mathf.Clamp(timerMin,0,404);
-            timerSec=Mathf.Clamp(timerSec,0,59);
-            GameConditions.instance.timer=(timerMin*60)+timerSec;
-        }
         if(Input.GetKeyDown(KeyCode.Escape)){
-            if(!GameIsStarted){
-                Level.instance.LoadStartMenu();
+            if(!GameManager.instance.GameIsStarted){
+                if(perksPanel.activeSelf)BackStartMenu();
+                else Leave();
             }
         }
-    }
-    public void StartGame(){
-        startMenuUI.SetActive(false);
-        perksMenuUI.SetActive(false);
-        //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
-        GameSession.instance.speedChanged=false;
-        GameSession.instance.gameSpeed=prevGameSpeed;
-        GameIsStarted=true;
-        foreach(Player player in GameSession.instance.players){
-            player.GetComponent<PlayerPerks>().SetStartParams();
-            player.GetComponent<PlayerPerks>().RespawnPerks();
+
+        //Set skins
+        if(GameManager.instance.players.Length>1)if(GameManager.instance.players[0].skinID==0&&GameManager.instance.players[1].skinID==0){GameManager.instance.players[1].skinID=1;}
+        for(var s=0;s<skinObj.Length&&s<GameManager.instance.players.Length;s++){
+        if(GameManager.instance.players[s]!=null){
+            var skinID=GameManager.instance.players[s].skinID;
+            //if(GameManager.instance.players.Length>=skinObj.Length){
+                //Check others for same skin
+                for(var s2=0;s2<skinObj.Length&&s2<GameManager.instance.players.Length;s2++){if(s2!=s){
+                    var skinID2=GameManager.instance.players[s2].skinID;
+                    if(skinID2==skinID){skinID++;}
+                }}
+                if(skinID>=0&&skinID<GameAssets.instance.skins.Length){
+                    skinObj[s].GetComponent<Image>().sprite=GameAssets.instance.GetSkin(skinID);
+                }
+            //}
+        }}
+
+        if(!PhotonNetwork.OfflineMode){
+            for(var i=0;i<playersReadyTxt.Length&&i<GameManager.instance.players.Length;i++){
+                if(GameManager.instance.players[i].ready){playersReadyTxt[i].text="Ready";playersReadyTxt[i].color=Color.green;}
+                else{playersReadyTxt[i].text="Not Ready";playersReadyTxt[i].color=Color.grey;}
+            }
+            if(GameManager.instance.players[GameManager.instance.GetLocalPlayerID()].ready){
+                startButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="Unready";
+            }else{
+                startButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="Ready";
+            }
+        }else{
+            roomNameTxt.text="";
+            startButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="Start";
         }
     }
+    
+    public void StartGame(){PhotonView.Get(GameManager.instance).RPC("StartGameRPC",RpcTarget.All,GameManager.instance.GetLocalPlayerID());}
     public void Open(){
-        prevGameSpeed=GameSession.instance.gameSpeed;
-        startMenuUI.SetActive(true);
-        perksMenuUI.SetActive(false);
+        mainPanel.SetActive(true);
+        perksPanel.SetActive(false);
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
-        GameIsStarted=false;
-        GameSession.instance.speedChanged=true;
-        GameSession.instance.gameSpeed=0f;
+    }
+    public void Close(){
+        mainPanel.SetActive(false);
+        perksPanel.SetActive(false);
+        //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
+    }
+    public void Leave(){
+        if(PhotonNetwork.IsConnectedAndReady){PhotonNetwork.LeaveRoom();PhotonNetwork.LeaveLobby();Level.instance.LoadOnlineScene();}
+        if(PhotonNetwork.OfflineMode){PhotonNetwork.LeaveRoom();Level.instance.LoadStartMenu();}
     }
 
     public void PerksMenu(int number){
         editPerksID=number;
-        startMenuUI.SetActive(false);
-        perksMenuUI.SetActive(true);
+        mainPanel.SetActive(false);
+        perksPanel.SetActive(true);
     }
     public void BackStartMenu(){
-        perksMenuUI.SetActive(false);
-        startMenuUI.SetActive(true);
+        perksPanel.SetActive(false);
+        mainPanel.SetActive(true);
     }
 
+    
+    public void GiveMaster(int ID){if(PhotonNetwork.IsMasterClient)PhotonNetwork.SetMasterClient(PhotonNetwork.PlayerList[ID]);}
+    public void SkinPrev(int ID){PhotonView.Get(GameManager.instance).RPC("SkinPrevRPC",RpcTarget.All,ID);}
+    public void SkinNext(int ID){PhotonView.Get(GameManager.instance).RPC("SkinNextRPC",RpcTarget.All,ID);}
+    public void SetPerk(perks enumPerk){PhotonView.Get(GameManager.instance).RPC("SetPerkRPC",RpcTarget.All,enumPerk,editPerksID);}
 
-    public void SetPerk(perks enumPerk){
-        var player=GameSession.instance.players[editPerksID];
-        var playerPerks=player.GetComponent<PlayerPerks>();
-        if(playerPerks.playPerks.Contains(enumPerk)){var usedprkID=playerPerks.playPerks.FindIndex(0,playerPerks.playPerks.Count,(x) => x == enumPerk);playerPerks.playPerks[usedprkID]=perks.empty;return;}
-        for(var i=0; i<playerPerks.playPerks.Count;i++){
-            if(playerPerks.playPerks[i]==perks.empty){if(!playerPerks.playPerks.Contains(enumPerk)){playerPerks.playPerks[i]=enumPerk;}}
-        }
+    public void SetTimeMinutes(TMPro.TMP_InputField txt){
+        int value=int.Parse(txt.text);if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetTimeMinutesRPC",RpcTarget.All,value);if(int.Parse(txt.text)>404){txt.text="404";}
     }
-    public void SetTimeMinutes(TMPro.TMP_InputField txt){if(Application.isPlaying)timerMin=int.Parse(txt.text);if(int.Parse(txt.text)>404){txt.text="404";}}
-    public void SetTimeSeconds(TMPro.TMP_InputField txt){if(Application.isPlaying)timerSec=int.Parse(txt.text);if(int.Parse(txt.text)>59){txt.text="59";}}
-    /*public void SetGameTimeLimit(TMPro.TMP_InputField txt){
-    if(Application.isPlaying){
-        GameConditions.instance.scoreLimit=int.Parse(txt.text);
-        txt.text=System.Math.Round((float.Parse(txt.text)),2).ToString();
-        float min=(float)System.Math.Truncate(float.Parse(txt.text));
-        float sec=float.Parse(txt.text)-min;
-        GameConditions.instance.timer=(min*60)+(sec*100); //float.Parse(txt.text);
-    }}*/
+    public void SetTimeSeconds(TMPro.TMP_InputField txt){
+        int value=int.Parse(txt.text);if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetTimeSecondsRPC",RpcTarget.All,value);if(int.Parse(txt.text)>59){txt.text="59";}
+    }
     public void SetScoreLimit(TMPro.TMP_InputField txt){
-        if(Application.isPlaying)GameConditions.instance.scoreLimit=int.Parse(txt.text);
+        int value=int.Parse(txt.text);if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetScoreLimitRPC",RpcTarget.All,value);
     }public void SetKillsLimit(TMPro.TMP_InputField txt){
-        if(Application.isPlaying)GameConditions.instance.killsLimit=int.Parse(txt.text);
+        int value=int.Parse(txt.text);if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetKillLimitRPC",RpcTarget.All,value);
     }
 
 
     public void SetTimeLimitEnabled(bool isTimeLimit){
-        if(Application.isPlaying)GameConditions.instance.timerEnabled=isTimeLimit;
+        if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetTimeLimitEnabledRPC",RpcTarget.All,isTimeLimit);
     }public void SetTimeLimitKills(bool isTimeLimitKills){
     if(Application.isPlaying){
-        if(GameConditions.instance.timerEnabled){
-            GameConditions.instance.timeKillsEnabled=isTimeLimitKills;
+        if(GameManager.instance.startCond.timerEnabled){
+            PhotonView.Get(GameManager.instance).RPC("SetTimeLimitKillsRPC",RpcTarget.All,isTimeLimitKills);
+            if(PhotonNetwork.IsMasterClient){
             var ck=GameObject.Find("CheckmarkKS").GetComponent<TMPro.TextMeshProUGUI>();
             if(isTimeLimitKills)ck.text="K";else ck.text="S";
+            }
         }
     }}
     public void SetScoreLimitEnabled(bool isScoreLimit){
-        if(Application.isPlaying)GameConditions.instance.scoreEnabled=isScoreLimit;
+        if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetScoreLimitEnabledRPC",RpcTarget.All,isScoreLimit);
     }
     public void SetKillsLimitEnabled(bool isKillsLimit){
-        if(Application.isPlaying)GameConditions.instance.killsEnabled=isKillsLimit;
+        if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetKillsLimitEnabledRPC",RpcTarget.All,isKillsLimit);
     }
-
-    public void PreviousGameSpeed(){GameSession.instance.gameSpeed=prevGameSpeed;}
 }

@@ -2,14 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Photon.Pun;
 
 public class PlayerSkin : MonoBehaviour{
     public int playerID=-1;
     public int skinID;
     IEnumerator Start(){
-        if(playerID==-1)Debug.Log("Player ID not set");
-        if(GetComponent<Image>()!=null){//Set SkinID from Player
-            foreach(Player player in FindObjectsOfType<Player>()){if(player.playerNum==this.playerID){this.skinID=player.GetComponent<PlayerSkin>().skinID;}}
+        if(playerID==-1)Debug.Log("PlayerScript ID not set");
+        if(GetComponent<PlayerScript>()!=null)playerID=GetComponent<PlayerScript>().playerNum;
+        if(GetComponent<Image>()!=null){//Set SkinID from PlayerScript
+            foreach(PlayerScript PlayerScript in FindObjectsOfType<PlayerScript>()){if(PlayerScript.playerNum==this.playerID){this.skinID=PlayerScript.GetComponent<PlayerSkin>().skinID;}}
         }
         //Set skinID from current sprite
         string[] num=new string[2];
@@ -18,14 +20,14 @@ public class PlayerSkin : MonoBehaviour{
         if(num!=null&&num.Length>=2)skinID=int.Parse(num[1]);
 
         
-        GameSession.instance.speedChanged=true;
-        GameSession.instance.gameSpeed=0;
+        //GameSession.instance.speedChanged=true;
+        //GameSession.instance.gameSpeed=0;
         yield return new WaitForSecondsRealtime(0.005f);
     }
-    void Update(){
+    /*void Update(){
         if(skinID>=0&&skinID<GameAssets.instance.skins.Length){
-            if(GetComponent<Player>()!=null){//Set SkinID for Player from config
-                foreach(PlayerSkin skin in FindObjectsOfType<PlayerSkin>()){if(skin.playerID==GetComponent<Player>().playerNum){GetComponent<PlayerSkin>().skinID=skin.skinID;}}
+            if(GetComponent<PlayerScript>()!=null){//Set SkinID for PlayerScript from config
+                foreach(PlayerSkin skin in FindObjectsOfType<PlayerSkin>()){if(skin.playerID==GetComponent<PlayerScript>().playerNum){GetComponent<PlayerSkin>().skinID=skin.skinID;}}
             }
 
             if(GetComponent<SpriteRenderer>()!=null)GetComponent<SpriteRenderer>().sprite=GameAssets.instance.GetSkin(skinID);
@@ -46,4 +48,12 @@ public class PlayerSkin : MonoBehaviour{
             skinID=0;for(;s.skinID==skinID;skinID++);
         }
     }}}
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){
+        if(stream.IsWriting){// We own this player: send the others our data
+            stream.SendNext(skinID);
+        }
+        else{// Network player, receive data
+            this.skinID=(int)stream.ReceiveNext();
+        }
+    }*/
 }

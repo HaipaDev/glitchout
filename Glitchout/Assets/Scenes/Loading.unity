@@ -473,6 +473,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: LoaderCanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 5723858701084346837, guid: a1d042a2d7fa16449ba3191e111a4031,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a1d042a2d7fa16449ba3191e111a4031, type: 3}
 --- !u!1001 &2537177792896037293
@@ -545,6 +550,11 @@ PrefabInstance:
     - target: {fileID: 3282709053022522600, guid: aaea7fa04956e714893575d6a3406495,
         type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3282709053022522601, guid: aaea7fa04956e714893575d6a3406495,
+        type: 3}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
