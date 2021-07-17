@@ -10,6 +10,9 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
     public PlayerSession[] players;
     int defPlayerCount=2;
     [SerializeReference] public GameStartConditions startCond=new GameStartConditions();
+    public int timerMin=2;
+    public int timerSec=30;
+
     public float startTimer=-4;
     public bool GameIsStarted=false;
     public bool GameIsPaused=false;
@@ -30,6 +33,14 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
             if(pausedCount!=players.Length){GameIsPaused=false;}else{GameIsPaused=true;}
         }else{
             if(PauseMenu.GameIsPaused)GameIsPaused=true;else GameIsPaused=false;
+        }
+        
+        if(!GameIsStarted){
+            //Sum up timer
+            timerMin=Mathf.Clamp(timerMin,0,404);
+            timerSec=Mathf.Clamp(timerSec,0,59);
+            startCond.timerSet=(timerMin*60)+timerSec;
+            GameConditions.instance.startCond=startCond;
         }
     }
     void OnValidate() {
@@ -75,6 +86,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
                     player.playerScript.GetComponent<PlayerPerks>().RespawnPerks();
                 }else{Debug.LogWarning("No PlayerScript attached to "+System.Array.FindIndex(players,0,players.Length,x=>x==player));}
             }
+            GameConditions.instance.startCond=startCond;
             GameIsStarted=true;
         }
         if(startTimer>0)startTimer-=Time.unscaledDeltaTime;
@@ -82,6 +94,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
         if(readyCount!=players.Length){return;}else{if(startTimer==-4){startTimer=3;}}//else{startTimer=-5;return;}}
     }
 
+    #region RPCs
     [PunRPC]
     void SetPaused(int ID, bool set){players[ID].paused=set;}
     [PunRPC]
@@ -136,7 +149,15 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
             }
         }
     }
-
+    [PunRPC]void SetTimeMinutesRPC(int value){timerMin=value;}
+    [PunRPC]void SetTimeSecondsRPC(int value){timerSec=value;}
+    [PunRPC]void SetScoreLimitRPC(int value){startCond.scoreLimit=value;}
+    [PunRPC]void SetKillLimitRPC(int value){startCond.killsLimit=value;}
+    [PunRPC]void SetTimeLimitEnabledRPC(bool value){startCond.timerEnabled=value;}
+    [PunRPC]void SetTimeLimitKillsRPC(bool value){startCond.timeKillsEnabled=value;}
+    [PunRPC]void SetScoreLimitEnabledRPC(bool value){startCond.scoreEnabled=value;}
+    [PunRPC]void SetKillsLimitEnabledRPC(bool value){startCond.killsEnabled=value;}
+    #endregion
     
     public void Die(int playerNum, float hitTimer){
         if(playerNum==0){
@@ -160,9 +181,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
         players[i].score=result;
     }
 
-    public void ResetPlayers(){
-        Array.Clear(players,0,players.Length);
-    }
+    public void ResetPlayers(){Array.Clear(players,0,players.Length);}
 
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){
@@ -179,6 +198,9 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
                 stream.SendNext(players[i].score);
                 stream.SendNext(players[i].kills);
                 stream.SendNext(players[i].paused);
+            }
+            if(!GameIsStarted){
+                
             }
             stream.SendNext(GameIsPaused);
             //for(var i=0;i<players.Length;i++)stream.SendNext(players[i].nick);
@@ -198,6 +220,9 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
                 this.players[i].score=(int)stream.ReceiveNext();
                 this.players[i].kills=(int)stream.ReceiveNext();
                 this.players[i].paused=(bool)stream.ReceiveNext();
+            }
+            if(!GameIsStarted){
+                
             }
             this.GameIsPaused=(bool)stream.ReceiveNext();
             //this.players=(PlayerSession[])stream.ReceiveNext();

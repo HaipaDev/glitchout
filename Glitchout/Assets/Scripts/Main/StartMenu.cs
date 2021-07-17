@@ -15,8 +15,6 @@ public class StartMenu : MonoBehaviourPunCallbacks{
     public GameObject startButton;
     public TMPro.TextMeshProUGUI roomNameTxt;
     public int editPerksID;
-    [HideInInspector]public float timerMin=2;
-    [HideInInspector]public float timerSec=30;
     void Start(){
         instance=this;
         if(mainPanel==null){mainPanel=transform.GetChild(0).gameObject;}if(perksPanel==null){perksPanel=transform.GetChild(1).gameObject;}
@@ -25,12 +23,6 @@ public class StartMenu : MonoBehaviourPunCallbacks{
         if(!PhotonNetwork.OfflineMode){roomNameTxt.text=PhotonNetwork.CurrentRoom.Name;startButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="Ready";}
     }
     void Update(){
-        if(!GameManager.instance.GameIsStarted){
-            //Sum up timer
-            timerMin=Mathf.Clamp(timerMin,0,404);
-            timerSec=Mathf.Clamp(timerSec,0,59);
-            GameConditions.instance.startCond.timerSet=(timerMin*60)+timerSec;
-        }
         if(Input.GetKeyDown(KeyCode.Escape)){
             if(!GameManager.instance.GameIsStarted){
                 if(perksPanel.activeSelf)BackStartMenu();
@@ -97,29 +89,35 @@ public class StartMenu : MonoBehaviourPunCallbacks{
     public void SkinNext(int ID){PhotonView.Get(GameManager.instance).RPC("SkinNextRPC",RpcTarget.All,ID);}
     public void SetPerk(perks enumPerk){PhotonView.Get(GameManager.instance).RPC("SetPerkRPC",RpcTarget.All,enumPerk,editPerksID);}
 
-    public void SetTimeMinutes(TMPro.TMP_InputField txt){if(Application.isPlaying)timerMin=int.Parse(txt.text);if(int.Parse(txt.text)>404){txt.text="404";}}
-    public void SetTimeSeconds(TMPro.TMP_InputField txt){if(Application.isPlaying)timerSec=int.Parse(txt.text);if(int.Parse(txt.text)>59){txt.text="59";}}
+    public void SetTimeMinutes(TMPro.TMP_InputField txt){
+        int value=int.Parse(txt.text);if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetTimeMinutesRPC",RpcTarget.All,value);if(int.Parse(txt.text)>404){txt.text="404";}
+    }
+    public void SetTimeSeconds(TMPro.TMP_InputField txt){
+        int value=int.Parse(txt.text);if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetTimeSecondsRPC",RpcTarget.All,value);if(int.Parse(txt.text)>59){txt.text="59";}
+    }
     public void SetScoreLimit(TMPro.TMP_InputField txt){
-        if(Application.isPlaying)GameManager.instance.startCond.scoreLimit=int.Parse(txt.text);
+        int value=int.Parse(txt.text);if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetScoreLimitRPC",RpcTarget.All,value);
     }public void SetKillsLimit(TMPro.TMP_InputField txt){
-        if(Application.isPlaying)GameManager.instance.startCond.killsLimit=int.Parse(txt.text);
+        int value=int.Parse(txt.text);if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetKillLimitRPC",RpcTarget.All,value);
     }
 
 
     public void SetTimeLimitEnabled(bool isTimeLimit){
-        if(Application.isPlaying)GameManager.instance.startCond.timerEnabled=isTimeLimit;
+        if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetTimeLimitEnabledRPC",RpcTarget.All,isTimeLimit);
     }public void SetTimeLimitKills(bool isTimeLimitKills){
     if(Application.isPlaying){
         if(GameManager.instance.startCond.timerEnabled){
-            GameManager.instance.startCond.timeKillsEnabled=isTimeLimitKills;
+            PhotonView.Get(GameManager.instance).RPC("SetTimeLimitKillsRPC",RpcTarget.All,isTimeLimitKills);
+            if(PhotonNetwork.IsMasterClient){
             var ck=GameObject.Find("CheckmarkKS").GetComponent<TMPro.TextMeshProUGUI>();
             if(isTimeLimitKills)ck.text="K";else ck.text="S";
+            }
         }
     }}
     public void SetScoreLimitEnabled(bool isScoreLimit){
-        if(Application.isPlaying)GameManager.instance.startCond.scoreEnabled=isScoreLimit;
+        if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetScoreLimitEnabledRPC",RpcTarget.All,isScoreLimit);
     }
     public void SetKillsLimitEnabled(bool isKillsLimit){
-        if(Application.isPlaying)GameManager.instance.startCond.killsEnabled=isKillsLimit;
+        if(Application.isPlaying)PhotonView.Get(GameManager.instance).RPC("SetKillsLimitEnabledRPC",RpcTarget.All,isKillsLimit);
     }
 }

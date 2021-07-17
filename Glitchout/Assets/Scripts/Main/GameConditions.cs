@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Photon.Pun;
 
-
-public class GameConditions : MonoBehaviour{
+public class GameConditions : MonoBehaviour, IPunObservable{
     public static GameConditions instance;
     public GameStartConditions startCond;
     public float timer;
@@ -13,15 +13,14 @@ public class GameConditions : MonoBehaviour{
     public bool wonBySKLimit;
     public bool doubleScoreDisplay;
     void Start(){
-        if(SceneManager.GetActiveScene().name!="OnlineMatchmaking")instance=this;
+        instance=this;
         //if(instance!=null){Destroy(gameObject);}else{instance=this;DontDestroyOnLoad(gameObject);}
-        ChangeSettings();
+        StartSettings();
     }
-    public void ChangeSettings(){
-        if(startCond.timerEnabled){timer=startCond.timerSet;}
-    }
+    public void StartSettings(){if(startCond.timerEnabled){timer=startCond.timerSet;}}
 
     void Update(){
+        if(!GameManager.instance.GameIsStarted){StartSettings();}
         if(((startCond.timerEnabled&&startCond.timeKillsEnabled)&&startCond.scoreEnabled==true)
         ||((startCond.timerEnabled&&!startCond.timeKillsEnabled)&&startCond.killsEnabled==true)
         ||(startCond.scoreEnabled==true&&startCond.killsEnabled==true)){doubleScoreDisplay=true;}
@@ -72,6 +71,15 @@ public class GameConditions : MonoBehaviour{
             }
         }
         AudioManager.instance.Play("Victory");
+    }
+
+    public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){
+        if(stream.IsWriting){// We own this player: send the others our data
+            stream.SendNext(timer);
+        }
+        else{// Network player, receive data
+            this.timer=(float)stream.ReceiveNext();
+        }
     }
 }
 [System.Serializable]

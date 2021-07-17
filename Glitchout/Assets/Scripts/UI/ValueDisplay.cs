@@ -8,10 +8,12 @@ public class ValueDisplay : MonoBehaviour{
     [SerializeField]string value;
     [SerializeField]bool update=true;
     string txt;
+    [SerializeField]bool colorUpdate=false;
+    Color color=Color.white;
     void Start(){
         //if(value=="timerSetting"){var timer=GameConditions.instance.timer; float min=timer/60; float sec=Mathf.RoundToInt(timer-(float)(System.Math.Truncate(min)*60f)); if(sec>=60){min+=1;sec=0;} string textSec=sec.ToString(); if(sec<10){textSec="0"+sec;} txt=System.Math.Truncate(min).ToString()+"."+textSec;}
-        if(value=="timerMin"){txt=StartMenu.instance.timerMin.ToString();}
-        if(value=="timerSec"){txt=StartMenu.instance.timerMin.ToString();}
+        if(value=="timerMin"){txt=GameManager.instance.timerMin.ToString();}
+        if(value=="timerSec"){txt=GameManager.instance.timerMin.ToString();}
         //if(value=="perkCount_"){txt="0/"+PerksList.instance.perkList.Length+" PERKS";}
         if(txt!=""){
             if(GetComponent<TMPro.TextMeshProUGUI>()!=null)GetComponent<TMPro.TextMeshProUGUI>().text=txt;
@@ -27,7 +29,7 @@ public class ValueDisplay : MonoBehaviour{
                 if(value.Contains("kills_")){if(GameConditions.instance.startCond.timerEnabled&&GameConditions.instance.startCond.timeKillsEnabled!=true){value="score_"+x;}if(GameManager.instance.players.Length>xx)txt=GameManager.instance.players[xx].kills.ToString();}
                 if(value.Contains("nick_")){if(GameManager.instance.players.Length>xx)if(!String.IsNullOrEmpty(GameManager.instance.players[xx].nick)){
                     txt=GameManager.instance.players[xx].nick;
-                    if(transform.root.GetComponentInChildren<StartMenu>()!=null)if(Photon.Pun.PhotonNetwork.PlayerList[xx].IsMasterClient){GetComponent<TMPro.TextMeshProUGUI>().color=Color.cyan;}else{GetComponent<TMPro.TextMeshProUGUI>().color=Color.white;}}
+                    if(transform.root.GetComponentInChildren<StartMenu>()!=null)if(Photon.Pun.PhotonNetwork.PlayerList[xx].IsMasterClient){color=Color.cyan;}else{color=Color.white;}}
                     else{txt="Player"+(xx+1).ToString();}
                 }
                 if(value.Contains("perkCount_")){List<perks> pCount=new List<perks>();
@@ -46,14 +48,18 @@ public class ValueDisplay : MonoBehaviour{
             ||GameConditions.instance.startCond.scoreEnabled){txt="Score:";}
             else if((GameConditions.instance.startCond.timerEnabled&&GameConditions.instance.startCond.timeKillsEnabled)
             ||GameConditions.instance.startCond.killsEnabled){txt="Kills:";}}
-        if(value=="perksFor"){txt="CHANGE PERKS FOR "+GameManager.instance.players[StartMenu.instance.editPerksID].nick;}
+        if(value=="perksFor"){string value;if(!string.IsNullOrEmpty(GameManager.instance.players[StartMenu.instance.editPerksID].nick)){value=GameManager.instance.players[StartMenu.instance.editPerksID].nick;}else{value="Player"+StartMenu.instance.editPerksID+1;}
+        txt="CHANGE PERKS FOR "+value;}
+        if(value=="killLimit"){txt="KILL LIMIT: "+GameManager.instance.startCond.killsLimit;if(!GameManager.instance.startCond.killsEnabled){color=Color.grey;}else{color=Color.white;}}
+        if(value=="scoreLimit"){txt="SCORE LIMIT: "+GameManager.instance.startCond.scoreLimit;if(!GameManager.instance.startCond.scoreEnabled){color=Color.grey;}else{color=Color.white;}}
+        if(value=="timeLimit"){txt="TIME LIMIT: "+GameManager.instance.timerMin+":"+GameManager.instance.timerSec;if(!GameManager.instance.startCond.timerEnabled){color=Color.grey;}else{color=Color.white;}}
 
         if(value=="timer"){GetComponent<TMPro.TextMeshProUGUI>().enabled=GameConditions.instance.startCond.timerEnabled;
             var timer=GameConditions.instance.timer;if(timer>0){float min=timer/60; float sec=Mathf.RoundToInt(timer-(float)(System.Math.Truncate(min)*60f)); if(sec>=60){min+=1;sec=0;} string textSec=sec.ToString(); if(sec<10){textSec="0"+sec;} txt=System.Math.Truncate(min).ToString()+":"+textSec;}else{txt="0:00";}}//160/60=2\.6 | 160-2*60=160-120=40
         
         if(update==true){
-            if(GetComponent<TMPro.TextMeshProUGUI>()!=null)GetComponent<TMPro.TextMeshProUGUI>().text=txt;
-            if(GetComponent<TMPro.TMP_InputField>()!=null)GetComponent<TMPro.TMP_InputField>().text=txt;
+            if(GetComponent<TMPro.TextMeshProUGUI>()!=null){GetComponent<TMPro.TextMeshProUGUI>().text=txt;GetComponent<TMPro.TextMeshProUGUI>().color=color;}
+            if(GetComponent<TMPro.TMP_InputField>()!=null){GetComponent<TMPro.TMP_InputField>().text=txt;GetComponent<TMPro.TMP_InputField>().textComponent.color=color;}
         }
     }
 }

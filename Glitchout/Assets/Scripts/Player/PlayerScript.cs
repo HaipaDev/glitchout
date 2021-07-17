@@ -166,12 +166,12 @@ public class PlayerScript : MonoBehaviourPunCallbacks, IPunObservable{
         hidden=true;
         GetComponent<SpriteRenderer>().enabled=false;
         GetComponent<Collider2D>().enabled=false;
-        GetComponent<PlayerPerks>().spectres[0].transform.parent.gameObject.SetActive(false);
+        if(GetComponent<PlayerPerks>().spectres[0]!=null)GetComponent<PlayerPerks>().spectres[0].transform.parent.gameObject.SetActive(false);
     }private void UnHide(){
         hidden=false;
         GetComponent<SpriteRenderer>().enabled=true;
         GetComponent<Collider2D>().enabled=true;
-        GetComponent<PlayerPerks>().spectres[0].transform.parent.gameObject.SetActive(true);
+        if(GetComponent<PlayerPerks>().spectres[0]!=null)GetComponent<PlayerPerks>().spectres[0].transform.parent.gameObject.SetActive(true);
     }
 
 
