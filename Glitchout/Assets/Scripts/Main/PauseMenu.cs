@@ -54,6 +54,7 @@ public class PauseMenu : MonoBehaviourPunCallbacks{
             GameSession.instance.gameSpeed=0f;
         }
     }
+    public void Restart(){PhotonView.Get(GameManager.instance).RPC("RestartGame",RpcTarget.All);}
     public void Menu(){
         if(!GameSession.instance.offlineMode){PhotonNetwork.LeaveRoom();PhotonNetwork.LeaveLobby();}
         Level.instance.LoadStartMenu();

@@ -7,6 +7,7 @@ using Photon.Pun;
 using Photon.Realtime;
 
 public class NetworkController : MonoBehaviourPunCallbacks{
+    public static NetworkController instance;
     [Header("Lobby")]
     [SerializeField] GameObject loginPanel;
     [SerializeField] TMPro.TMP_InputField  playerNameInput;
@@ -26,17 +27,12 @@ public class NetworkController : MonoBehaviourPunCallbacks{
     [SerializeField] GameObject startButton;
 
     void Start(){
-        loginPanel.SetActive(true);
-        lobbyPanel.SetActive(false);
-        roomPanel.SetActive(false);
-        lobbyConnectButton.SetActive(false);
-        GameSession.instance.gameSpeed=1;
-        GameSession.instance.speedChanged=false;
-        if(PlayerPrefs.HasKey("NickName")){
-            if(!string.IsNullOrEmpty(PlayerPrefs.GetString("NickName"))){
-               playerNameInput.text=PlayerPrefs.GetString("NickName");
-            }
-        }
+        if(instance!=null){Destroy(gameObject);}instance=this;
+        if(loginPanel!=null)loginPanel.SetActive(true);
+        if(lobbyPanel!=null)lobbyPanel.SetActive(false);
+        if(roomPanel!=null)roomPanel.SetActive(false);
+        if(lobbyConnectButton!=null)lobbyConnectButton.SetActive(false);
+        if(PlayerPrefs.HasKey("NickName")&&playerNameInput!=null){if(!string.IsNullOrEmpty(PlayerPrefs.GetString("NickName"))){playerNameInput.text=PlayerPrefs.GetString("NickName");}}
         PhotonNetwork.ConnectUsingSettings();
     }
     public override void OnConnectedToMaster(){
@@ -77,7 +73,7 @@ public class NetworkController : MonoBehaviourPunCallbacks{
             GameObject tempListing=Instantiate(roomListingPrefab,roomsContainer);
             RoomButton tempButton=tempListing.GetComponent<RoomButton>();
             tempButton.SetRoom(room.Name,room.MaxPlayers,room.PlayerCount);
-        }}else if(playerListingPrefab==null||playersContainer==null){Debug.Log("PlayerContainer or PlayerListing prefab is not asigned");}
+        }}else if(playerListingPrefab==null||playersContainer==null){Debug.LogWarning("PlayerContainer or PlayerListing prefab is not asigned");}
     }
     public void PlayerNameUpdate(string nameInput){PhotonNetwork.NickName=nameInput;PlayerPrefs.SetString("NickName",nameInput);}
     public void OnRoomNameChanged(string nameIn){roomName=nameIn;}
@@ -90,7 +86,7 @@ public class NetworkController : MonoBehaviourPunCallbacks{
         Debug.Log("Creating room "+roomName);
     }
     public override void OnCreateRoomFailed(short returnCode,string message){
-        Debug.Log("Tried to create a new room, but failed, there probably exists a room with the same name");
+        Debug.LogWarning("Tried to create a new room, but failed, there probably exists a room with the same name");
     }
     public void LeaveLobby(){
         loginPanel.SetActive(true);
@@ -98,8 +94,10 @@ public class NetworkController : MonoBehaviourPunCallbacks{
         PhotonNetwork.LeaveLobby();
     }
     void ClearPlayerListings(){
-        for(int i=playersContainer.childCount-1;i>=0;i--){
-            Destroy(playersContainer.GetChild(0).gameObject);
+        if(playersContainer!=null){
+            for(int i=playersContainer.childCount-1;i>=0;i--){
+                Destroy(playersContainer.GetChild(0).gameObject);
+            }
         }
     }
     void ListPlayers(){
@@ -108,20 +106,19 @@ public class NetworkController : MonoBehaviourPunCallbacks{
             GameObject tempListing=Instantiate(playerListingPrefab,playersContainer);
             TMPro.TextMeshProUGUI tempText=tempListing.transform.GetChild(0).GetComponent<TMPro.TextMeshProUGUI>();
             tempText.text=player.NickName;
-        }}else if(playerListingPrefab==null||playersContainer==null){Debug.Log("PlayerContainer or PlayerListing prefab is not asigned");}
+        }}else if(playerListingPrefab==null||playersContainer==null){Debug.LogWarning("PlayerContainer or PlayerListing prefab is not asigned");}
     }
     public override void OnJoinedRoom(){
         //roomPanel.SetActive(true);
         //lobbyPanel.SetActive(false);
         //roomNameDisplay.text=PhotonNetwork.CurrentRoom.Name;
         PhotonNetwork.LoadLevel("Game");
-        StartMenu.instance.startButton.GetComponentInChildren<TMPro.TextMeshProUGUI>().text="Ready";
         //if(PhotonNetwork.IsMasterClient)startButton.SetActive(true);
         //else startButton.SetActive(false);
         ClearPlayerListings();
         ListPlayers();
-        if(GameManager.instance.players==null)GameManager.instance.players=new PlayerSession[1];
-        GameManager.instance.players[0].nick=PhotonNetwork.PlayerList[0].NickName;
+        //if(GameManager.instance.players==null)GameManager.instance.players=new PlayerSession[1];
+        //GameManager.instance.players[0].nick=PhotonNetwork.PlayerList[0].NickName;
     }
     public override void OnPlayerEnteredRoom(Player newPlayer){
         Debug.Log(newPlayer.NickName+" just joined "+PhotonNetwork.CurrentRoom.Name);
@@ -147,10 +144,7 @@ public class NetworkController : MonoBehaviourPunCallbacks{
         PhotonNetwork.LeaveLobby();
         StartCoroutine(rejoinLobby());
     }
-    public void Disconnect(){
-        PhotonNetwork.Disconnect();
-    }
-
+    public void Disconnect(){PhotonNetwork.Disconnect();}
 
     static System.Predicate<RoomInfo> ByName(string name){return delegate(RoomInfo room){return room.Name==name;};}
 }

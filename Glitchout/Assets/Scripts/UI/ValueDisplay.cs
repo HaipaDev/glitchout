@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class ValueDisplay : MonoBehaviour{
-    [SerializeField]string value;
+    [SerializeField]public string value;
     [SerializeField]bool update=true;
     string txt;
     [SerializeField]bool colorUpdate=false;
@@ -13,7 +13,7 @@ public class ValueDisplay : MonoBehaviour{
     void Start(){
         //if(value=="timerSetting"){var timer=GameConditions.instance.timer; float min=timer/60; float sec=Mathf.RoundToInt(timer-(float)(System.Math.Truncate(min)*60f)); if(sec>=60){min+=1;sec=0;} string textSec=sec.ToString(); if(sec<10){textSec="0"+sec;} txt=System.Math.Truncate(min).ToString()+"."+textSec;}
         if(value=="timerMin"){txt=GameManager.instance.timerMin.ToString();}
-        if(value=="timerSec"){txt=GameManager.instance.timerMin.ToString();}
+        if(value=="timerSec"){if(GameManager.instance.timerSec>9)txt=GameManager.instance.timerSec.ToString();else txt="0"+GameManager.instance.timerSec.ToString();}
         //if(value=="perkCount_"){txt="0/"+PerksList.instance.perkList.Length+" PERKS";}
         if(txt!=""){
             if(GetComponent<TMPro.TextMeshProUGUI>()!=null)GetComponent<TMPro.TextMeshProUGUI>().text=txt;
@@ -52,7 +52,9 @@ public class ValueDisplay : MonoBehaviour{
         txt="CHANGE PERKS FOR "+value;}
         if(value=="killLimit"){txt="KILL LIMIT: "+GameManager.instance.startCond.killsLimit;if(!GameManager.instance.startCond.killsEnabled){color=Color.grey;}else{color=Color.white;}}
         if(value=="scoreLimit"){txt="SCORE LIMIT: "+GameManager.instance.startCond.scoreLimit;if(!GameManager.instance.startCond.scoreEnabled){color=Color.grey;}else{color=Color.white;}}
-        if(value=="timeLimit"){txt="TIME LIMIT: "+GameManager.instance.timerMin+":"+GameManager.instance.timerSec;if(!GameManager.instance.startCond.timerEnabled){color=Color.grey;}else{color=Color.white;}}
+        if(value=="timeLimit"){var sec="";if(GameManager.instance.timerSec>9)sec=GameManager.instance.timerSec.ToString();else sec="0"+GameManager.instance.timerSec.ToString();
+            txt="TIME LIMIT: "+GameManager.instance.timerMin+":"+sec;
+        if(!GameManager.instance.startCond.timerEnabled){color=Color.grey;}else{color=Color.white;}}
 
         if(value=="timer"){GetComponent<TMPro.TextMeshProUGUI>().enabled=GameConditions.instance.startCond.timerEnabled;
             var timer=GameConditions.instance.timer;if(timer>0){float min=timer/60; float sec=Mathf.RoundToInt(timer-(float)(System.Math.Truncate(min)*60f)); if(sec>=60){min+=1;sec=0;} string textSec=sec.ToString(); if(sec<10){textSec="0"+sec;} txt=System.Math.Truncate(min).ToString()+":"+textSec;}else{txt="0:00";}}//160/60=2\.6 | 160-2*60=160-120=40

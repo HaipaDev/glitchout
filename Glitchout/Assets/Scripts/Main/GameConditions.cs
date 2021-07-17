@@ -8,7 +8,7 @@ public class GameConditions : MonoBehaviour, IPunObservable{
     public static GameConditions instance;
     public GameStartConditions startCond;
     public float timer;
-    public bool matchFinished;
+    public bool MatchFinished;
     public int winningPlayer=-1;
     public bool wonBySKLimit;
     public bool doubleScoreDisplay;
@@ -31,32 +31,34 @@ public class GameConditions : MonoBehaviour, IPunObservable{
                 GameObject.Find("DoubleScore1").transform.GetChild(0).gameObject.SetActive(true);GameObject.Find("DoubleScore2").transform.GetChild(0).gameObject.SetActive(true);
             }else{
                 GameObject.Find("DefaultScore1").transform.GetChild(0).gameObject.SetActive(true);GameObject.Find("DefaultScore2").transform.GetChild(0).gameObject.SetActive(true);
+                if(startCond.killsEnabled||startCond.timeKillsEnabled){GameObject.Find("DefaultScore1").transform.GetChild(0).GetChild(1).GetComponent<ValueDisplay>().value="kills_0";GameObject.Find("DefaultScore2").transform.GetChild(0).GetChild(1).GetComponent<ValueDisplay>().value="kills_1";}
+                else{GameObject.Find("DefaultScore1").transform.GetChild(0).GetChild(1).GetComponent<ValueDisplay>().value="score_0";GameObject.Find("DefaultScore2").transform.GetChild(0).GetChild(1).GetComponent<ValueDisplay>().value="score_1";}
                 GameObject.Find("DoubleScore1").transform.GetChild(0).gameObject.SetActive(false);GameObject.Find("DoubleScore2").transform.GetChild(0).gameObject.SetActive(false);
             }
         }
         if(SceneManager.GetActiveScene().name=="Game"&&GameManager.instance.GameIsStarted==true){
             if(startCond.timerEnabled==true){
                 if(timer>0&&!GameManager.instance.TimeIs0){timer-=Time.deltaTime;}
-                if(timer<=0){timer=-4;matchFinished=true;}
+                if(timer<=0){timer=-4;MatchFinished=true;}
             }
-            if(startCond.scoreEnabled==true&&matchFinished!=true){
+            if(startCond.scoreEnabled==true&&MatchFinished!=true){
                 for(var i=0;i<GameManager.instance.players.Length;i++){
-                    if(GameManager.instance.players[i].score>=startCond.scoreLimit){matchFinished=true;wonBySKLimit=true;winningPlayer=i+1;}
+                    if(GameManager.instance.players[i].score>=startCond.scoreLimit){MatchFinished=true;wonBySKLimit=true;winningPlayer=i;}
                 }
-            }if(startCond.killsEnabled==true&&matchFinished!=true){
+            }if(startCond.killsEnabled==true&&MatchFinished!=true){
                 for(var i=0;i<GameManager.instance.players.Length;i++){
-                    if(GameManager.instance.players[i].kills>=startCond.killsLimit){matchFinished=true;wonBySKLimit=true;winningPlayer=i+1;}
+                    if(GameManager.instance.players[i].kills>=startCond.killsLimit){MatchFinished=true;wonBySKLimit=true;winningPlayer=i;}
                 }
             }
 
-            if(matchFinished){
+            if(MatchFinished){
                 SetWinningPlayer();
                 EndMenu.instance.Open();
                 //GameSession.instance.speedChanged=true;
                 //GameSession.instance.gameSpeed=0;
             }
         }
-        if(!GameManager.instance.GameIsStarted){matchFinished=false;}
+        if(!GameManager.instance.GameIsStarted){MatchFinished=false;}
     }
     void SetWinningPlayer(){
         if(startCond.timerEnabled==true&&!wonBySKLimit){
@@ -70,7 +72,7 @@ public class GameConditions : MonoBehaviour, IPunObservable{
                 else{winningPlayer=-1;}
             }
         }
-        AudioManager.instance.Play("Victory");
+        
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){

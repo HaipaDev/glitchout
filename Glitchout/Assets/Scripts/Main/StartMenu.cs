@@ -32,22 +32,23 @@ public class StartMenu : MonoBehaviourPunCallbacks{
 
         //Set skins
         if(GameManager.instance.players.Length>1)if(GameManager.instance.players[0].skinID==0&&GameManager.instance.players[1].skinID==0){GameManager.instance.players[1].skinID=1;}
-        for(var s=0;s<skinObj.Length;s++){
-        //if(GameSession.instance.players.Length>=skinObj.Length){
+        for(var s=0;s<skinObj.Length&&s<GameManager.instance.players.Length;s++){
         if(GameManager.instance.players[s]!=null){
             var skinID=GameManager.instance.players[s].skinID;
-            //Check others for same skin
-            for(var s2=0;s2<skinObj.Length;s2++){if(s2!=s){
-                var skinID2=GameManager.instance.players[s2].skinID;
-                if(skinID2==skinID){skinID++;}
-            }}
-            if(skinID>=0&&skinID<GameAssets.instance.skins.Length){
-                skinObj[s].GetComponent<Image>().sprite=GameAssets.instance.GetSkin(skinID);
-            }
-        }}//}
+            //if(GameManager.instance.players.Length>=skinObj.Length){
+                //Check others for same skin
+                for(var s2=0;s2<skinObj.Length&&s2<GameManager.instance.players.Length;s2++){if(s2!=s){
+                    var skinID2=GameManager.instance.players[s2].skinID;
+                    if(skinID2==skinID){skinID++;}
+                }}
+                if(skinID>=0&&skinID<GameAssets.instance.skins.Length){
+                    skinObj[s].GetComponent<Image>().sprite=GameAssets.instance.GetSkin(skinID);
+                }
+            //}
+        }}
 
         if(!PhotonNetwork.OfflineMode){
-            for(var i=0;i<playersReadyTxt.Length;i++){
+            for(var i=0;i<playersReadyTxt.Length&&i<GameManager.instance.players.Length;i++){
                 if(GameManager.instance.players[i].ready){playersReadyTxt[i].text="Ready";playersReadyTxt[i].color=Color.green;}
                 else{playersReadyTxt[i].text="Not Ready";playersReadyTxt[i].color=Color.grey;}
             }
@@ -67,6 +68,11 @@ public class StartMenu : MonoBehaviourPunCallbacks{
         mainPanel.SetActive(true);
         perksPanel.SetActive(false);
         //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=true;
+    }
+    public void Close(){
+        mainPanel.SetActive(false);
+        perksPanel.SetActive(false);
+        //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
     }
     public void Leave(){
         if(PhotonNetwork.IsConnectedAndReady){PhotonNetwork.LeaveRoom();PhotonNetwork.LeaveLobby();Level.instance.LoadOnlineScene();}

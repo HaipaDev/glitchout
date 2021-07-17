@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using Photon.Realtime;
 
 public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
     public static GameManager instance;
@@ -21,11 +22,12 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
     void Start(){instance=this;Resize();
         PhotonNetwork.SerializationRate=6000;//60/s
         if(GameSession.instance.offlineMode){PhotonNetwork.LeaveLobby();PhotonNetwork.OfflineMode=true;PhotonNetwork.CreateRoom("");}
-        if(PhotonNetwork.IsConnectedAndReady){var go=PhotonNetwork.Instantiate(playerPrefab.name,Vector2.zero,Quaternion.identity);}//go.name="Player"+go.GetComponent<PlayerScript>().playerNum;}
-        if(PhotonNetwork.OfflineMode){var go=PhotonNetwork.Instantiate(playerPrefab.name,Vector2.zero,Quaternion.identity);}//Instantiate second player on OfflineMode}
+        if(PhotonNetwork.IsConnectedAndReady){var go=PhotonNetwork.Instantiate(playerPrefab.name,Vector2.zero,Quaternion.identity);}//go.GetPhotonView().ViewID=1000+players.Length;}
+        if(PhotonNetwork.OfflineMode){var go=PhotonNetwork.Instantiate(playerPrefab.name,Vector2.zero,Quaternion.identity);}//Second player on OfflineMode
+        //else{if(FindObjectOfType<NetworkController>()==null)Instantiate(new GameObject("NetworkController",typeof(NetworkController)),new Vector2(0,0),Quaternion.identity);}
     }
     void Update(){
-        if(!GameIsStarted||GameIsPaused||Time.timeScale<0.0001f){TimeIs0=true;}else{TimeIs0=false;}
+        if(Time.timeScale<0.0001f||!GameIsStarted||GameIsPaused||GameConditions.instance.MatchFinished){TimeIs0=true;}else{TimeIs0=false;}
         Resize();
         StartGame();
         if(!PhotonNetwork.OfflineMode){
@@ -75,10 +77,9 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
         //if(SceneManager.GetActiveScene().name=="Game")
     }
     void StartGame(){
-        if(startTimer<=0&&startTimer!=-4&&!GameIsStarted){
+        if(startTimer<=0&&startTimer!=-4&&!GameIsStarted&&players.Length>1){
             PhotonNetwork.CurrentRoom.IsOpen=false;
-            StartMenu.instance.mainPanel.SetActive(false);
-            StartMenu.instance.perksPanel.SetActive(false);
+            StartMenu.instance.Close();
             //GameObject.Find("BlurImage").GetComponent<SpriteRenderer>().enabled=false;
             foreach(PlayerSession player in players){
                 if(player.playerScript!=null){
@@ -90,22 +91,22 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
             GameIsStarted=true;
         }
         if(startTimer>0)startTimer-=Time.unscaledDeltaTime;
-        var readyCount=Array.FindAll(players,x=>x.ready).Length;
-        if(readyCount!=players.Length){return;}else{if(startTimer==-4){startTimer=3;}}//else{startTimer=-5;return;}}
+        if(!PhotonNetwork.OfflineMode){
+            var readyCount=Array.FindAll(players,x=>x.ready).Length;
+            if(readyCount!=players.Length){return;}else{if(startTimer==-4){startTimer=3;}}
+        }
     }
 
     #region RPCs
     [PunRPC]
-    void SetPaused(int ID, bool set){players[ID].paused=set;}
+    void SetPaused(int ID, bool set){if(players.Length>ID)if(players[ID]!=null)players[ID].paused=set;}
     [PunRPC]
     void StartGameRPC(int ID){
         if(!PhotonNetwork.OfflineMode){
-        //Debug.Log("Local player ID="+ID+" | It's ready status is: "+players[ID].ready);
-        //Debug.Log("Local players NickName: "+PhotonNetwork.LocalPlayer.NickName+" | Player list nick: "+players[GetLocalPlayerID()].nick);
-        if(!players[ID].ready){players[ID].ready=true;}
-        else{players[ID].ready=false;startTimer=-4;}
-        //var readyCount=Array.FindAll(players,x=>x.ready).Length;
-        //if(readyCount==players.Length/*&&PhotonNetwork.IsMasterClient*/){if(startTimer<=0&&startTimer!=-4){startTimer=3;return;}else{startTimer=-4;players[ID].ready=false;return;}}
+            if(players.Length>1){
+                if(!players[ID].ready){players[ID].ready=true;}
+                else{players[ID].ready=false;startTimer=-4;}
+            }
         }else{
             startTimer=0;
         }
@@ -115,27 +116,31 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
     void SkinPrevRPC(int ID){
         //for(var s=0;s<skinObj.Length;s++){
         var skinID=players[ID].skinID;
-        for(var s2=0;s2<players.Length;s2++){if(s2!=ID){
-            var skinID2=players[s2].skinID;
-            if(skinID>0){
-                if(skinID2!=skinID-1){skinID--;}else if(skinID2==skinID-1&&skinID>1){skinID-=2;}else{skinID=GameAssets.instance.skins.Length-1;}
-            }else if(skinID==0){//Wrap skins outside and dont allow the same one
-                skinID=GameAssets.instance.skins.Length-1;for(;skinID2==skinID&&skinID>0;skinID--);
-            }
-        }}
+        //if(players.Length>1){
+            for(var s2=0;s2<players.Length;s2++){if(players.Length==1||s2!=ID){
+                var skinID2=players[s2].skinID;
+                if(skinID>0){
+                    if(skinID2!=skinID-1){skinID--;}else if(skinID2==skinID-1&&skinID>1){skinID-=2;}else{skinID=GameAssets.instance.skins.Length-1;}
+                }else if(skinID==0){//Wrap skins outside and dont allow the same one
+                    skinID=GameAssets.instance.skins.Length-1;for(;skinID2==skinID&&skinID>0;skinID--);
+                }
+            }}
+        //}else{skinID--;}
         players[ID].skinID=skinID;
     }//}
     [PunRPC]
     public void SkinNextRPC(int ID){//for(var s=0;s<skinObj.Length;s++){
         var skinID=players[ID].skinID;
-        for(var s2=0;s2<players.Length;s2++){if(s2!=ID){
-            var skinID2=players[s2].skinID;
-            if(skinID<GameAssets.instance.skins.Length-1){
-                if(skinID2!=skinID+1){skinID++;}else if(skinID2==skinID+1&&skinID<GameAssets.instance.skins.Length-2){skinID+=2;}else{skinID=0;}
-            }else if(skinID==GameAssets.instance.skins.Length-1){//Wrap skins outside and dont allow the same one
-                skinID=0;for(;skinID2==skinID;skinID++);
-            }
-        }}
+        //if(players.Length>1){
+            for(var s2=0;s2<players.Length;s2++){if(players.Length==1||s2!=ID){
+                var skinID2=players[s2].skinID;
+                if(skinID<GameAssets.instance.skins.Length-1){
+                    if(skinID2!=skinID+1){skinID++;}else if(skinID2==skinID+1&&skinID<GameAssets.instance.skins.Length-2){skinID+=2;}else{skinID=0;}
+                }else if(skinID==GameAssets.instance.skins.Length-1){//Wrap skins outside and dont allow the same one
+                    skinID=0;for(;skinID2==skinID;skinID++);
+                }
+            }}
+        //}else{skinID++;}
         players[ID].skinID=skinID;
     }//}
     [PunRPC]
@@ -157,6 +162,22 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
     [PunRPC]void SetTimeLimitKillsRPC(bool value){startCond.timeKillsEnabled=value;}
     [PunRPC]void SetScoreLimitEnabledRPC(bool value){startCond.scoreEnabled=value;}
     [PunRPC]void SetKillsLimitEnabledRPC(bool value){startCond.killsEnabled=value;}
+
+    [PunRPC]
+    public void RestartGame(){
+        GameConditions.instance.MatchFinished=false;
+        GameConditions.instance.wonBySKLimit=false;
+        startTimer=-4;
+        GameIsStarted=false;
+        PauseMenu.instance.Resume();
+        EndMenu.instance.Close();
+        StartMenu.instance.Open();
+        foreach(PlayerSession p in players){p.ready=false;
+            p.score=0;p.kills=0;p.respawnTimer=-4;
+            p.playerScript.xpos=0;p.playerScript.ypos=0;p.playerScript.health=p.playerScript.maxHealth;
+        }
+        PhotonNetwork.CurrentRoom.IsOpen=true;
+    }
     #endregion
     
     public void Die(int playerNum, float hitTimer){
@@ -190,6 +211,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
             for(var i=0;i<players.Length;i++){
                 if(!GameIsStarted){
                 stream.SendNext(players[i].nick);
+                stream.SendNext(players[i].skinID);
                 stream.SendNext(players[i].ready);
                 for(var p=0;p<this.players[i].playPerks.Count;p++){
                     stream.SendNext((int)players[i].playPerks[p]);
@@ -200,7 +222,14 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
                 stream.SendNext(players[i].paused);
             }
             if(!GameIsStarted){
-                
+                stream.SendNext(timerMin);
+                stream.SendNext(timerSec);
+                stream.SendNext(startCond.timerEnabled);
+                stream.SendNext(startCond.timerSet);
+                stream.SendNext(startCond.scoreEnabled);
+                stream.SendNext(startCond.scoreLimit);
+                stream.SendNext(startCond.killsEnabled);
+                stream.SendNext(startCond.killsLimit);
             }
             stream.SendNext(GameIsPaused);
             //for(var i=0;i<players.Length;i++)stream.SendNext(players[i].nick);
@@ -212,6 +241,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
             for(var i=0;i<this.players.Length;i++){
                 if(!GameIsStarted){
                 this.players[i].nick=(string)stream.ReceiveNext();
+                this.players[i].skinID=(int)stream.ReceiveNext();
                 this.players[i].ready=(bool)stream.ReceiveNext();
                 for(var p=0;p<this.players[i].playPerks.Count;p++){
                     this.players[i].playPerks[p]=(perks)((int)stream.ReceiveNext());
@@ -222,14 +252,24 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
                 this.players[i].paused=(bool)stream.ReceiveNext();
             }
             if(!GameIsStarted){
-                
+                this.timerMin=(int)stream.ReceiveNext();
+                this.timerSec=(int)stream.ReceiveNext();
+                this.startCond.timerEnabled=(bool)stream.ReceiveNext();
+                this.startCond.scoreEnabled=(bool)stream.ReceiveNext();
+                this.startCond.scoreLimit=(int)stream.ReceiveNext();
+                this.startCond.killsEnabled=(bool)stream.ReceiveNext();
+                this.startCond.killsLimit=(int)stream.ReceiveNext();
             }
             this.GameIsPaused=(bool)stream.ReceiveNext();
             //this.players=(PlayerSession[])stream.ReceiveNext();
             //this.startCond=(GameStartConditions)stream.ReceiveNext();
         }
     }
-    //public override void OnConnectedToMaster(){Debug.Log("OfflineMode: "+PhotonNetwork.OfflineMode);}
+    public override void OnJoinedRoom(){
+
+    }
+    public override void OnPlayerEnteredRoom(Player newPlayer){Debug.Log(newPlayer.NickName+" just joined "+PhotonNetwork.CurrentRoom.Name);}
+    public override void OnPlayerLeftRoom(Player newPlayer){Debug.Log(newPlayer.NickName+" just left "+PhotonNetwork.CurrentRoom.Name);if(players.Length==1){RestartGame();}}
     public int GetLocalPlayerID(){
         return Array.FindIndex(players,0,players.Length,x=>x.nick==PhotonNetwork.LocalPlayer.NickName);
         //Array.FindIndex(players,0,players.Length,x=>Array.IndexOf(players,x)==Array.FindIndex(PhotonNetwork.PlayerList,x=>x==PhotonNetwork.LocalPlayer));
