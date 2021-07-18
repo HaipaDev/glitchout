@@ -181,6 +181,10 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
     #endregion
     
     public void Die(int playerNum, float hitTimer){
+        PhotonView.Get(this).RPC("DieRPC",RpcTarget.All,playerNum,hitTimer);
+    }
+    [PunRPC]
+    void DieRPC(int playerNum, float hitTimer){
         if(playerNum==0){
             AddSubScore(playerNum,GameSession.instance.score_death,false);
             players[playerNum].respawnTimer=GameSession.instance.respawnTime;
@@ -207,7 +211,6 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){
         if(stream.IsWriting){// We own this player: send the others our data
-            stream.SendNext(gameSpeed);
             for(var i=0;i<players.Length;i++){
                 if(!GameIsStarted){
                 stream.SendNext(players[i].nick);
@@ -225,19 +228,18 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
                 stream.SendNext(timerMin);
                 stream.SendNext(timerSec);
                 stream.SendNext(startCond.timerEnabled);
-                stream.SendNext(startCond.timerSet);
                 stream.SendNext(startCond.scoreEnabled);
                 stream.SendNext(startCond.scoreLimit);
                 stream.SendNext(startCond.killsEnabled);
                 stream.SendNext(startCond.killsLimit);
             }
             stream.SendNext(GameIsPaused);
+            stream.SendNext(gameSpeed);
             //for(var i=0;i<players.Length;i++)stream.SendNext(players[i].nick);
             //stream.SendNext(players);
             //stream.SendNext(startCond);
         }
         else{// Network player, receive data
-            gameSpeed=(float)stream.ReceiveNext();
             for(var i=0;i<this.players.Length;i++){
                 if(!GameIsStarted){
                 this.players[i].nick=(string)stream.ReceiveNext();
@@ -261,6 +263,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
                 this.startCond.killsLimit=(int)stream.ReceiveNext();
             }
             this.GameIsPaused=(bool)stream.ReceiveNext();
+            gameSpeed=(float)stream.ReceiveNext();
             //this.players=(PlayerSession[])stream.ReceiveNext();
             //this.startCond=(GameStartConditions)stream.ReceiveNext();
         }
@@ -269,7 +272,7 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
 
     }
     public override void OnPlayerEnteredRoom(Player newPlayer){Debug.Log(newPlayer.NickName+" just joined "+PhotonNetwork.CurrentRoom.Name);}
-    public override void OnPlayerLeftRoom(Player newPlayer){Debug.Log(newPlayer.NickName+" just left "+PhotonNetwork.CurrentRoom.Name);if(players.Length==1){RestartGame();}}
+    public override void OnPlayerLeftRoom(Player newPlayer){Debug.Log(newPlayer.NickName+" just left "+PhotonNetwork.CurrentRoom.Name);if(PhotonNetwork.PlayerList.Length==1){GameConditions.instance.MatchFinished=true;}}//PhotonView.Get(this).RPC("RestartGame",RpcTarget.All);}}
     public int GetLocalPlayerID(){
         return Array.FindIndex(players,0,players.Length,x=>x.nick==PhotonNetwork.LocalPlayer.NickName);
         //Array.FindIndex(players,0,players.Length,x=>Array.IndexOf(players,x)==Array.FindIndex(PhotonNetwork.PlayerList,x=>x==PhotonNetwork.LocalPlayer));

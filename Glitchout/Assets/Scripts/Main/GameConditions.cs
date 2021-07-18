@@ -61,7 +61,7 @@ public class GameConditions : MonoBehaviour, IPunObservable{
         if(!GameManager.instance.GameIsStarted){MatchFinished=false;}
     }
     void SetWinningPlayer(){
-        if(startCond.timerEnabled==true&&!wonBySKLimit){
+        if(startCond.timerEnabled==true&&!wonBySKLimit&&GameManager.instance.players.Length>1){
             if(!startCond.timeKillsEnabled){
                 if(GameManager.instance.players[0].score>GameManager.instance.players[1].score){winningPlayer=0;}
                 else if(GameManager.instance.players[1].score>GameManager.instance.players[0].score){winningPlayer=1;}
@@ -71,16 +71,20 @@ public class GameConditions : MonoBehaviour, IPunObservable{
                 else if(GameManager.instance.players[1].kills>GameManager.instance.players[0].kills){winningPlayer=1;}
                 else{winningPlayer=-1;}
             }
-        }
+        }else if(GameManager.instance.players.Length==1){winningPlayer=0;}
         
     }
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info){
         if(stream.IsWriting){// We own this player: send the others our data
             stream.SendNext(timer);
+            stream.SendNext(winningPlayer);
+            stream.SendNext(MatchFinished);
         }
         else{// Network player, receive data
             this.timer=(float)stream.ReceiveNext();
+            this.winningPlayer=(int)stream.ReceiveNext();
+            this.MatchFinished=(bool)stream.ReceiveNext();
         }
     }
 }

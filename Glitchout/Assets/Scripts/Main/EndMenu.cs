@@ -25,9 +25,10 @@ public class EndMenu : MonoBehaviour{
     void ChangeWinnerTxt(){
         if(txt!=null){
             if(GameConditions.instance.winningPlayer!=-1){string value="";
-                if(!string.IsNullOrEmpty(GameManager.instance.players[GameConditions.instance.winningPlayer].nick)){value=GameManager.instance.players[GameConditions.instance.winningPlayer].nick;txt.text=txt.text.Replace("_",txt.text.Split('_')[0]);}
-                else{value="Player"+(GameConditions.instance.winningPlayer+1).ToString();txt.text=txt.text.Replace("_",value);}
-                
+                if(GameManager.instance.players.Length>1){
+                    if(!string.IsNullOrEmpty(GameManager.instance.players[GameConditions.instance.winningPlayer].nick)){value=GameManager.instance.players[GameConditions.instance.winningPlayer].nick;}
+                    else{value="Player"+(GameConditions.instance.winningPlayer+1).ToString();}
+                }else{txt.text=value+" WON BY WALKOVER!";}
             }else{txt.text="DRAW!";}
         }
     }
