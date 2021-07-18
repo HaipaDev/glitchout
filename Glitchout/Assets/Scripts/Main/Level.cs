@@ -53,9 +53,7 @@ public class Level : MonoBehaviour{
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         GameSession.instance.gameSpeed=1f;
     }
-    public void QuitGame(){
-        Application.Quit();
-    }
+    public void QuitGame(){Application.Quit();}
     public void Restart(){
         SceneManager.LoadScene("Loading");
         GameSession.instance.gameSpeed=1f;

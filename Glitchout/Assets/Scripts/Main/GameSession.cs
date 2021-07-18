@@ -70,7 +70,7 @@ public class GameSession : MonoBehaviour{
         SaveSerial.instance.SaveSettings();
         var s=FindObjectOfType<SettingsMenu>();
     }
-    public void ResetMusicPitch(){if(FindObjectOfType<MusicPlayer>()!=null)FindObjectOfType<MusicPlayer>().GetComponent<AudioSource>().pitch=1;} 
+    public void ResetMusicPitch(){MusicPlayer.instance.GetComponent<AudioSource>().pitch=1;} 
     #region
     public void CheckCodes(string fkey, string nkey){
         //if(fkey=="0"&&nkey=="0"){}

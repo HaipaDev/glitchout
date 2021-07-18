@@ -155,3 +155,21 @@ MonoBehaviour:
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
+  - name: ClockTick
+    clip: {fileID: 8300000, guid: 9396872d292b35845a40f7dc2e8e5495, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 1
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: TVOff
+    clip: {fileID: 8300000, guid: 77cd3dbc5c1db3442b1dca0be9cf89b4, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0.02
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}

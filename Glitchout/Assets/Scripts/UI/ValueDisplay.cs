@@ -57,7 +57,9 @@ public class ValueDisplay : MonoBehaviour{
         if(!GameManager.instance.startCond.timerEnabled){color=Color.grey;}else{color=Color.white;}}
 
         if(value=="timer"){GetComponent<TMPro.TextMeshProUGUI>().enabled=GameConditions.instance.startCond.timerEnabled;
-            var timer=GameConditions.instance.timer;if(timer>0){float min=timer/60; float sec=Mathf.RoundToInt(timer-(float)(System.Math.Truncate(min)*60f)); if(sec>=60){min+=1;sec=0;} string textSec=sec.ToString(); if(sec<10){textSec="0"+sec;} txt=System.Math.Truncate(min).ToString()+":"+textSec;}else{txt="0:00";}}//160/60=2\.6 | 160-2*60=160-120=40
+            var timer=GameConditions.instance.timer;if(timer>0){float min=timer/60; float sec=Mathf.RoundToInt(timer-(float)(System.Math.Truncate(min)*60f)); if(sec>=60){min+=1;sec=0;} string textSec=sec.ToString(); if(sec<10){textSec="0"+sec;} txt=System.Math.Truncate(min).ToString()+":"+textSec;}else{txt="0:00";}//160/60=2\.6 | 160-2*60=160-120=40
+            if(timer<=10){color=Color.red;}else{color=Color.white;}
+        }
         
         if(update==true){
             if(GetComponent<TMPro.TextMeshProUGUI>()!=null){GetComponent<TMPro.TextMeshProUGUI>().text=txt;GetComponent<TMPro.TextMeshProUGUI>().color=color;}

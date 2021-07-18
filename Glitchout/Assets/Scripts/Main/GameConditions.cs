@@ -40,6 +40,7 @@ public class GameConditions : MonoBehaviour, IPunObservable{
             if(startCond.timerEnabled==true){
                 if(timer>0&&!GameManager.instance.TimeIs0){timer-=Time.deltaTime;}
                 if(timer<=0){timer=-4;MatchFinished=true;}
+                if(timer<=10&&!AudioManager.instance.GetSource("ClockTick").isPlaying){AudioManager.instance.Play("ClockTick");}
             }
             if(startCond.scoreEnabled==true&&MatchFinished!=true){
                 for(var i=0;i<GameManager.instance.players.Length;i++){
@@ -52,6 +53,7 @@ public class GameConditions : MonoBehaviour, IPunObservable{
             }
 
             if(MatchFinished){
+                AudioManager.instance.Stop("ClockTick");
                 SetWinningPlayer();
                 EndMenu.instance.Open();
                 //GameSession.instance.speedChanged=true;

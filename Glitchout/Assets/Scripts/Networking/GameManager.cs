@@ -44,6 +44,8 @@ public class GameManager : MonoBehaviourPunCallbacks, IPunObservable{
             startCond.timerSet=(timerMin*60)+timerSec;
             GameConditions.instance.startCond=startCond;
         }
+
+        if(Array.Find(players,x=>x.playerScript.health<=25&&x.playerScript.health>0)!=null){MusicPlayer.instance.GetComponent<AudioSource>().pitch=1.2f;}else{MusicPlayer.instance.GetComponent<AudioSource>().pitch=1;}
     }
     void OnValidate() {
         var allPerks=Enum.GetValues(typeof(perks));

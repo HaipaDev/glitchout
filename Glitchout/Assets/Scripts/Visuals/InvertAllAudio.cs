@@ -5,18 +5,14 @@ using UnityEngine.Audio;
 
 public class InvertAllAudio : MonoBehaviour{
     public bool revertMusic;
-    public MusicPlayer musicPlayer;
     float offTimer;
-    void Start(){
-        musicPlayer=FindObjectOfType<MusicPlayer>();
-    }
 
     void Update(){
         //if(invert){
             foreach(AudioSource sound in FindObjectsOfType<AudioSource>()){
             if(sound!=null){
                 GameObject snd=sound.gameObject;
-                //if(sound!=musicPlayer){
+                //if(sound!=MusicPlayer.instance){
                 if(snd.GetComponent<MusicPlayer>()==null){//If not MusicPlayer
                     //if(sound.GetComponent<AudioSource>()!=null){
                     //var tempAudioTime=snd.GetComponent<AudioSource>().clip.length-0.025f;
@@ -26,14 +22,13 @@ public class InvertAllAudio : MonoBehaviour{
                     //}
                 }else{
                     if(revertMusic!=true){
-                        musicPlayer=FindObjectOfType<MusicPlayer>();
-                        if(musicPlayer.GetComponent<AudioSource>().pitch!=-1)musicPlayer.GetComponent<AudioSource>().pitch=-1;}
-                    //else{musicPlayer=FindObjectOfType<MusicPlayer>();musicPlayer.GetComponent<AudioSource>().pitch=1;}}
-                if(revertMusic==true){if(sound!=musicPlayer){sound.loop=false;sound.Stop();}if(FindObjectOfType<MusicPlayer>()!=null){musicPlayer=FindObjectOfType<MusicPlayer>();musicPlayer.GetComponent<AudioSource>().pitch=1;offTimer=1f;}}
+                        if(MusicPlayer.instance.GetComponent<AudioSource>().pitch!=-1)MusicPlayer.instance.GetComponent<AudioSource>().pitch=-1;}
+                    //else{MusicPlayer.instance=FindObjectOfType<MusicPlayer>();MusicPlayer.instance.GetComponent<AudioSource>().pitch=1;}}
+                if(revertMusic==true){if(sound!=MusicPlayer.instance){sound.loop=false;sound.Stop();}MusicPlayer.instance.GetComponent<AudioSource>().pitch=1;offTimer=1f;}
                 }
             }
         }
-        //else{musicPlayer.GetComponent<AudioSource>().pitch=1;}
+        //else{MusicPlayer.instance.GetComponent<AudioSource>().pitch=1;}
         if(FindObjectOfType<PlayerScript>()!=null){
             //if(FindObjectOfType<PlayerScript>().inverter!=true){revertMusic=true;}//this.enabled=false;}
         }else{

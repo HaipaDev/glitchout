@@ -150,6 +150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: timer
   update: 1
+  colorUpdate: 1
 --- !u!1 &999469203248021093
 GameObject:
   m_ObjectHideFlags: 0
@@ -643,6 +644,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: kills_1
   update: 1
+  colorUpdate: 0
 --- !u!1 &1423529726704328264
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,6 +983,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: nick_0
   update: 1
+  colorUpdate: 0
 --- !u!1 &1726163746293507811
 GameObject:
   m_ObjectHideFlags: 0
@@ -1131,6 +1134,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: scoreDesc
   update: 1
+  colorUpdate: 0
 --- !u!1 &2092811040419750762
 GameObject:
   m_ObjectHideFlags: 0
@@ -1357,6 +1361,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: score_0
   update: 1
+  colorUpdate: 0
 --- !u!1 &3583235225792323461
 GameObject:
   m_ObjectHideFlags: 0
@@ -1507,6 +1512,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: score_1
   update: 1
+  colorUpdate: 0
 --- !u!1 &3702210274304330795
 GameObject:
   m_ObjectHideFlags: 0
@@ -1696,6 +1702,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: score_0
   update: 1
+  colorUpdate: 0
 --- !u!1 &5008369468050281474
 GameObject:
   m_ObjectHideFlags: 0
@@ -1971,6 +1978,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: scoreDesc
   update: 1
+  colorUpdate: 0
 --- !u!1 &6749051870511581140
 GameObject:
   m_ObjectHideFlags: 0
@@ -2121,6 +2129,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: health_0
   update: 1
+  colorUpdate: 0
 --- !u!1 &6749051870831652985
 GameObject:
   m_ObjectHideFlags: 0
@@ -2271,6 +2280,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: health_1
   update: 1
+  colorUpdate: 0
 --- !u!1 &6749051870857392631
 GameObject:
   m_ObjectHideFlags: 0
@@ -3071,6 +3081,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: nick_1
   update: 1
+  colorUpdate: 0
 --- !u!1 &8327962362597075629
 GameObject:
   m_ObjectHideFlags: 0
@@ -3257,6 +3268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: kills_0
   update: 1
+  colorUpdate: 0
 --- !u!1 &8735350378661914042
 GameObject:
   m_ObjectHideFlags: 0
@@ -3407,6 +3419,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   value: score_1
   update: 1
+  colorUpdate: 0
 --- !u!1001 &4489623442748728815
 PrefabInstance:
   m_ObjectHideFlags: 0
